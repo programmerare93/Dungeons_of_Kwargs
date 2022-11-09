@@ -1,4 +1,3 @@
-import numpy as np
 import pygame
 from dataclasses import dataclass
 
@@ -21,6 +20,11 @@ class Window:
     def set_icon(self, surface):
         pygame.display.set_icon(surface)
 
+    def __init__(self, title: str, width: int, height: int):
+        pygame.init()
+        self.screen = pygame.display.set_mode((width, height))
+        pygame.display.set_caption(title)
+        
     def get_event(self):
         return pygame.event.get()
 

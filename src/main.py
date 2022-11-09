@@ -2,9 +2,11 @@ from window.window import *
 from sys import exit
 
 window = Window("test", 800, 600)
+from window.window import Window
 
-icon = pygame.image.load("../assets/fort_icon.png")
-window.set_icon(icon)
+window = Window("test", 600, 600)
+
+running = True
 
 # Main-loopen
 while True:
