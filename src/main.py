@@ -1,10 +1,13 @@
-from window.window import Window
+from window.window import *
 
-window = Window("test", 600, 600)
+window = Window("test", 800, 600)
+tile_set = TileSet("../assets/ibm_pc_font.png")
 
-running = True
+icon = pygame.image.load("../assets/fort_icon.png")
+window.set_icon(icon)
 
-while running:
+# Main-loopen
+while window.is_running:
     for event in window.get_event():
         if window.should_quit(event):
-            running = False
+            window.is_running = False
