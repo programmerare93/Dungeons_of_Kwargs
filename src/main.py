@@ -12,3 +12,4 @@ while True:
         if window.should_quit(event):
             exit()
     window.update()
+    window.tick(60)

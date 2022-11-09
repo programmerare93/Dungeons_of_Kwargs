@@ -7,11 +7,14 @@ class Window:
     """Klass för att skapa ett fönster med pygame"""
     screen: pygame.surface
     image: pygame.image
+    clock: pygame.time.Clock
 
     def __init__(self, title: str, width: int, height: int):
         """Constructor som initializerar pygame och skapar fönstret"""
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption(title)
+
+        self.clock = pygame.time.Clock()
 
     def __del__(self):
         """Destructor som ser till att pygame avslutas"""
@@ -20,11 +23,6 @@ class Window:
     def set_icon(self, surface):
         pygame.display.set_icon(surface)
 
-    def __init__(self, title: str, width: int, height: int):
-        pygame.init()
-        self.screen = pygame.display.set_mode((width, height))
-        pygame.display.set_caption(title)
-        
     def get_event(self):
         return pygame.event.get()
 
@@ -36,3 +34,6 @@ class Window:
 
     def update(self):
         pygame.display.update()
+
+    def tick(self, framerate: int):
+        self.clock.tick(framerate)
