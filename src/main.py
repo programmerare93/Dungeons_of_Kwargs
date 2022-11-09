@@ -6,7 +6,6 @@ from window.window import Window
 
 window = Window("test", 600, 600)
 
-running = True
 
 # Main-loopen
 while True:
