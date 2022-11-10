@@ -6,6 +6,8 @@ window = Window("test", 800, 600)
 icon = pygame.image.load("../assets/fort_icon.png")
 window.set_icon(icon)
 
+print("Test")
+
 # Main-loopen
 while True:
     for event in window.get_event():
