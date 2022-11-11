@@ -1,38 +1,29 @@
 from typing import Tuple
 
-import numpy as np
-
-graphic_dt = np.dtype(
-    [
-        ("ch", np.int32),  # Unicode codepoint.
-        ("fg", "3B"),  # 3 unsigned bytes, for RGB colors.
-        ("bg", "3B"),
-    ]
-)
-
-tile_dt = np.dtype(
-    [
-        ("walkable", np.bool),  # True if this tile can be walked over.
-        ("transparent", np.bool),  # True if this tile doesn't block FOV.
-        ("dark", graphic_dt),  # Graphics for when this tile is not in FOV.
-    ]
-)
+from tcod import Console
 
 
-def new_tile(
-        *,  # Tvingar en att använda namnet på parametern så att ordningen är irrelevant
-        walkable: int,
-        transparent: int,
-        dark: Tuple[int, Tuple[int, int, int], Tuple[int, int, int]],
-) -> np.ndarray:
-    """Helper function for defining individual tile types"""
-    return np.array((walkable, transparent, dark), dtype=tile_dt)
+class Tile:
+    walkable: bool
+    visible: bool
+    color: Tuple[int, int, int]
+    char: str
+
+    def __init__(self, walkable: bool, visible: bool, color: Tuple[int, int, int], char: str):
+        self.walkable = walkable
+        self.visible = visible
+        self.color = color
+        self.char = char
+
+    def render(self, console: Console, x: int, y: int):
+        if self.visible:
+            console.print(x, y, self.char, self.color)
+        else:
+            console.print(x, y, self.char, (0, 0, 0))
 
 
-floor = new_tile(
-    walkable=True, transparent=True, dark=(ord(" "), (255, 255, 255), (50, 50, 150))
-)
+visible_floor = Tile(walkable=True, visible=True, color=(155, 200, 255), char='.')
+nonvisible_floor = Tile(walkable=True, visible=False, color=(155, 200, 255), char='.')
 
-wall = new_tile(
-    walkable=False, transparent=False, dark=(ord(" "), (255, 255, 255), (0, 0, 100))
-)
+visible_wall = Tile(walkable=False, visible=True, color=(255, 255, 255), char='#')
+nonvisible_wall = Tile(walkable=False, visible=False, color=(255, 255, 255), char='#')

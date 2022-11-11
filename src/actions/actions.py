@@ -29,8 +29,12 @@ class MovementAction(Action):
         if not engine.game_map.in_bounds(dest_x, dest_y):
             # Koordinaten är utanför kartan
             return
+        """
         if not engine.game_map.tiles["walkable"][dest_x, dest_y]:
             # Koordinaten är blockerat av en annan tile
+            return
+        """
+        if not engine.game_map.get_tile(dest_x, dest_y).walkable:
             return
 
         entity.move(self.dx, self.dy)
