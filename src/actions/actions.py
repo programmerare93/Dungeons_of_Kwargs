@@ -2,32 +2,23 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+# Falskt på 'runtime'
 if TYPE_CHECKING:
-    from engine import Engine
-    from entity import Entity
+    from src.engine.engine import Engine
+    from src.creature.entity import Entity
 
 
 class Action:
     def perform(self, engine: Engine, entity: Entity) -> None:
-        """Perform this action with the objects needed to determine its scope.
+        """Metod som kommer att utföra en handling för en entitet,
+        måste implementeras för individuella subklasser"""
 
-        `engine` is the scope this action is being performed in.
-
-        `entity` is the object performing the action.
-
-        This method must be overridden by Action subclasses.
-        """
+        # Kommer att misslyckas om man inte modifierat metoden
         raise NotImplementedError()
-
-
-class EscapeAction(Action):
-    def perform(self, engine: Engine, entity: Entity) -> None:
-        raise SystemExit()
 
 
 class MovementAction(Action):
     def __init__(self, dx: int, dy: int):
-        super().__init__()
         self.dx = dx
         self.dy = dy
 
@@ -36,13 +27,10 @@ class MovementAction(Action):
         dest_y = entity.y + self.dy
 
         if not engine.game_map.in_bounds(dest_x, dest_y):
-            # Destination is out of bounds.
+            # Koordinaten är utanför kartan
             return
         if not engine.game_map.tiles["walkable"][dest_x, dest_y]:
-            # Destination is blocked by a tile.
+            # Koordinaten är blockerat av en annan tile
             return
-        # if engine.game_map.get_blocking_entity_at_location(dest_x, dest_y):
-        #     # Destination is blocked by an entity.
-        #     return
 
         entity.move(self.dx, self.dy)

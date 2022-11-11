@@ -29,6 +29,3 @@ class Window:
 
     def get_events(self):
         return tcod.event.wait()
-
-    def convert_event(self, event):
-        self.context.convert_event(event)

@@ -9,6 +9,7 @@ from src.stage.game_map import GameMap
 
 
 class Engine:
+    """Klassen för spel motorn, samlar all funktionalitet i metoder"""
     def __init__(
         self,
         entities: Set[Entity],
