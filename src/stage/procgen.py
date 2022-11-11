@@ -1,8 +1,12 @@
-from typing import Tuple
+from typing import Iterator, Tuple
+
+import random
 
 from stage.game_map import GameMap
 
 import stage.tile_types as tile_types
+
+import tcod
 
 
 class RectangularRoom:
@@ -24,6 +28,26 @@ class RectangularRoom:
         return slice(self.x1 + 1, self.x2), slice(self.y1 + 1, self.y2)
 
 
+def tunnel_between(
+    start: Tuple[int, int], end: Tuple[int, int]
+) -> Iterator[Tuple[slice, slice]]:
+    """Return an L-shaped tunnel between these two points."""
+    x1, y1 = start
+    x2, y2 = end
+    if random.randint(0, 1) == 1:  # 50% chance
+        # Move horizontally, then vertically.
+        corner_x, corner_y = x2, y1
+    else:
+        # Move vertically, then horizontally.
+        corner_x, corner_y = x1, y2
+
+    for x, y in tcod.los.bresenham((x1, y1), (corner_x, corner_y)).tolist():
+        yield x, y
+
+    for x, y in tcod.los.bresenham((corner_x, corner_y), (x2, y2)).tolist():
+        yield x, y
+
+
 def generate_dungeon(map_width, map_height) -> GameMap:
     dungeon = GameMap(map_width, map_height)
 
@@ -32,5 +56,8 @@ def generate_dungeon(map_width, map_height) -> GameMap:
 
     dungeon.tiles[room1.inner] = tile_types.floor
     dungeon.tiles[room2.inner] = tile_types.floor
+
+    for x, y in tunnel_between(room1.center, room2.center):
+        dungeon.tiles[x, y] = tile_types.floor
 
     return dungeon
