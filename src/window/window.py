@@ -16,6 +16,7 @@ class Window:
         self.width = width
         self.height = height
 
+
     def print(self, x: int, y: int, string: str):
         self.console.print(x, y, string)
 
