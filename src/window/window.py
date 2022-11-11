@@ -5,6 +5,7 @@ from dataclasses import dataclass
 @dataclass
 class Window:
     """Klass för att skapa ett fönster med pygame"""
+
     screen: pygame.surface
     image: pygame.image
 
@@ -20,11 +21,6 @@ class Window:
     def set_icon(self, surface):
         pygame.display.set_icon(surface)
 
-    def __init__(self, title: str, width: int, height: int):
-        pygame.init()
-        self.screen = pygame.display.set_mode((width, height))
-        pygame.display.set_caption(title)
-        
     def get_event(self):
         return pygame.event.get()
 
@@ -36,3 +32,9 @@ class Window:
 
     def update(self):
         pygame.display.update()
+
+    def get_screen(self):
+        return self.screen
+    
+    def get_image(self):
+        return self.image
