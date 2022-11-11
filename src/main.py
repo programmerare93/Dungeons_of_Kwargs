@@ -1,15 +1,22 @@
 from window.window import *
-from sys import exit
 
-window = Window("test", 800, 600)
+tileset = tcod.tileset.load_tilesheet("../assets/arial10x10.png", 32, 8, tcod.tileset.CHARMAP_TCOD)
 
-icon = pygame.image.load("../assets/fort_icon.png")
-window.set_icon(icon)
+window = Window("Caves of Kwargs", 80, 50, tileset)
 
 # Main-loopen
 while True:
-    for event in window.get_event():
-        if window.should_quit(event):
+    window.clear()
+
+    window.print(40, 25, "@")
+
+    window.present()
+
+    for event in window.get_events():
+        window.convert_event(event)
+        if isinstance(event, tcod.event.Quit):
             exit()
-    window.update()
-    window.tick(60)
+
+        elif isinstance(event, tcod.event.KeyDown):
+            # Skriv kod för knappar här
+            pass
