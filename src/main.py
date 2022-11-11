@@ -8,7 +8,7 @@ from stage.game_map import GameMap
 
 tileset = tcod.tileset.load_tilesheet("../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437)
 
-window = Window("Caves of Kwargs", 80, 50, tileset)
+window = Window("Dungeons of Kwargs", 80, 50, tileset)
 
 def main():
     event_handler = EventHandler()
