@@ -6,7 +6,7 @@ from creature.entity import Entity
 from actions.input_handlers import EventHandler
 from stage.game_map import GameMap
 
-tileset = tcod.tileset.load_tilesheet("../assets/dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD)
+tileset = tcod.tileset.load_tilesheet("../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437)
 
 window = Window("Caves of Kwargs", 80, 50, tileset)
 
