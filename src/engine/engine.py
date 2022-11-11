@@ -3,13 +3,14 @@ from typing import Set, Iterable, Any
 from tcod.context import Context
 from tcod.console import Console
 
-from src.actions.input_handlers import EventHandler
-from src.creature.entity import Entity
-from src.stage.game_map import GameMap
+from actions.input_handlers import EventHandler
+from creature.entity import Entity
+from stage.game_map import GameMap
 
 
 class Engine:
     """Klassen för spel motorn, samlar all funktionalitet i metoder"""
+
     def __init__(
         self,
         entities: Set[Entity],
