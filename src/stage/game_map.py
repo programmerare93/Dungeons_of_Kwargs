@@ -1,7 +1,7 @@
 import numpy as np
 from tcod.console import Console
 
-import tile_types
+import src.stage.tile_types as tile_types
 
 
 class GameMap:
