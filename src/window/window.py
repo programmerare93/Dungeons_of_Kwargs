@@ -1,38 +1,29 @@
-import pygame
 from dataclasses import dataclass
+import tcod
 
 
 @dataclass
 class Window:
-    """Klass för att skapa ett fönster med pygame"""
-    screen: pygame.surface
-    image: pygame.image
+    """Klass för att skapa ett fönster med tcod"""
+    context: tcod.context
+    console: tcod.Console
 
-    def __init__(self, title: str, width: int, height: int):
-        """Constructor som initializerar pygame och skapar fönstret"""
-        self.screen = pygame.display.set_mode((width, height))
-        pygame.display.set_caption(title)
+    def __init__(self, title: str, width: int, height: int, tileset):
+        self.console = tcod.Console(width, height, "F")
+        self.context = tcod.context.new_terminal(width, height, tileset=tileset, title=title, vsync=True)
 
-    def __del__(self):
-        """Destructor som ser till att pygame avslutas"""
-        pygame.quit()
+    def print(self, x: int, y: int, string: str):
+        self.console.print(x, y, string)
 
-    def set_icon(self, surface):
-        pygame.display.set_icon(surface)
+    def clear(self):
+        self.console.clear()
 
-    def __init__(self, title: str, width: int, height: int):
-        pygame.init()
-        self.screen = pygame.display.set_mode((width, height))
-        pygame.display.set_caption(title)
-        
-    def get_event(self):
-        return pygame.event.get()
+    def present(self):
+        """Metod för att visa konsolen(fönstret)"""
+        self.context.present(self.console)
 
-    def should_quit(self, event):
-        if event.type == pygame.QUIT:
-            return True
-        else:
-            return False
+    def get_events(self):
+        return tcod.event.wait()
 
-    def update(self):
-        pygame.display.update()
+    def convert_event(self, event):
+        self.context.convert_event(event)
