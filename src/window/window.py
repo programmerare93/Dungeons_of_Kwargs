@@ -7,10 +7,15 @@ class Window:
     """Klass för att skapa ett fönster med tcod"""
     context: tcod.context
     console: tcod.Console
+    width: int
+    height: int
 
     def __init__(self, title: str, width: int, height: int, tileset):
         self.console = tcod.Console(width, height, "F")
         self.context = tcod.context.new_terminal(width, height, tileset=tileset, title=title, vsync=True)
+        self.width = width
+        self.height = height
+
 
     def print(self, x: int, y: int, string: str):
         self.console.print(x, y, string)
