@@ -3,8 +3,8 @@ import tcod
 from actions.input_handlers import EventHandler
 from creature.entity import Entity
 from engine.engine import Engine
-from stage.procgen import generate_dungeon
 from stage.floor import Floor
+from stage.procgen import generate_dungeon
 from window.window import Window
 
 tileset = tcod.tileset.load_tilesheet(
