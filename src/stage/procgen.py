@@ -107,7 +107,7 @@ def generate_dungeon(
                 dungeon.tiles[x, y] = tile_types.floor
         rooms.append(new_room)
 
-    for room in rooms:
+    for room in rooms[1::]:
         generate_entities(room, dungeon)
 
     return dungeon

@@ -53,6 +53,7 @@ class GameMap:
                 ):
                     entity.render(console, entity.x, entity.y)
             except IndexError:
+                print("IndexError: ", entity.x, entity.y)
                 continue
 
     def get_tile(self, x, y):

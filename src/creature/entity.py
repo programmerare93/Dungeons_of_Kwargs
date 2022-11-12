@@ -23,7 +23,7 @@ class Entity:
 
 
 def generate_entities(room, game_map):
-    """Genererar en entity i en given rum"""
+    """Genererar en entity i ett givet rum"""
     x = room.center[0] + random.randint(0, room.width - 3)
 
     y = room.center[1] + random.randint(0, room.width - 3)
