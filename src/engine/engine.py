@@ -14,14 +14,12 @@ class Engine:
     """Klassen för spel motorn, samlar all funktionalitet i metoder"""
 
     def __init__(
-            self,
-            entities: Set[Entity],
-            event_handler: EventHandler,
-            game_map: GameMap,
-            player: Entity,
-            radius: int
+        self,
+        event_handler: EventHandler,
+        game_map: GameMap,
+        player: Entity,
+        radius: int,
     ):
-        self.entities = entities
         self.event_handler = event_handler
         self.game_map = game_map
         self.player = player
@@ -49,17 +47,13 @@ class Engine:
             self.game_map.transparent_tiles,
             (self.player.x, self.player.y),
             radius=self.radius,
-            algorithm=tcod.FOV_SYMMETRIC_SHADOWCAST)
+            algorithm=tcod.FOV_SYMMETRIC_SHADOWCAST,
+        )
 
         self.game_map.explored |= self.game_map.visible
 
     def render(self, console: Console, context: Context) -> None:
         self.game_map.render(console)
-
-        for entity in self.entities:
-            if not self.game_map.visible[entity.x, entity.y]:
-                continue
-            console.print(x=entity.x, y=entity.y, string=entity.char, fg=entity.color)
 
         context.present(console)
 

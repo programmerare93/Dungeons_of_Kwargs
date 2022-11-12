@@ -1,4 +1,6 @@
 from typing import Tuple
+from tcod import Console
+import random
 
 
 class Entity:
@@ -14,3 +16,17 @@ class Entity:
         """Ändrar x och y koordinaten på en entity med ett givet värde"""
         self.x += dx
         self.y += dy
+
+    def render(self, console: Console, x: int, y: int):
+        """Ritar ut en entity på en given konsol"""
+        console.print(x=x, y=y, string=self.char, fg=self.color)
+
+
+def generate_entities(room, game_map):
+    """Genererar en entity i en given rum"""
+    x = room.center[0] + random.randint(0, room.width - 3)
+
+    y = room.center[1] + random.randint(0, room.width - 3)
+
+    entity = Entity(x, y, "M", (255, 255, 255))
+    game_map.entities.add(entity)

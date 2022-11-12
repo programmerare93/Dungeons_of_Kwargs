@@ -69,9 +69,10 @@ def generate_dungeon(
         map_width: int,
         map_height: int,
         player: Entity,
+        radius: int
 ) -> GameMap:
     """Genererar en ny dungeon nivå"""
-    dungeon = GameMap(map_width, map_height)
+    dungeon = GameMap(map_width, map_height, radius)
 
     rooms: List[RectangularRoom] = []
 
