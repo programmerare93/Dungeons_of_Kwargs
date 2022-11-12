@@ -1,35 +1,49 @@
 import numpy as np
 from tcod.console import Console
+import random
+
 
 import stage.tile_types as tile_types
+
+from typing import Iterable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from engine.engine import Engine
+
+from creature.entity import Entity
 
 
 class GameMap:
     """Klass för att representera spel kartan"""
 
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int, entities: Iterable["Entity"] = ()):
         self.width, self.height = width, height
         self.tiles = np.full((width, height), fill_value=tile_types.wall, order="F")
-
         self.visible = np.full((width, height), fill_value=False, order="F")
         self.explored = np.full((width, height), fill_value=False, order="F")
+        self.entities = set(entities)
 
     def in_bounds(self, x: int, y: int) -> bool:
         """Återvänder sant ifall koordinaten är inom kartan"""
         return 0 <= x < self.width and 0 <= y < self.height
 
     def is_blocked(self, x, y) -> bool:
-        if (not self.get_tile(x + 1, y).transparent and
-            not self.get_tile(x - 1, y).transparent and
-            not self.get_tile(x, y + 1).transparent and
-            not self.get_tile(x + 1, y + 1).transparent and
-            not self.get_tile(x - 1, y + 1).transparent and
-            not self.get_tile(x, y - 1).transparent and
-            not self.get_tile(x + 1, y - 1).transparent and
-            not self.get_tile(x - -1, y - 1).transparent):
+        try:
+            if (
+                not self.get_tile(x + 1, y).transparent
+                and not self.get_tile(x - 1, y).transparent
+                and not self.get_tile(x, y + 1).transparent
+                and not self.get_tile(x + 1, y + 1).transparent
+                and not self.get_tile(x - 1, y + 1).transparent
+                and not self.get_tile(x, y - 1).transparent
+                and not self.get_tile(x + 1, y - 1).transparent
+                and not self.get_tile(x - -1, y - 1).transparent
+            ):
+                return True
+            else:
+                return False
+        except IndexError:
             return True
-        else:
-            return False
 
     def render(self, console: Console) -> None:
         """Metod för att gå igenom alla tiles och sedan rendera varje tile"""
@@ -48,6 +62,17 @@ class GameMap:
                     tile.seen = True
                     tile.color = tile_types.seen_color
                     tile.render(console, x, y)
+
+        for entity in self.entities:
+            try:
+                if (
+                    self.visible[entity.x, entity.y]
+                    and not self.is_blocked(entity.x, entity.y)
+                    and not self.tiles[entity.x, entity.y] == tile_types.wall
+                ):
+                    entity.render(console, entity.x, entity.y)
+            except IndexError:
+                continue
 
     def get_tile(self, x, y):
         return self.tiles[x, y]
