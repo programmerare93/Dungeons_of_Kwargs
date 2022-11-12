@@ -1,14 +1,14 @@
 import tcod
 
-from window.window import Window
-from engine.engine import Engine
-from creature.entity import Entity
 from actions.input_handlers import EventHandler
-from stage.game_map import GameMap
+from creature.entity import Entity
+from engine.engine import Engine
 from stage.procgen import generate_dungeon
+from stage.floor import Floor
+from window.window import Window
 
 tileset = tcod.tileset.load_tilesheet(
-    "./assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
+    "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )
 
 window = Window("Dungeons of Kwargs", 80, 50, tileset)
@@ -18,17 +18,25 @@ def main():
     event_handler = EventHandler()
 
     player = Entity(int(window.width / 2), int(window.height / 2), "@", (255, 255, 255))
-    npc = Entity(int(window.width / 2 - 5), int(window.height / 2), "@", (255, 255, 0))
-    entities = {npc, player}
+    entities = {player}
 
-    game_map = generate_dungeon(map_width=80, map_height=45)
+    floor = Floor()
+
+    game_map = generate_dungeon(
+        floor.max_rooms,
+        floor.room_min_size,
+        floor.room_max_size,
+        window.width,
+        window.height,
+        player
+    )
 
     engine = Engine(
-        entities=entities, event_handler=event_handler, game_map=game_map, player=player
+        entities, event_handler, game_map, player, radius=4
     )
 
     while True:
-        engine.render(console=window.console, context=window.context)
+        engine.render(window.console, window.context)
 
         events = tcod.event.wait()
 

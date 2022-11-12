@@ -1,38 +1,83 @@
 from typing import Tuple
 
-import numpy as np
-
-graphic_dt = np.dtype(
-    [
-        ("ch", np.int32),  # Unicode codepoint.
-        ("fg", "3B"),  # 3 unsigned bytes, for RGB colors.
-        ("bg", "3B"),
-    ]
-)
-
-tile_dt = np.dtype(
-    [
-        ("walkable", np.bool),  # True if this tile can be walked over.
-        ("transparent", np.bool),  # True if this tile doesn't block FOV.
-        ("dark", graphic_dt),  # Graphics for when this tile is not in FOV.
-    ]
-)
+from tcod import Console
 
 
-def new_tile(
-        *,  # Tvingar en att använda namnet på parametern så att ordningen är irrelevant
-        walkable: int,
-        transparent: int,
-        dark: Tuple[int, Tuple[int, int, int], Tuple[int, int, int]],
-) -> np.ndarray:
-    """Helper function for defining individual tile types"""
-    return np.array((walkable, transparent, dark), dtype=tile_dt)
+class Tile:
+    type: int
+    walkable: bool
+    visible: bool
+    transparent: bool
+    seen: bool
+    color: Tuple[int, int, int]
+    char: str
+
+    def __init__(self,
+                 walkable: bool,
+                 visible: bool,
+                 transparent: bool,
+                 seen: bool,
+                 color: Tuple[int, int, int],
+                 char: str):
+        self.walkable = walkable
+        self.visible = visible
+        self.transparent = transparent
+        self.seen = seen
+        self.color = color
+        self.char = char
+
+    def render(self, console: Console, x: int, y: int):
+        if self.visible:
+            console.print(x, y, self.char, self.color)
+        elif self.seen:
+            console.print(x, y, self.char, self.color)
+        else:
+            console.print(x, y, self.char, (0, 0, 0))
 
 
-floor = new_tile(
-    walkable=True, transparent=True, dark=(ord(" "), (255, 255, 255), (50, 50, 150))
-)
+class Floor(Tile):
+    def __init__(self, color):
+        self.walkable = True
+        self.visible = False
+        self.transparent = True
+        self.seen = False
+        self.color = color
+        self.char = '.'
+        self.type = 0
 
-wall = new_tile(
-    walkable=False, transparent=False, dark=(ord(" "), (255, 255, 255), (0, 0, 100))
-)
+
+class Wall(Tile):
+    def __init__(self, color):
+        self.walkable = False
+        self.visible = False
+        self.transparent = False
+        self.seen = False
+        self.color = color
+        self.char = '#'
+        self.type = 1
+
+
+types_of_tiles = {
+    "floor": 0,
+    "wall": 1
+}
+
+seen_color = (55, 55, 55)
+floor_color = (155, 200, 255)
+wall_color = (255, 255, 255)
+
+visible_floor = Floor(floor_color)
+visible_floor.visible = True
+
+floor = Floor(floor_color)
+
+seen_floor = Floor(seen_color)
+seen_floor.seen = True
+
+visible_wall = Wall(wall_color)
+visible_wall.visible = True
+
+wall = Wall(wall_color)
+
+seen_wall = Wall(seen_floor)
+seen_wall.seen = True
