@@ -28,7 +28,8 @@ def main():
         floor.room_max_size,
         window.width,
         window.height,
-        player
+        player,
+        radius=4
     )
 
     engine = Engine(

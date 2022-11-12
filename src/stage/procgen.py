@@ -56,10 +56,10 @@ def tunnel_between(
         corner_x, corner_y = x1, y2
 
     # los står för lign of sight, bresenham står för bresenhams linjealgoritm
-    for x, y in tcod.los.bresenham((x1, y1), (corner_x, corner_y)).tolist():
+    for (x, y) in tcod.los.bresenham((x1, y1), (corner_x, corner_y)).tolist():
         yield x, y
 
-    for x, y in tcod.los.bresenham((corner_x, corner_y), (x2, y2)).tolist():
+    for (x, y) in tcod.los.bresenham((corner_x, corner_y), (x2, y2)).tolist():
         yield x, y
 
 
@@ -70,9 +70,10 @@ def generate_dungeon(
         map_width: int,
         map_height: int,
         player: Entity,
+        radius: int
 ) -> GameMap:
     """Genererar en ny dungeon nivå"""
-    dungeon = GameMap(map_width, map_height)
+    dungeon = GameMap(map_width, map_height, radius)
 
     rooms: List[RectangularRoom] = []
 
@@ -85,7 +86,7 @@ def generate_dungeon(
 
         new_room = RectangularRoom(x, y, room_width, room_height)
 
-        # 'any' återvänder sant om något värde är sant i denna
+        # 'any' återvänder sant om något värde är sant i det givna itererbara objektet
         # kommer att gå igenom alla andra rum och se om de överlappar med det nya
         if any(new_room.intersects(other_room) for other_room in rooms):
             continue  # Rummet överlappar ett annat rum så vi försöker igen
@@ -98,7 +99,7 @@ def generate_dungeon(
             player.x, player.y = new_room.center
         else:  # Resten
             # Gräver en tunnel mellan detta rum och den förra (därmed rooms[-1])
-            for x, y in tunnel_between(rooms[-1].center, new_room.center):
+            for (x, y) in tunnel_between(rooms[-1].center, new_room.center):
                 dungeon.tiles[x, y] = tile_types.floor
 
         rooms.append(new_room)

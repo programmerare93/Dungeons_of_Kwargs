@@ -40,8 +40,13 @@ class Engine:
             self.update_fov()
 
     def update_fov(self) -> None:
+        for (x, row) in enumerate(self.game_map.tiles):
+            for (y, value) in enumerate(row):
+                if self.game_map.get_tile(x, y).transparent:
+                    self.game_map.transparent_tiles[x, y] = True
+
         self.game_map.visible[:] = compute_fov(
-            self.game_map.tiles,
+            self.game_map.transparent_tiles,
             (self.player.x, self.player.y),
             radius=self.radius,
             algorithm=tcod.FOV_SYMMETRIC_SHADOWCAST)
