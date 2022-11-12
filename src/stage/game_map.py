@@ -1,5 +1,3 @@
-import array
-
 import numpy as np
 from tcod.console import Console
 
@@ -8,11 +6,10 @@ import src.stage.tile_types as tile_types
 
 class GameMap:
     """Klass för att representera spel kartan"""
+
     def __init__(self, width: int, height: int):
         self.width, self.height = width, height
-        self.tiles = np.full((width, height), fill_value=tile_types.visible_floor, order="F")
-
-        self.tiles[30, 20] = tile_types.visible_wall
+        self.tiles = np.full((width, height), fill_value=tile_types.wall, order="F")
 
     def in_bounds(self, x: int, y: int) -> bool:
         """Återvänder sant ifall koordinaten är inom kartan"""
@@ -25,4 +22,3 @@ class GameMap:
 
     def get_tile(self, x, y):
         return self.tiles[x, y]
-
