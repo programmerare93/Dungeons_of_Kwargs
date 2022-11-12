@@ -12,13 +12,15 @@ class Tile:
     color: Tuple[int, int, int]
     char: str
 
-    def __init__(self,
-                 walkable: bool,
-                 visible: bool,
-                 transparent: bool,
-                 seen: bool,
-                 color: Tuple[int, int, int],
-                 char: str):
+    def __init__(
+        self,
+        walkable: bool,
+        visible: bool,
+        transparent: bool,
+        seen: bool,
+        color: Tuple[int, int, int],
+        char: str,
+    ):
         self.walkable = walkable
         self.visible = visible
         self.transparent = transparent
@@ -37,7 +39,7 @@ class Floor(Tile):
         self.transparent = True
         self.seen = False
         self.color = color
-        self.char = '.'
+        self.char = "."
         self.type = 0
 
 
@@ -48,14 +50,11 @@ class Wall(Tile):
         self.transparent = False
         self.seen = False
         self.color = color
-        self.char = '#'
+        self.char = "#"
         self.type = 1
 
 
-types_of_tiles = {
-    "floor": 0,
-    "wall": 1
-}
+types_of_tiles = {"floor": 0, "wall": 1}
 
 seen_color = (55, 55, 55)
 floor_color = (155, 200, 255)

@@ -1,19 +1,28 @@
 import numpy as np
 from tcod.console import Console
+import random
+
 
 import stage.tile_types as tile_types
+
+from typing import Iterable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from engine.engine import Engine
+
+from creature.entity import Entity
 
 
 class GameMap:
     """Klass för att representera spel kartan"""
 
-    def __init__(self, width: int, height: int, radius: int):
+
+    def __init__(self, width: int, height: int, entities: Iterable["Entity"] = ()):
         self.width, self.height = width, height
         self.tiles = np.full((width, height), fill_value=tile_types.wall, order="F")
-
-        self.transparent_tiles = np.full((width, height), fill_value=False, order="F")
         self.visible = np.full((width, height), fill_value=False, order="F")
         self.explored = np.full((width, height), fill_value=False, order="F")
+        self.entities = set(entities)
 
         self.radius = radius
 
@@ -37,6 +46,17 @@ class GameMap:
                     tile.seen = True
                     tile.color = tile_types.seen_color
                     tile.render(console, x, y)
+
+        for entity in self.entities:
+            try:
+                if (
+                    self.visible[entity.x, entity.y]
+                    and not self.is_blocked(entity.x, entity.y)
+                    and not self.tiles[entity.x, entity.y] == tile_types.wall
+                ):
+                    entity.render(console, entity.x, entity.y)
+            except IndexError:
+                continue
 
     def get_tile(self, x, y):
         return self.tiles[x, y]

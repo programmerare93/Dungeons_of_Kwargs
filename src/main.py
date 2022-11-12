@@ -7,8 +7,10 @@ from stage.floor import Floor
 from stage.procgen import generate_dungeon
 from window.window import Window
 
+max_monsters_per_room = 3
+
 tileset = tcod.tileset.load_tilesheet(
-    "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
+    "./assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )
 
 window = Window("Dungeons of Kwargs", 80, 50, tileset)
@@ -18,7 +20,6 @@ def main():
     event_handler = EventHandler()
 
     player = Entity(int(window.width / 2), int(window.height / 2), "@", (255, 255, 255))
-    entities = {player}
 
     floor = Floor()
 
@@ -29,12 +30,9 @@ def main():
         window.width,
         window.height,
         player,
-        radius=4
     )
 
-    engine = Engine(
-        entities, event_handler, game_map, player, radius=4
-    )
+    engine = Engine(event_handler, game_map, player, radius=4)
 
     while True:
         engine.render(window.console, window.context)
