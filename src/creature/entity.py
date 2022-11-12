@@ -24,9 +24,9 @@ class Entity:
 
 def generate_entities(room, game_map):
     """Genererar en entity i en given rum"""
-    x = room.center[0] + random.randint(0, room.width - 1)
+    x = room.center[0] + random.randint(0, room.width - 3)
 
-    y = room.center[1] + random.randint(0, room.width - 1)
+    y = room.center[1] + random.randint(0, room.width - 3)
 
     entity = Entity(x, y, "M", (255, 255, 255))
     game_map.entities.add(entity)
