@@ -2,15 +2,12 @@ from typing import Set, Iterable, Any
 
 import tcod.constants
 from tcod.context import Context
-from tcod.console import Console
 from tcod.map import compute_fov
 
-import numpy as np
-
-from actions.input_handlers import EventHandler
-from creature.entity import Entity
-from stage.game_map import GameMap
-from stage.tile_types import *
+from src.actions.input_handlers import EventHandler
+from src.creature.entity import Entity
+from src.stage.game_map import GameMap
+from src.stage.tile_types import *
 
 
 class Engine:
@@ -41,8 +38,13 @@ class Engine:
             self.update_fov()
 
     def update_fov(self) -> None:
+        for (x, row) in enumerate(self.game_map.tiles):
+            for (y, value) in enumerate(row):
+                if self.game_map.get_tile(x, y).transparent:
+                    self.game_map.transparent_tiles[x, y] = True
+
         self.game_map.visible[:] = compute_fov(
-            self.game_map.tiles,
+            self.game_map.transparent_tiles,
             (self.player.x, self.player.y),
             radius=self.radius,
             algorithm=tcod.FOV_SYMMETRIC_SHADOWCAST,
