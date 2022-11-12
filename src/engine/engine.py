@@ -4,10 +4,10 @@ import tcod.constants
 from tcod.context import Context
 from tcod.map import compute_fov
 
-from src.actions.input_handlers import EventHandler
-from src.creature.entity import Entity
-from src.stage.game_map import GameMap
-from src.stage.tile_types import *
+from actions.input_handlers import EventHandler
+from creature.entity import Entity
+from stage.game_map import GameMap
+from stage.tile_types import *
 
 
 class Engine:

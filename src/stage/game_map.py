@@ -16,15 +16,13 @@ from creature.entity import Entity
 class GameMap:
     """Klass för att representera spel kartan"""
 
-
     def __init__(self, width: int, height: int, entities: Iterable["Entity"] = ()):
         self.width, self.height = width, height
         self.tiles = np.full((width, height), fill_value=tile_types.wall, order="F")
+        self.transparent_tiles = np.full((width, height), fill_value=False, order="F")
         self.visible = np.full((width, height), fill_value=False, order="F")
         self.explored = np.full((width, height), fill_value=False, order="F")
         self.entities = set(entities)
-
-        self.radius = radius
 
     def in_bounds(self, x: int, y: int) -> bool:
         """Återvänder sant ifall koordinaten är inom kartan"""
@@ -51,7 +49,6 @@ class GameMap:
             try:
                 if (
                     self.visible[entity.x, entity.y]
-                    and not self.is_blocked(entity.x, entity.y)
                     and not self.tiles[entity.x, entity.y] == tile_types.wall
                 ):
                     entity.render(console, entity.x, entity.y)
