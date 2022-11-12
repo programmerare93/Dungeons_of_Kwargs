@@ -13,7 +13,6 @@ import tcod
 if TYPE_CHECKING:
     from src.creature.entity import Entity
 
-
 class RectangularRoom:
     def __init__(self, x: int, y: int, width: int, height: int):
         self.x1 = x
