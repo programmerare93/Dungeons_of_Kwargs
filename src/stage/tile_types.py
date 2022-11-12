@@ -29,12 +29,7 @@ class Tile:
         self.char = char
 
     def render(self, console: Console, x: int, y: int):
-        if self.visible:
-            console.print(x, y, self.char, self.color)
-        elif self.seen:
-            console.print(x, y, self.char, self.color)
-        else:
-            console.print(x, y, self.char, (0, 0, 0))
+        console.print(x, y, self.char, self.color)
 
 
 class Floor(Tile):
@@ -65,18 +60,7 @@ seen_color = (55, 55, 55)
 floor_color = (155, 200, 255)
 wall_color = (255, 255, 255)
 
-visible_floor = Floor(floor_color)
-visible_floor.visible = True
 
 floor = Floor(floor_color)
 
-seen_floor = Floor(seen_color)
-seen_floor.seen = True
-
-visible_wall = Wall(wall_color)
-visible_wall.visible = True
-
 wall = Wall(wall_color)
-
-seen_wall = Wall(seen_floor)
-seen_wall.seen = True
