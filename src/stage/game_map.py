@@ -1,21 +1,19 @@
 import numpy as np
 from tcod.console import Console
 
-import stage.tile_types as tile_types
+import src.stage.tile_types as tile_types
 
 
 class GameMap:
     """Klass för att representera spel kartan"""
 
-    def __init__(self, width: int, height: int, radius: int):
+    def __init__(self, width: int, height: int):
         self.width, self.height = width, height
         self.tiles = np.full((width, height), fill_value=tile_types.wall, order="F")
 
         self.transparent_tiles = np.full((width, height), fill_value=False, order="F")
         self.visible = np.full((width, height), fill_value=False, order="F")
         self.explored = np.full((width, height), fill_value=False, order="F")
-
-        self.radius = radius
 
     def in_bounds(self, x: int, y: int) -> bool:
         """Återvänder sant ifall koordinaten är inom kartan"""

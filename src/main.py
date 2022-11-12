@@ -29,7 +29,6 @@ def main():
         window.width,
         window.height,
         player,
-        radius=4
     )
 
     engine = Engine(
