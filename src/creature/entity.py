@@ -24,9 +24,48 @@ class Entity:
 
 def generate_entities(room, game_map):
     """Genererar en entity i ett given rum"""
-    x = room.center[0] + random.randint(0, room.width - 3)
+    x = room.center[0] + random.randint(0, room.width // 2)
 
-    y = room.center[1] + random.randint(0, room.width - 3)
+    y = room.center[1] + random.randint(0, room.height // 2)
 
     entity = Entity(x, y, "O", (10, 70, 0))
     game_map.entities.add(entity)
+
+
+class Player(Entity):
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        strength: int,
+        dexterity: int,
+        constitution: int,
+        intelligence: int,
+    ):
+        super().__init__(x, y, "@", (255, 255, 255))
+        self.strength = strength
+        self.dexterity = dexterity
+        self.constitution = constitution
+        self.intelligence = intelligence
+
+    def attack(self, target):
+        damage = self.strength
+        print(f"You hit the {target.name} for {damage} damage!")
+        target.hp -= damage
+
+
+class Monster(Entity):
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        char: str,
+        color: Tuple[int, int, int],
+        strength: int,
+        dexterity: int,
+        constitution: int,
+    ):
+        super().__init__(x, y, char, color)
+        self.strength = strength
+        self.dexterity = dexterity
+        self.constitution = constitution

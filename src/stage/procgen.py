@@ -5,9 +5,9 @@ from typing import Iterator, List, Tuple
 
 import tcod
 
-import src.stage.tile_types as tile_types
-from src.creature.entity import Entity, generate_entities
-from src.stage.game_map import GameMap
+import stage.tile_types as tile_types
+from creature.entity import Entity, generate_entities
+from stage.game_map import GameMap
 
 
 class RectangularRoom:
@@ -33,15 +33,15 @@ class RectangularRoom:
     def intersects(self, other: RectangularRoom) -> bool:
         """Återvänder sant om den här instansen av rummet överlappar med ett annat rum"""
         return (
-                self.x1 <= other.x2
-                and self.x2 >= other.x1
-                and self.y1 <= other.y2
-                and self.y2 >= other.y1
+            self.x1 <= other.x2
+            and self.x2 >= other.x1
+            and self.y1 <= other.y2
+            and self.y2 >= other.y1
         )
 
 
 def tunnel_between(
-        start: Tuple[int, int], end: Tuple[int, int]
+    start: Tuple[int, int], end: Tuple[int, int]
 ) -> Iterator[Tuple[slice, slice]]:
     """Återvänder en L-formad tunnel mellan de två punkterna"""
     x1, y1 = start
@@ -62,12 +62,12 @@ def tunnel_between(
 
 
 def generate_dungeon(
-        max_rooms: int,
-        room_min_size: int,
-        room_max_size: int,
-        map_width: int,
-        map_height: int,
-        player: Entity,
+    max_rooms: int,
+    room_min_size: int,
+    room_max_size: int,
+    map_width: int,
+    map_height: int,
+    player: Entity,
 ) -> GameMap:
     """Genererar en ny dungeon nivå"""
     dungeon = GameMap(map_width, map_height, entities=[player])
