@@ -11,6 +11,7 @@ class Tile:
     seen: bool
     color: Tuple[int, int, int]
     char: str
+    has_monster: bool
 
     def __init__(
         self,
@@ -41,6 +42,7 @@ class Floor(Tile):
         self.color = color
         self.char = "."
         self.type = 0
+        self.has_monster = False
 
 
 class Wall(Tile):
@@ -52,6 +54,7 @@ class Wall(Tile):
         self.color = color
         self.char = "#"
         self.type = 1
+        self.has_monster = False
 
 
 types_of_tiles = {"floor": 0, "wall": 1}

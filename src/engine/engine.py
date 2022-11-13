@@ -5,7 +5,7 @@ from tcod.context import Context
 from tcod.map import compute_fov
 
 from actions.input_handlers import EventHandler
-from creature.entity import Entity
+from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.tile_types import *
 
@@ -51,12 +51,13 @@ class Engine:
         )
 
         self.game_map.explored |= self.game_map.visible
-        
-    def entity_at_location(self, x: int, y: int) -> Set[Entity]:
-        return {entity for entity in self.game_map.entities if entity.x == x and entity.y == y}
 
     def entity_at_location(self, x: int, y: int) -> Set[Entity]:
-        return {entity for entity in self.game_map.entities if entity.x == x and entity.y == y}
+        return {
+            entity
+            for entity in self.game_map.entities
+            if entity.x == x and entity.y == y
+        }
 
     def render(self, console: Console, context: Context) -> None:
         self.game_map.render(console)

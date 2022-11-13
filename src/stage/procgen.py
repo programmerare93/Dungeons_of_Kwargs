@@ -6,7 +6,7 @@ from typing import Iterator, List, Tuple
 import tcod
 
 import stage.tile_types as tile_types
-from creature.entity import Entity, generate_entities
+from creature.entity import Entity, generate_monsters
 from stage.game_map import GameMap
 
 
@@ -102,6 +102,6 @@ def generate_dungeon(
         rooms.append(new_room)
 
     for room in rooms[1::]:
-        generate_entities(room, dungeon)
+        generate_monsters(room, dungeon)
 
     return dungeon
