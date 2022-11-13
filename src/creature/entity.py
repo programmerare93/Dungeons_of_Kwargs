@@ -37,12 +37,14 @@ class Player(Entity):
         self,
         x: int,
         y: int,
+        char: str,
+        color: Tuple[int, int, int],
         strength: int,
         dexterity: int,
         constitution: int,
         intelligence: int,
     ):
-        super().__init__(x, y, "@", (255, 255, 255))
+        super().__init__(x, y, char, color)
         self.strength = strength
         self.dexterity = dexterity
         self.constitution = constitution
@@ -64,8 +66,10 @@ class Monster(Entity):
         strength: int,
         dexterity: int,
         constitution: int,
+        intelligence: int,
     ):
         super().__init__(x, y, char, color)
         self.strength = strength
         self.dexterity = dexterity
         self.constitution = constitution
+        self.intelligence = intelligence
