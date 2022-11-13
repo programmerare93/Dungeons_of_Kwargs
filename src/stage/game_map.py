@@ -1,16 +1,9 @@
+from typing import Iterable
+
 import numpy as np
 from tcod.console import Console
-import random
 
-
-import stage.tile_types as tile_types
-
-from typing import Iterable, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from engine.engine import Engine
-
-from creature.entity import Entity
+import src.stage.tile_types as tile_types
 
 
 class GameMap:
@@ -19,11 +12,13 @@ class GameMap:
     def __init__(self, width: int, height: int, entities: Iterable["Entity"] = ()):
         self.width, self.height = width, height
         self.tiles = np.full((width, height), fill_value=tile_types.wall, order="F")
+
         self.transparent_tiles = np.full((width, height), fill_value=False, order="F")
         self.visible = np.full((width, height), fill_value=False, order="F")
         self.explored = np.full((width, height), fill_value=False, order="F")
-        self.entities = set(entities)
 
+        self.entities = set(entities)
+        
     def in_bounds(self, x: int, y: int) -> bool:
         """Återvänder sant ifall koordinaten är inom kartan"""
         return 0 <= x < self.width and 0 <= y < self.height
@@ -48,8 +43,8 @@ class GameMap:
         for entity in self.entities:
             try:
                 if (
-                    self.visible[entity.x, entity.y]
-                    and not self.tiles[entity.x, entity.y] == tile_types.wall
+                        self.visible[entity.x, entity.y] and
+                        not self.tiles[entity.x, entity.y] == tile_types.wall
                 ):
                     entity.render(console, entity.x, entity.y)
             except IndexError:

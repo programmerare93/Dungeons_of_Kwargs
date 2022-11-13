@@ -23,10 +23,10 @@ class Entity:
 
 
 def generate_entities(room, game_map):
-    """Genererar en entity i ett givet rum"""
+    """Genererar en entity i ett given rum"""
     x = room.center[0] + random.randint(0, room.width - 3)
 
     y = room.center[1] + random.randint(0, room.width - 3)
 
-    entity = Entity(x, y, "M", (255, 255, 255))
+    entity = Entity(x, y, "O", (10, 70, 0))
     game_map.entities.add(entity)
