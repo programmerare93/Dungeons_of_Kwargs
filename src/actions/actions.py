@@ -42,10 +42,6 @@ class MovementAction(Action):
 
 
 class AttackingAction(Action):
-    def __init__(self, attacker: Entity, target: Entity, engine: Engine):
-        self.attacker = attacker
-        self.target = target
-        self.engine = engine
-
-    def perform(self) -> None:
+    def perform(self, engine, player) -> None:
+        print("Attacking")
         pass

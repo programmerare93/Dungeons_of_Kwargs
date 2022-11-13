@@ -24,7 +24,7 @@ def main():
         int(window.height / 2),
         "@",
         (255, 255, 255),
-        0,
+        5,
         0,
         0,
         0,
@@ -42,12 +42,10 @@ def main():
         player,
     )
 
-    engine = Engine(event_handler, game_map, player, radius=4)
+    engine = Engine(event_handler, game_map, player, radius=4, tick=0)
 
     while True:
-        window.console.draw_frame(
-            0, 51, window.width, window.height - 51, "Log", clear=False
-        )
+        window.render_log(player, engine)
 
         engine.render(window.console, window.context)
 

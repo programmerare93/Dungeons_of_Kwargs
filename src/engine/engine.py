@@ -19,11 +19,13 @@ class Engine:
         game_map: GameMap,
         player: Entity,
         radius: int,
+        tick: int,
     ):
         self.event_handler = event_handler
         self.game_map = game_map
         self.player = player
         self.radius = radius
+        self.tick = 0
         self.update_fov()
 
     def handle_events(self, events: Iterable[Any]) -> None:
@@ -61,6 +63,8 @@ class Engine:
 
     def render(self, console: Console, context: Context) -> None:
         self.game_map.render(console)
+
+        self.tick += 1
 
         context.present(console)
 

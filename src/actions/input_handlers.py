@@ -23,7 +23,7 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             action = MovementAction(dx=-1, dy=0)
         elif key in (tcod.event.K_RIGHT, tcod.event.K_KP_6):
             action = MovementAction(dx=1, dy=0)
-        elif key in (tcod.event.K_SPACE):
-            action = AttackingAction(self.engine.player, self.engine)
+        elif key == (tcod.event.K_SPACE):
+            action = AttackingAction()
 
         return action
