@@ -52,6 +52,9 @@ class Engine:
 
         self.game_map.explored |= self.game_map.visible
 
+    def entity_at_location(self, x: int, y: int) -> Set[Entity]:
+        return {entity for entity in self.game_map.entities if entity.x == x and entity.y == y}
+
     def render(self, console: Console, context: Context) -> None:
         self.game_map.render(console)
 

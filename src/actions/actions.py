@@ -33,4 +33,7 @@ class MovementAction(Action):
         if not engine.game_map.get_tile(dest_x, dest_y).walkable:
             return
 
+        if engine.entity_at_location(dest_x, dest_y):
+            return
+
         entity.move(self.dx, self.dy)
