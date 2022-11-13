@@ -1,17 +1,14 @@
 from __future__ import annotations
 
-from typing import Iterator, List, Tuple, TYPE_CHECKING
-
 import random
-
-from src.stage.game_map import GameMap
-
-import src.stage.tile_types as tile_types
+from typing import Iterator, List, Tuple
 
 import tcod
 
-if TYPE_CHECKING:
-    from src.creature.entity import Entity
+import src.stage.tile_types as tile_types
+from src.creature.entity import Entity, generate_entities
+from src.stage.game_map import GameMap
+
 
 class RectangularRoom:
     def __init__(self, x: int, y: int, width: int, height: int):
@@ -19,6 +16,8 @@ class RectangularRoom:
         self.y1 = y
         self.x2 = x + width
         self.y2 = y + height
+        self.width = width
+        self.height = height
 
     @property
     def center(self) -> Tuple[int, int]:
@@ -69,10 +68,9 @@ def generate_dungeon(
         map_width: int,
         map_height: int,
         player: Entity,
-        radius: int
 ) -> GameMap:
     """Genererar en ny dungeon nivå"""
-    dungeon = GameMap(map_width, map_height, radius)
+    dungeon = GameMap(map_width, map_height, entities=[player])
 
     rooms: List[RectangularRoom] = []
 
@@ -102,5 +100,8 @@ def generate_dungeon(
                 dungeon.tiles[x, y] = tile_types.floor
 
         rooms.append(new_room)
+
+    for room in rooms[1::]:
+        generate_entities(room, dungeon)
 
     return dungeon

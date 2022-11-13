@@ -28,5 +28,5 @@ def generate_entities(room, game_map):
 
     y = room.center[1] + random.randint(0, room.width - 3)
 
-    entity = Entity(x, y, "M", (255, 255, 255))
+    entity = Entity(x, y, "O", (10, 70, 0))
     game_map.entities.add(entity)
