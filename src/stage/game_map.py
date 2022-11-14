@@ -3,7 +3,7 @@ from typing import Iterable
 import numpy as np
 from tcod.console import Console
 
-import src.stage.tile_types as tile_types
+import stage.tile_types as tile_types
 
 
 class GameMap:
@@ -18,10 +18,10 @@ class GameMap:
         self.explored = np.full((width, height), fill_value=False, order="F")
 
         self.entities = set(entities)
-        
+
     def in_bounds(self, x: int, y: int) -> bool:
         """Återvänder sant ifall koordinaten är inom kartan"""
-        return 0 <= x < self.width and 0 <= y < self.height
+        return 0 < x < self.width and 0 < y < self.height
 
     def render(self, console: Console) -> None:
         """Metod för att gå igenom alla tiles och sedan rendera varje tile"""
@@ -43,8 +43,9 @@ class GameMap:
         for entity in self.entities:
             try:
                 if (
-                        self.visible[entity.x, entity.y] and
-                        not self.tiles[entity.x, entity.y] == tile_types.wall
+                    self.visible[entity.x, entity.y]
+                    and not self.tiles[entity.x, entity.y] == tile_types.wall
+                    and self.in_bounds(entity.x, entity.y)
                 ):
                     entity.render(console, entity.x, entity.y)
             except IndexError:

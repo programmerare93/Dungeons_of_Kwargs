@@ -5,7 +5,7 @@ from tcod.context import Context
 from tcod.map import compute_fov
 
 from actions.input_handlers import EventHandler
-from creature.entity import Entity
+from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.tile_types import *
 
@@ -19,11 +19,13 @@ class Engine:
         game_map: GameMap,
         player: Entity,
         radius: int,
+        tick: int,
     ):
         self.event_handler = event_handler
         self.game_map = game_map
         self.player = player
         self.radius = radius
+        self.tick = 0
         self.update_fov()
 
     def handle_events(self, events: Iterable[Any]) -> None:
@@ -34,6 +36,8 @@ class Engine:
                 continue
 
             action.perform(self, self.player)
+
+            self.tick += 1
 
             self.update_fov()
 
@@ -51,12 +55,13 @@ class Engine:
         )
 
         self.game_map.explored |= self.game_map.visible
-        
-    def entity_at_location(self, x: int, y: int) -> Set[Entity]:
-        return {entity for entity in self.game_map.entities if entity.x == x and entity.y == y}
 
     def entity_at_location(self, x: int, y: int) -> Set[Entity]:
-        return {entity for entity in self.game_map.entities if entity.x == x and entity.y == y}
+        return {
+            entity
+            for entity in self.game_map.entities
+            if entity.x == x and entity.y == y
+        }
 
     def render(self, console: Console, context: Context) -> None:
         self.game_map.render(console)

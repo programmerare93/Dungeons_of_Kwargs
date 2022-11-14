@@ -22,11 +22,53 @@ class Entity:
         console.print(x=x, y=y, string=self.char, fg=self.color)
 
 
-def generate_entities(room, game_map):
+def generate_monsters(room, game_map):
     """Genererar en entity i ett given rum"""
-    x = room.center[0] + random.randint(0, room.width - 3)
+    x = room.center[0] + random.randint(0, room.width // 2)
 
-    y = room.center[1] + random.randint(0, room.width - 3)
+    y = room.center[1] + random.randint(0, room.height // 2)
 
-    entity = Entity(x, y, "O", (10, 70, 0))
+    entity = Monster(x, y, "O", (10, 70, 0), 3, 0, 0, 0, 0)
     game_map.entities.add(entity)
+
+
+class Player(Entity):
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        char: str,
+        color: Tuple[int, int, int],
+        hp: int,
+        strength: int,
+        dexterity: int,
+        constitution: int,
+        intelligence: int,
+    ):
+        super().__init__(x, y, char, color)
+        self.hp = hp
+        self.strength = strength
+        self.dexterity = dexterity
+        self.constitution = constitution
+        self.intelligence = intelligence
+
+
+class Monster(Entity):
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        char: str,
+        color: Tuple[int, int, int],
+        hp: int,
+        strength: int,
+        dexterity: int,
+        constitution: int,
+        intelligence: int,
+    ):
+        super().__init__(x, y, char, color)
+        self.hp = hp
+        self.strength = strength
+        self.dexterity = dexterity
+        self.constitution = constitution
+        self.intelligence = intelligence

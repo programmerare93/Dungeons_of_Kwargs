@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import random
+
 # Falskt på 'runtime'
 if TYPE_CHECKING:
     from src.engine.engine import Engine
@@ -37,3 +39,9 @@ class MovementAction(Action):
             return
 
         entity.move(self.dx, self.dy)
+
+
+class AttackingAction(Action):
+    def perform(self, engine, player) -> None:
+        print("Attacking")
+        pass
