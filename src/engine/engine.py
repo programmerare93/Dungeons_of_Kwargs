@@ -37,6 +37,8 @@ class Engine:
 
             action.perform(self, self.player)
 
+            self.tick += 1
+
             self.update_fov()
 
     def update_fov(self) -> None:
@@ -63,8 +65,6 @@ class Engine:
 
     def render(self, console: Console, context: Context) -> None:
         self.game_map.render(console)
-
-        self.tick += 1
 
         context.present(console)
 
