@@ -13,11 +13,19 @@ class Window:
 
     def __init__(self, title: str, width: int, height: int, tileset):
         self.console = tcod.Console(width, height, "F")
-        self.context = tcod.context.new_terminal(
-            width, height, tileset=tileset, title=title, vsync=True
+
+
+        self.context = tcod.context.new(
+            width=width,
+            height=height,
+            title=title,
+            vsync=True,
+            tileset=tileset,
+            sdl_window_flags=tcod.context.SDL_WINDOW_FULLSCREEN_DESKTOP
         )
-        self.width = width
+
         self.height = height
+        self.width = width
 
     def render_log(self, player, engine):
         self.console.draw_frame(0, 51, self.width, self.height - 51, "Log", clear=False)
