@@ -68,6 +68,7 @@ def generate_dungeon(
     map_width: int,
     map_height: int,
     player: Entity,
+    monsters_per_room: int,
 ) -> GameMap:
     """Genererar en ny dungeon nivå"""
     dungeon = GameMap(map_width, map_height, entities=[player])
@@ -102,6 +103,7 @@ def generate_dungeon(
         rooms.append(new_room)
 
     for room in rooms[1::]:
-        generate_monsters(room, dungeon)
+        for _ in range(0, random.randint(0, monsters_per_room)):
+            generate_monsters(room, dungeon)
 
     return dungeon

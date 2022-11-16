@@ -28,8 +28,12 @@ def generate_monsters(room, game_map):
 
     y = room.center[1] + random.randint(0, room.height // 2)
 
-    entity = Monster(x, y, "O", (10, 70, 0), 3, 0, 0, 0, 0)
-    game_map.entities.add(entity)
+    if not game_map.entity_at_location(x, y):
+        if random.random() < 0.8:
+            monster = Entity(x, y, "O", (0, 255, 120))
+        else:
+            monster = Entity(x, y, "T", (0, 0, 255))
+        game_map.entities.add(monster)
 
 
 class Player(Entity):

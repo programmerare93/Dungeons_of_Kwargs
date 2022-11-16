@@ -14,14 +14,13 @@ class Window:
     def __init__(self, title: str, width: int, height: int, tileset):
         self.console = tcod.Console(width, height, "F")
 
-
         self.context = tcod.context.new(
             width=width,
             height=height,
             title=title,
             vsync=True,
             tileset=tileset,
-            sdl_window_flags=tcod.context.SDL_WINDOW_FULLSCREEN_DESKTOP
+            sdl_window_flags=tcod.context.SDL_WINDOW_FULLSCREEN_DESKTOP,
         )
 
         self.height = height
@@ -33,7 +32,7 @@ class Window:
             5,
             52,
             self.width,
-            self.height - 52,
+            self.height + 20,
             "Player position: {}, {}".format(player.x, player.y),
         )
 
