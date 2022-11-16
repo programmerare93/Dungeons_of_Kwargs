@@ -8,36 +8,7 @@ import tcod
 import stage.tile_types as tile_types
 from creature.entity import Entity, generate_monsters
 from stage.game_map import GameMap
-
-
-class RectangularRoom:
-    def __init__(self, x: int, y: int, width: int, height: int):
-        self.x1 = x
-        self.y1 = y
-        self.x2 = x + width
-        self.y2 = y + height
-        self.width = width
-        self.height = height
-
-    @property
-    def center(self) -> Tuple[int, int]:
-        center_x = int((self.x1 + self.x2) / 2)
-        center_y = int((self.y1 + self.y2) / 2)
-        return center_x, center_y
-
-    @property
-    def inner(self) -> Tuple[slice, slice]:
-        """Återvänder den inre arean av det givna rummet som en 2D array index"""
-        return slice(self.x1 + 1, self.x2), slice(self.y1 + 1, self.y2)
-
-    def intersects(self, other: RectangularRoom) -> bool:
-        """Återvänder sant om den här instansen av rummet överlappar med ett annat rum"""
-        return (
-            self.x1 <= other.x2
-            and self.x2 >= other.x1
-            and self.y1 <= other.y2
-            and self.y2 >= other.y1
-        )
+from stage.rooms import *
 
 
 def tunnel_between(
@@ -97,7 +68,10 @@ def generate_dungeon(
         else:  # Resten
             # Gräver en tunnel mellan detta rum och den förra (därmed rooms[-1])
             for (x, y) in tunnel_between(rooms[-1].center, new_room.center):
-                dungeon.tiles[x, y] = tile_types.floor
+                if random.randint(1, 30) == 10:
+                    dungeon.tiles[x, y] = tile_types.trap
+                else:
+                    dungeon.tiles[x, y] = tile_types.floor
 
         rooms.append(new_room)
 

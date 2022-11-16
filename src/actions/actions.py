@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import random
-
 # Falskt på 'runtime'
 if TYPE_CHECKING:
     from src.engine.engine import Engine
