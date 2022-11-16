@@ -1,8 +1,6 @@
-from dataclasses import dataclass
 import tcod
 
 
-@dataclass
 class Window:
     """Klass för att skapa ett fönster med tcod"""
 
@@ -13,7 +11,6 @@ class Window:
 
     def __init__(self, title: str, width: int, height: int, tileset):
         self.console = tcod.Console(width, height, "F")
-
 
         self.context = tcod.context.new(
             width=width,
@@ -26,32 +23,6 @@ class Window:
 
         self.height = height
         self.width = width
-
-    def render_log(self, player, engine):
-        self.console.draw_frame(0, 51, self.width, self.height - 51, "Log", clear=False)
-        self.console.print_box(
-            5,
-            52,
-            self.width,
-            self.height - 52,
-            "Player position: {}, {}".format(player.x, player.y),
-        )
-
-        self.console.print_box(
-            5,
-            53,
-            self.width,
-            self.height - 53,
-            "Current Tick: {}".format(engine.tick),
-        )
-
-        self.console.print_box(
-            5,
-            54,
-            self.width,
-            self.height - 53,
-            "Player HP: {}".format(player.hp),
-        )
 
     def print(self, x: int, y: int, string: str):
         self.console.print(x, y, string)

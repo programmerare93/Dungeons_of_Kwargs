@@ -6,6 +6,7 @@ from engine.engine import Engine
 from stage.floor import Floor
 from stage.procgen import generate_dungeon
 from window.window import Window
+from window.log import Log
 
 max_monsters_per_room = 3
 
@@ -43,9 +44,10 @@ def main():
     )
 
     engine = Engine(event_handler, game_map, player, radius=4, tick=0)
+    log = Log(window, player, engine)
 
     while True:
-        window.render_log(player, engine)
+        log.render()
 
         engine.render(window.console, window.context)
 
