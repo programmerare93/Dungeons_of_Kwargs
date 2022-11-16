@@ -45,16 +45,16 @@ class Player(Entity):
         color: Tuple[int, int, int],
         hp: int,
         strength: int,
+        perception: int,
         dexterity: int,
-        constitution: int,
         intelligence: int,
     ):
         super().__init__(x, y, char, color)
         self.hp = hp
         self.strength = strength
         self.dexterity = dexterity
-        self.constitution = constitution
         self.intelligence = intelligence
+        self.perception = perception
 
 
 class Monster(Entity):
