@@ -24,6 +24,9 @@ class GameMap:
         """Återvänder sant ifall koordinaten är inom kartan"""
         return 0 < x < self.width and 0 < y < self.height
 
+    def calculateDistance(self, x1, y1, x2, y2):
+        return np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
     def render(self, console: Console) -> None:
         """Metod för att gå igenom alla tiles och sedan rendera varje tile"""
         # TODO: Kolla över metoden igen och se om det finns något bättre sätt, det funkar iallafall

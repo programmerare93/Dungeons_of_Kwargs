@@ -43,5 +43,14 @@ class MovementAction(Action):
 
 class AttackingAction(Action):
     def perform(self, engine, player) -> None:
-        print("Attacking")
+        for entity in engine.game_map.entities:
+            if (
+                engine.game_map.calculateDistance(
+                    player.x, player.y, entity.x, entity.y
+                )
+                == 1
+            ):
+                entity.hp -= player.strength
+                print(f"{entity.char} har {entity.hp} hp kvar")
+        # print("Attacking")
         pass
