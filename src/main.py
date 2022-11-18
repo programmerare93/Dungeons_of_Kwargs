@@ -6,6 +6,7 @@ from engine.engine import Engine
 from stage.floor import Floor
 from stage.procgen import generate_dungeon
 from window.window import Window
+from window import color
 
 max_monsters_per_room = 3
 
@@ -45,7 +46,7 @@ def main():
     )
 
     engine = Engine(event_handler, game_map, player, radius=4, tick=0)
-
+    engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
     while True:
         window.render_log(player, engine)
 

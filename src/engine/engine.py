@@ -9,6 +9,7 @@ from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.tile_types import *
 from window.render_functions import render_bar
+from window.message_log import MessageLog
 
 
 class Engine:
@@ -24,6 +25,7 @@ class Engine:
     ):
         self.event_handler = event_handler
         self.game_map = game_map
+        self.message_log = MessageLog()
         self.player = player
         self.radius = radius
         self.tick = 0
@@ -65,7 +67,7 @@ class Engine:
             maximum_value=self.player.max_hp,
             total_width=20,
         )
-
+        self.message_log.render(console=console, x=23, y=62, width=40, height=6)
         context.present(console)
 
         console.clear()

@@ -39,7 +39,7 @@ class MovementAction(Action):
             for entity in engine.game_map.entities:
                 if entity.x == dest_x and entity.y == dest_y:
                     entity.hp -= 1
-                    print(f"{entity.char} har {entity.hp} hp kvar")
+                    engine.message_log.add_message(f"{entity.char} took 1 damage!")
                     return
 
         entity.move(self.dx, self.dy)
