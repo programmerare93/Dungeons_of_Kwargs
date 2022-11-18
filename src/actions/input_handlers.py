@@ -23,8 +23,6 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             action = MovementAction(dx=-1, dy=0)
         elif key in (tcod.event.K_RIGHT, tcod.event.K_KP_6):
             action = MovementAction(dx=1, dy=0)
-        elif key == (tcod.event.K_SPACE):
-            action = AttackingAction()
         elif key == tcod.event.K_ESCAPE:
             raise SystemExit()
 
