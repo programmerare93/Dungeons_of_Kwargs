@@ -54,7 +54,7 @@ class Engine:
         self.game_map.visible[:] = compute_fov(
             self.game_map.transparent_tiles,
             (self.player.x, self.player.y),
-            radius=self.radius,
+            radius=self.player.perception,
             algorithm=tcod.FOV_SYMMETRIC_SHADOWCAST,
         )
 

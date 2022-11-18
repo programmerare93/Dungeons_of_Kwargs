@@ -25,12 +25,12 @@ def main():
         int(window.height / 2),
         "@",
         (255, 255, 255),
-        5,
-        5,
-        1,
-        0,
-        0,
-        0,
+        max_hp=30,
+        hp=30,
+        strength=5,
+        dexterity=5,
+        intelligence=5,
+        perception=4,
     )
 
     floor = Floor()
