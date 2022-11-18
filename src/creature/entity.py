@@ -29,6 +29,7 @@ class Player(Entity):
         y: int,
         char: str,
         color: Tuple[int, int, int],
+        max_hp: int,
         hp: int,
         strength: int,
         perception: int,
@@ -36,6 +37,7 @@ class Player(Entity):
         intelligence: int,
     ):
         super().__init__(x, y, char, color)
+        self.max_hp = max_hp
         self.hp = hp
         self.strength = strength
         self.dexterity = dexterity
@@ -50,6 +52,7 @@ class Monster(Entity):
         y: int,
         char: str,
         color: Tuple[int, int, int],
+        max_hp: int,
         hp: int,
         strength: int,
         perception: int,
@@ -57,6 +60,7 @@ class Monster(Entity):
         intelligence: int,
     ):
         super().__init__(x, y, char, color)
+        self.max_hp = max_hp
         self.hp = hp
         self.strength = strength
         self.dexterity = dexterity
@@ -72,7 +76,7 @@ def generate_monsters(room, game_map):
 
     if not game_map.entity_at_location(x, y):
         if random.random() < 0.8:
-            monster = Monster(x, y, "O", (0, 255, 120), 10, 1, 1, 1, 1)
+            monster = Monster(x, y, "O", (0, 255, 120), 10, 10, 1, 1, 1, 1)
         else:
-            monster = Monster(x, y, "T", (0, 0, 255), 16, 3, 3, 3, 3)
+            monster = Monster(x, y, "T", (0, 0, 255), 16, 16, 3, 3, 3, 3)
         game_map.entities.add(monster)

@@ -29,7 +29,7 @@ class Window:
     def render_log(self, player, engine):
         self.console.draw_frame(0, 51, self.width, self.height - 51, "Log", clear=False)
         self.console.print_box(
-            5,
+            54,
             52,
             self.width,
             self.height + 20,
@@ -37,19 +37,11 @@ class Window:
         )
 
         self.console.print_box(
-            5,
+            54,
             53,
             self.width,
             self.height - 53,
             "Current Tick: {}".format(engine.tick),
-        )
-
-        self.console.print_box(
-            5,
-            54,
-            self.width,
-            self.height - 53,
-            "Player HP: {}".format(player.hp),
         )
 
     def print(self, x: int, y: int, string: str):

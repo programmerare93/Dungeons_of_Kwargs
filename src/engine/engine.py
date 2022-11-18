@@ -8,6 +8,7 @@ from actions.input_handlers import EventHandler
 from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.tile_types import *
+from window.render_functions import render_bar
 
 
 class Engine:
@@ -58,6 +59,12 @@ class Engine:
 
     def render(self, console: Console, context: Context) -> None:
         self.game_map.render(console)
+        render_bar(
+            console=console,
+            current_value=self.player.hp,
+            maximum_value=self.player.max_hp,
+            total_width=20,
+        )
 
         context.present(console)
 
