@@ -10,6 +10,7 @@ from stage.game_map import GameMap
 from stage.tile_types import *
 from window.render_functions import render_bar
 from window.message_log import MessageLog
+from window import color
 
 
 class Engine:
@@ -56,6 +57,13 @@ class Engine:
             radius=self.radius,
             algorithm=tcod.FOV_SYMMETRIC_SHADOWCAST,
         )
+
+    def check_entities(self):
+        for entity in self.game_map.entities:
+            if entity.hp <= 0:
+                self.game_map.entities.remove(entity)
+                self.message_log.add_message(f"{entity.char} died!", color.death_text)
+                return
 
         self.game_map.explored |= self.game_map.visible
 

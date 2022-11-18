@@ -56,6 +56,8 @@ def main():
 
         engine.handle_events(events)
 
+        engine.check_entities()
+
 
 if __name__ == "__main__":
     main()
