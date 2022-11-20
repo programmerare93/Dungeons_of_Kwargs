@@ -85,7 +85,8 @@ class Generator:
             self.room_list.append(new_room)
 
         # Tar bort första rummet som alternativ
-        available_stair_rooms = self.room_list.pop(0)
+        available_stair_rooms = self.room_list
+        available_stair_rooms.pop(0)
         # Gör om ett slumpmässigt rum till rummet med trappan i
         stair_room = random.choice(available_stair_rooms)
         self.dungeon.tiles[stair_room.center] = tile_types.stair_case
