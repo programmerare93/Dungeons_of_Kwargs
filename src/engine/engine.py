@@ -11,6 +11,7 @@ from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.tile_types import *
 from stage.procgen import Generator
+from stage.floor import Floor
 from window.render_functions import render_bar
 from window.message_log import MessageLog
 from window import color
@@ -24,6 +25,7 @@ class Engine:
         event_handler: EventHandler,
         game_map: GameMap,
         player: Entity,
+        floor: Floor,
         generator: Generator,
         player_can_attack: bool = True,
         player_attack_cool_down: int = 0,
@@ -32,15 +34,18 @@ class Engine:
         self.game_map = game_map
         self.message_log = MessageLog()
         self.player = player
+        self.floor = floor
         self.generator = generator
         self.tick = 0
         self.player_can_attack = player_can_attack
         self.player_attack_cool_down = player_attack_cool_down
+        self.update_game_map()
         self.update_fov()
 
     def update_game_map(self):
         self.generator.generate_dungeon()
         self.game_map = self.generator.get_dungeon()
+        self.update_fov()
 
     def handle_events(self, events: Iterable[Any]) -> None:
         for event in events:
@@ -49,12 +54,12 @@ class Engine:
             if action is None:
                 continue
 
-            if action.perform(self, self.player) != None:
+            if action.perform(self, self.player) is not None:
                 self.tick += 1
                 self.update_fov()
 
     def can_player_attack(self):
-        if self.player_can_attack == False:
+        if not self.player_can_attack:
             self.player_attack_cool_down = time.time()
             self.player_can_attack = "None"
 

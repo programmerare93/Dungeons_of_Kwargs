@@ -4,7 +4,7 @@ class Floor:
     max_monsters_per_room: int
 
     def __init__(self):
-        self.floor = 1
+        self.floor = 0
         self.max_rooms = 20
         self.max_monsters_per_room = 3
 
