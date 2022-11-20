@@ -4,7 +4,7 @@ from actions.input_handlers import EventHandler
 from creature.entity import Player
 from engine.engine import Engine
 from stage.floor import Floor
-from stage.procgen import generate_dungeon
+from stage.procgen import Generator
 from window.window import Window
 from window.log import Log
 
@@ -20,6 +20,7 @@ window = Window("Dungeons of Kwargs", 80, 70, tileset)
 def main():
     event_handler = EventHandler()
 
+    floor = Floor()
     player = Player(
         int(window.width / 2),
         int(window.height / 2),
@@ -32,18 +33,11 @@ def main():
         0,
     )
 
-    floor = Floor()
+    generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
+    generator.generate_dungeon()
+    game_map = generator.get_dungeon()
 
-    game_map = generate_dungeon(
-        floor.max_rooms,
-        floor.room_min_size,
-        floor.room_max_size,
-        window.width,
-        window.height - 20,
-        player,
-    )
-
-    engine = Engine(event_handler, game_map, player, radius=4, tick=0)
+    engine = Engine(event_handler, game_map, player, generator, radius=4)
     log = Log(window, player, engine)
 
     while True:

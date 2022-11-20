@@ -69,7 +69,19 @@ class Trap(Tile):
         self.has_monster = False
 
 
-types_of_tiles = {"floor": 0, "wall": 1, "trap": 2}
+class StairCase(Tile):
+    def __init__(self, color):
+        self.walkable = True
+        self.visible = False
+        self.transparent = True
+        self.seen = False
+        self.color = color
+        self.char = "<"
+        self.type = 3
+        self.has_monster = False
+
+
+types_of_tiles = {"floor": 0, "wall": 1, "trap": 2, "stair": 3}
 
 seen_color = (55, 55, 55)
 floor_color = (155, 200, 255)
@@ -81,3 +93,5 @@ floor = Floor(floor_color)
 wall = Wall(wall_color)
 
 trap = Trap(trap_color)
+
+stair_case = StairCase(wall_color)

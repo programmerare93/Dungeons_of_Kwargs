@@ -2,6 +2,8 @@ from typing import Tuple
 from tcod import Console
 import random
 
+from stage.floor import Floor
+
 
 class Entity:
     """Generisk klass för att representera en 'entitet', något som en fiende eller spelare"""
@@ -34,16 +36,16 @@ def generate_monsters(room, game_map):
 
 class Player(Entity):
     def __init__(
-        self,
-        x: int,
-        y: int,
-        char: str,
-        color: Tuple[int, int, int],
-        hp: int,
-        strength: int,
-        dexterity: int,
-        constitution: int,
-        intelligence: int,
+            self,
+            x: int,
+            y: int,
+            char: str,
+            color: Tuple[int, int, int],
+            hp: int,
+            strength: int,
+            dexterity: int,
+            constitution: int,
+            intelligence: int,
     ):
         super().__init__(x, y, char, color)
         self.hp = hp
@@ -55,16 +57,16 @@ class Player(Entity):
 
 class Monster(Entity):
     def __init__(
-        self,
-        x: int,
-        y: int,
-        char: str,
-        color: Tuple[int, int, int],
-        hp: int,
-        strength: int,
-        dexterity: int,
-        constitution: int,
-        intelligence: int,
+            self,
+            x: int,
+            y: int,
+            char: str,
+            color: Tuple[int, int, int],
+            hp: int,
+            strength: int,
+            dexterity: int,
+            constitution: int,
+            intelligence: int,
     ):
         super().__init__(x, y, char, color)
         self.hp = hp

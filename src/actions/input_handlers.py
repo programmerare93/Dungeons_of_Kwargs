@@ -2,7 +2,7 @@ from typing import Optional
 
 import tcod.event
 
-from actions.actions import Action, MovementAction, AttackingAction
+from actions.actions import Action, MovementAction, AttackingAction, GoDown
 
 
 class EventHandler(tcod.event.EventDispatch[Action]):
@@ -23,7 +23,9 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             action = MovementAction(dx=-1, dy=0)
         elif key in (tcod.event.K_RIGHT, tcod.event.K_KP_6):
             action = MovementAction(dx=1, dy=0)
-        elif key == (tcod.event.K_SPACE):
+        elif key == tcod.event.K_SPACE:
             action = AttackingAction()
+        elif key == tcod.event.K_LESS:
+            action = GoDown()
 
         return action

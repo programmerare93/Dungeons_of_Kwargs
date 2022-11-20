@@ -1,81 +1,94 @@
 from __future__ import annotations
 
 import random
-from typing import Iterator, List, Tuple
 
 import tcod
 
 import stage.tile_types as tile_types
 from creature.entity import Entity, generate_monsters
 from stage.game_map import GameMap
-from stage.rooms import *
+from stage.rooms import Room
 
 
-def tunnel_between(
-    start: Tuple[int, int], end: Tuple[int, int]
-) -> Iterator[Tuple[slice, slice]]:
-    """Återvänder en L-formad tunnel mellan de två punkterna"""
-    x1, y1 = start
-    x2, y2 = end
-    if random.randint(0, 1) == 1:  # 50% chans
-        # Rör sig horisontellt sen vertikalt
-        corner_x, corner_y = x2, y1
-    else:
-        # Rör sig vertikalt sen horisontellt
-        corner_x, corner_y = x1, y2
+class Generator:
+    def __init__(self, max_rooms: int, map_width: int, map_height: int, player: Entity, min_width=4, min_height=4):
+        self.player = player
+        self.dungeon = GameMap(map_width, map_height, entities=[player])
+        self.room_list = []
+        self.max_rooms = max_rooms
+        self.map_width = map_width
+        self.map_height = map_height
 
-    # los står för lign of sight, bresenham står för bresenhams linjealgoritm
-    for (x, y) in tcod.los.bresenham((x1, y1), (corner_x, corner_y)).tolist():
-        yield x, y
+        self.max_width = 14
+        self.min_width = 6
+        self.max_height = 14
+        self.min_height = 6
 
-    for (x, y) in tcod.los.bresenham((corner_x, corner_y), (x2, y2)).tolist():
-        yield x, y
+    def create_tunnel(self, start: tuple[int, int], end: tuple[int, int]) -> None:
+        """
+        Metod för att skapa en tunnel mellan två punkter med hjälp av tcods bresenham algoritm
+        Tar in en start punkt och slut punkt i formen av en tuple med två heltal (x, y)
+        Återvänder inget
+        """
+        x1, y1 = start
+        x2, y2 = end
+        if random.randint(0, 1):
+            # Rör sig horisontellt sen vertikalt
+            corner_x, corner_y = x2, y1
+        else:
+            # Rör sig vertikalt sen horisontellt
+            corner_x, corner_y = x1, y2
 
+        for (x, y) in tcod.los.bresenham((x1, y1), (corner_x, corner_y)).tolist():
+            self.dungeon.tiles[x, y] = tile_types.floor
 
-def generate_dungeon(
-    max_rooms: int,
-    room_min_size: int,
-    room_max_size: int,
-    map_width: int,
-    map_height: int,
-    player: Entity,
-) -> GameMap:
-    """Genererar en ny dungeon nivå"""
-    dungeon = GameMap(map_width, map_height, entities=[player])
+        for (x, y) in tcod.los.bresenham((corner_x, corner_y), (x2, y2)).tolist():
+            self.dungeon.tiles[x, y] = tile_types.floor
 
-    rooms: List[RectangularRoom] = []
+    def generate_dungeon(self):
+        """
+        Metod för att skapa själva kartan
+        Tar inte in något
+        Återvänder inget
+        """
+        # Återställer alla eventuella gamla nivåer
+        for (x, row) in enumerate(self.dungeon.tiles):
+            for (y, value) in enumerate(row):
+                self.dungeon.tiles[x, y] = tile_types.wall
 
-    for room in range(max_rooms):
-        room_width = random.randint(room_min_size, room_max_size)
-        room_height = random.randint(room_min_size, room_max_size)
+        self.room_list.clear()
 
-        x = random.randint(0, dungeon.width - room_width - 1)
-        y = random.randint(0, dungeon.height - room_height - 1)
+        for _ in range(self.max_rooms):
+            width = random.randint(self.min_width, self.max_width)
+            height = random.randint(self.min_height, self.max_height)
 
-        new_room = RectangularRoom(x, y, room_width, room_height)
+            x = random.randint(1, self.map_width - width - 1)
+            y = random.randint(1, self.map_height - height - 1)
 
-        # 'any' återvänder sant om något värde är sant i det givna itererbara objektet
-        # kommer att gå igenom alla andra rum och se om de överlappar med det nya
-        if any(new_room.intersects(other_room) for other_room in rooms):
-            continue  # Rummet överlappar ett annat rum så vi försöker igen
-        # Rummet var giltigt
+            new_room = Room(x, y, width, height)
 
-        dungeon.tiles[new_room.inner] = tile_types.floor
+            # Kommer att gå igenom alla rum i room_list
+            # och kollar ifall någon överlappar med det nya rummet
+            if any(new_room.intersects(other_room) for other_room in self.room_list):
+                continue  # Starta om ifall det överlappade
 
-        if len(rooms) == 0:
-            # Det här kommer vara första rummet spelaren startar i
-            player.x, player.y = new_room.center
-        else:  # Resten
-            # Gräver en tunnel mellan detta rum och den förra (därmed rooms[-1])
-            for (x, y) in tunnel_between(rooms[-1].center, new_room.center):
-                if random.randint(1, 30) == 10:
-                    dungeon.tiles[x, y] = tile_types.trap
-                else:
-                    dungeon.tiles[x, y] = tile_types.floor
+            self.dungeon.tiles[new_room.inner] = tile_types.floor
 
-        rooms.append(new_room)
+            if len(self.room_list) == 0:
+                self.player.x, self.player.y = new_room.center
+            else:
+                self.create_tunnel(self.room_list[-1].center, new_room.center)
 
-    for room in rooms[1::]:
-        generate_monsters(room, dungeon)
+            self.room_list.append(new_room)
 
-    return dungeon
+        # Tar bort start rummet från möjliga rum med trappa
+        self.room_list.pop(0)
+        # Gör om ett slumpmässigt rum till rummet med trappan i
+        stair_room = random.choice(self.room_list)
+        self.dungeon.tiles[stair_room.center] = tile_types.stair_case
+
+        for room in self.room_list[1::]:
+            generate_monsters(room, self.dungeon)
+
+    def get_dungeon(self):
+        return self.dungeon
