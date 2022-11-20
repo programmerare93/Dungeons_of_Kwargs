@@ -10,9 +10,11 @@ class Log:
         self.window = window
 
     def render(self):
-        self.window.console.draw_frame(0, 51, self.window.width, self.window.height - 51, "Log", clear=False)
+        self.window.console.draw_frame(
+            0, 51, self.window.width, self.window.height - 51, "Log", clear=False
+        )
         self.window.console.print_box(
-            5,
+            55,
             52,
             self.window.width,
             self.window.height - 52,
@@ -20,7 +22,7 @@ class Log:
         )
 
         self.window.console.print_box(
-            5,
+            55,
             53,
             self.window.width,
             self.window.height - 53,
@@ -28,7 +30,7 @@ class Log:
         )
 
         self.window.console.print_box(
-            5,
+            55,
             54,
             self.window.width,
             self.window.height - 53,
