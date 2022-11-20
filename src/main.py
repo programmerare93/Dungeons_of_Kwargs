@@ -36,13 +36,12 @@ def main():
     )
 
     generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
-    generator.generate_dungeon()
-    game_map = generator.get_dungeon()
-    game_map.generate_pathfinding_map()
+    game_map = None
 
-    engine = Engine(event_handler, game_map, player, generator)
+    engine = Engine(event_handler, game_map, player, floor, generator)
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
     log = Log(window, player, engine)
+    engine.game_map.generate_pathfinding_map()
 
     while True:
         engine.render(window.console, window.context)

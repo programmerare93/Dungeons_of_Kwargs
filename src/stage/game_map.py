@@ -25,7 +25,7 @@ class GameMap:
         """Återvänder sant ifall koordinaten är inom kartan"""
         return 0 < x < self.width and 0 < y < self.height
 
-    def calculateDistance(self, x1, y1, x2, y2):
+    def calculate_distance(self, x1, y1, x2, y2):
         return np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
     def render(self, console: Console) -> None:
@@ -41,6 +41,8 @@ class GameMap:
                         tile.color = tile_types.wall_color
                     elif tile.type == tile_types.types_of_tiles["trap"]:
                         tile.color = tile_types.trap_color
+                    elif tile_types == tile_types.types_of_tiles["stair"]:
+                        tile.color = tile_types.wall_color
                     tile.render(console, x, y)
                 elif self.explored[x, y]:
                     tile.seen = True
