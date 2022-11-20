@@ -35,11 +35,16 @@ class MovementAction(Action):
         if not engine.game_map.get_tile(dest_x, dest_y).walkable:
             return
 
-        if engine.game_map.entity_at_location(dest_x, dest_y):
-            for entity in engine.game_map.entities:
-                if entity.x == dest_x and entity.y == dest_y:
-                    entity.hp -= 1
-                    engine.message_log.add_message(f"{entity.char} took 1 damage!")
-                    return
+        if (
+            engine.game_map.entity_at_location(dest_x, dest_y)
+            and engine.player.stamina > 0
+        ):
+            list(engine.game_map.entity_at_location(dest_x, dest_y))[
+                0
+            ].hp -= engine.player.strength
+            engine.message_log.add_message(
+                f"{entity.char} took {engine.player.strength} damage!"
+            )
+            return
 
         entity.move(self.dx, self.dy)
