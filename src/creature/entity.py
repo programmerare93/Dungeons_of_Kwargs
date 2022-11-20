@@ -3,6 +3,7 @@ from tcod import Console
 import random
 
 from stage.floor import Floor
+from actions.actions import MovementAction
 
 
 class Entity:
@@ -68,6 +69,19 @@ class Monster(Entity):
         self.dexterity = dexterity
         self.intelligence = intelligence
         self.perception = perception
+        self.internal_tick = 0
+
+    def monster_pathfinding(self, player, game_map, engine):
+        """Monster pathfinding"""
+        print("tick")
+        tile_x, tile_y = (
+            game_map.pathfinding(self.x, self.y, player.x, player.y)[0][0],
+            game_map.pathfinding(self.x, self.y, player.x, player.y)[0][1],
+        )
+
+        action = MovementAction(tile_x - self.x, tile_y - self.y)
+        action.perform(engine, self)
+        self.internal_tick += 1
 
 
 def generate_monsters(room, game_map):
@@ -79,8 +93,19 @@ def generate_monsters(room, game_map):
 
     if not game_map.entity_at_location(x, y):
         if random.random() < 0.8:
-            monster = Monster(x, y, "O", (0, 255, 120), 10, 10, 1, 1, 1, 1)
+            monster = Monster(x, y, "O", (0, 255, 120), 10, 10, 1, 5, 1, 1)
         else:
-            monster = Monster(x, y, "T", (0, 0, 255), 16, 16, 3, 3, 3, 3)
+            monster = Monster(
+                x,
+                y,
+                "T",
+                (0, 0, 255),
+                max_hp=16,
+                hp=16,
+                strength=3,
+                perception=5,
+                dexterity=3,
+                intelligence=3,
+            )
         game_map.entities.add(monster)
         room.type = "monster"
