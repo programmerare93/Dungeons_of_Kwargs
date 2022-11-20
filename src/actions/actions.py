@@ -43,7 +43,7 @@ class MovementAction(Action):
             if entity.perception + random.randint(
                 1, 20
             ) > target.dexterity + random.randint(1, 20):
-                target.hp -= engine.player.strength
+                target.hp -= entity.strength
                 engine.message_log.add_message(
                     f"{target.char} took {entity.strength} damage!"
                 )
@@ -76,7 +76,6 @@ class MovementAction(Action):
             engine.game_map.entity_at_location(dest_x, dest_y)
             and not engine.player_can_attack == True
         ):
-            engine.message_log.add_message("Your attack is on cooldown!")
             return None
 
         entity.move(self.dx, self.dy)

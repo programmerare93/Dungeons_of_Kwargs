@@ -55,7 +55,19 @@ def main():
 
         engine.can_player_attack()
 
-        engine.check_entities()
+        if engine.check_entities() == "dead":
+            while True:
+                engine.render(window.console, window.context)
+                log.window.console.print_box(
+                    window.width // 2 - 5,
+                    window.height // 2,
+                    20,
+                    5,
+                    "You died!",
+                    fg=color.death_text,
+                )
+                events = tcod.event.wait()
+                engine.handle_death_events(events)
 
 
 if __name__ == "__main__":

@@ -59,6 +59,13 @@ class Engine:
                 self.tick += 1
                 self.update_fov()
 
+    def handle_death_events(self, events: Iterable[Any]) -> None:
+        for event in events:
+            action = self.event_handler.dispatch(event)
+
+            if action is None:
+                continue
+
     def handle_enemy_AI(self):
         if self.monster_tick + 1 == self.tick:
             for monster in self.game_map.entities:
@@ -97,9 +104,11 @@ class Engine:
     def check_entities(self):
         for entity in self.game_map.entities:
             if entity.hp <= 0:
-                self.game_map.entities.remove(entity)
+                if entity.char == "@":
+                    return "dead"
                 self.message_log.add_message(f"{entity.char} died!", color.death_text)
-                return
+                self.game_map.entities.remove(entity)
+                break
 
         self.game_map.explored |= self.game_map.visible
 

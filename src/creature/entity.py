@@ -92,7 +92,7 @@ def generate_monsters(room, game_map):
 
     if not game_map.entity_at_location(x, y):
         if random.random() < 0.8:
-            monster = Monster(x, y, "O", (0, 255, 120), 10, 10, 1, 5, 1, 1)
+            monster = Monster(x, y, "O", (0, 255, 120), 30, 10, 5, 5, 1, 1)
         else:
             monster = Monster(
                 x,
@@ -101,7 +101,7 @@ def generate_monsters(room, game_map):
                 (0, 0, 255),
                 max_hp=16,
                 hp=16,
-                strength=3,
+                strength=5,
                 perception=5,
                 dexterity=3,
                 intelligence=3,
