@@ -1,4 +1,5 @@
 from typing import Set, Iterable, Any
+import time
 
 import tcod.constants
 from tcod import Console
@@ -9,7 +10,9 @@ from actions.input_handlers import EventHandler
 from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.tile_types import *
-from stage.procgen import Generator
+from window.render_functions import render_bar
+from window.message_log import MessageLog
+from window import color
 
 
 class Engine:
@@ -21,14 +24,18 @@ class Engine:
         game_map: GameMap,
         player: Entity,
         generator: Generator,
-        radius: int,
+        tick: int,
+        player_can_attack: bool = True,
+        player_attack_cool_down: int = 0,
     ):
         self.event_handler = event_handler
         self.game_map = game_map
+        self.message_log = MessageLog()
         self.player = player
         self.generator = generator
-        self.radius = radius
         self.tick = 0
+        self.player_can_attack = player_can_attack
+        self.player_attack_cool_down = player_attack_cool_down
         self.update_fov()
 
     def update_game_map(self):
@@ -42,11 +49,17 @@ class Engine:
             if action is None:
                 continue
 
-            action.perform(self, self.player)
+            if action.perform(self, self.player) != None:
+                self.tick += 1
+                self.update_fov()
 
-            self.tick += 1
+    def can_player_attack(self):
+        if self.player_can_attack == False:
+            self.player_attack_cool_down = time.time()
+            self.player_can_attack = "None"
 
-            self.update_fov()
+        if time.time() - self.player_attack_cool_down >= 1:
+            self.player_can_attack = True
 
     def update_fov(self) -> None:
         for (x, row) in enumerate(self.game_map.tiles):
@@ -57,22 +70,28 @@ class Engine:
         self.game_map.visible[:] = compute_fov(
             transparency=self.game_map.transparent_tiles,
             pov=(self.player.x, self.player.y),
-            radius=self.radius,
+            radius=self.player.perception,
             algorithm=tcod.FOV_SYMMETRIC_SHADOWCAST,
         )
 
-        self.game_map.explored |= self.game_map.visible
+    def check_entities(self):
+        for entity in self.game_map.entities:
+            if entity.hp <= 0:
+                self.game_map.entities.remove(entity)
+                self.message_log.add_message(f"{entity.char} died!", color.death_text)
+                return
 
-    def entity_at_location(self, x: int, y: int) -> Set[Entity]:
-        return {
-            entity
-            for entity in self.game_map.entities
-            if entity.x == x and entity.y == y
-        }
+        self.game_map.explored |= self.game_map.visible
 
     def render(self, console: Console, context: Context) -> None:
         self.game_map.render(console)
-
+        render_bar(
+            console=console,
+            current_value=self.player.hp,
+            maximum_value=self.player.max_hp,
+            total_width=20,
+        )
+        self.message_log.render(console=console, x=23, y=62, width=40, height=6)
         context.present(console)
 
         console.clear()

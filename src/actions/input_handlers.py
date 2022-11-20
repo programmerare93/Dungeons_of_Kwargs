@@ -4,7 +4,6 @@ import tcod.event
 
 from actions.actions import Action, MovementAction, AttackingAction, GoDown
 
-
 class EventHandler(tcod.event.EventDispatch[Action]):
     def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
         raise SystemExit()
@@ -23,6 +22,8 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             action = MovementAction(dx=-1, dy=0)
         elif key in (tcod.event.K_RIGHT, tcod.event.K_KP_6):
             action = MovementAction(dx=1, dy=0)
+        elif key == tcod.event.K_ESCAPE:
+            raise SystemExit()
         elif key == tcod.event.K_SPACE:
             action = AttackingAction()
         elif key == tcod.event.K_LESS:

@@ -1,9 +1,10 @@
-from typing import Iterable
+from typing import Iterable, Set
 
 import numpy as np
 from tcod.console import Console
 
 import stage.tile_types as tile_types
+from creature.entity import Entity
 
 
 class GameMap:
@@ -22,6 +23,9 @@ class GameMap:
     def in_bounds(self, x: int, y: int) -> bool:
         """Återvänder sant ifall koordinaten är inom kartan"""
         return 0 < x < self.width and 0 < y < self.height
+
+    def calculateDistance(self, x1, y1, x2, y2):
+        return np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
     def render(self, console: Console) -> None:
         """Metod för att gå igenom alla tiles och sedan rendera varje tile"""
@@ -53,6 +57,9 @@ class GameMap:
             except IndexError:
                 print("IndexError: ", entity.x, entity.y)
                 continue
+
+    def entity_at_location(self, x: int, y: int) -> Set[Entity]:
+        return {entity for entity in self.entities if entity.x == x and entity.y == y}
 
     def get_tile(self, x, y):
         return self.tiles[x, y]

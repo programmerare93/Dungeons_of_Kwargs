@@ -18,12 +18,30 @@ class Window:
             title=title,
             vsync=True,
             tileset=tileset,
-            sdl_window_flags=tcod.context.SDL_WINDOW_FULLSCREEN_DESKTOP
+            sdl_window_flags=tcod.context.SDL_WINDOW_FULLSCREEN_DESKTOP,
         )
 
         self.height = height
         self.width = width
 
+    def render_log(self, player, engine):
+        self.console.draw_frame(0, 51, self.width, self.height - 51, "Log", clear=False)
+        self.console.print_box(
+            54,
+            52,
+            self.width,
+            self.height + 20,
+            "Player position: {}, {}".format(player.x, player.y),
+        )
+
+        self.console.print_box(
+            54,
+            53,
+            self.width,
+            self.height - 53,
+            "Current Tick: {}".format(engine.tick),
+        )
+        
     def print(self, x: int, y: int, string: str):
         self.console.print(x, y, string)
 
