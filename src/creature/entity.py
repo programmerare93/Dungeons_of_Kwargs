@@ -2,6 +2,8 @@ from typing import Tuple
 from tcod import Console
 import random
 
+from stage.floor import Floor
+
 
 class Entity:
     """Generisk klass för att representera en 'entitet', något som en fiende eller spelare"""

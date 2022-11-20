@@ -1,8 +1,6 @@
-from dataclasses import dataclass
 import tcod
 
 
-@dataclass
 class Window:
     """Klass för att skapa ett fönster med tcod"""
 
@@ -43,7 +41,7 @@ class Window:
             self.height - 53,
             "Current Tick: {}".format(engine.tick),
         )
-
+        
     def print(self, x: int, y: int, string: str):
         self.console.print(x, y, string)
 

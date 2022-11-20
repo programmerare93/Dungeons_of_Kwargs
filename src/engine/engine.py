@@ -2,6 +2,7 @@ from typing import Set, Iterable, Any
 import time
 
 import tcod.constants
+from tcod import Console
 from tcod.context import Context
 from tcod.map import compute_fov
 
@@ -22,7 +23,7 @@ class Engine:
         event_handler: EventHandler,
         game_map: GameMap,
         player: Entity,
-        radius: int,
+        generator: Generator,
         tick: int,
         player_can_attack: bool = True,
         player_attack_cool_down: int = 0,
@@ -31,11 +32,15 @@ class Engine:
         self.game_map = game_map
         self.message_log = MessageLog()
         self.player = player
-        self.radius = radius
+        self.generator = generator
         self.tick = 0
         self.player_can_attack = player_can_attack
         self.player_attack_cool_down = player_attack_cool_down
         self.update_fov()
+
+    def update_game_map(self):
+        self.generator.generate_dungeon()
+        self.game_map = self.generator.get_dungeon()
 
     def handle_events(self, events: Iterable[Any]) -> None:
         for event in events:
@@ -63,8 +68,8 @@ class Engine:
                     self.game_map.transparent_tiles[x, y] = True
 
         self.game_map.visible[:] = compute_fov(
-            self.game_map.transparent_tiles,
-            (self.player.x, self.player.y),
+            transparency=self.game_map.transparent_tiles,
+            pov=(self.player.x, self.player.y),
             radius=self.player.perception,
             algorithm=tcod.FOV_SYMMETRIC_SHADOWCAST,
         )

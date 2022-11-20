@@ -38,6 +38,8 @@ class GameMap:
                         tile.color = tile_types.floor_color
                     elif tile.type == tile_types.types_of_tiles["wall"]:
                         tile.color = tile_types.wall_color
+                    elif tile.type == tile_types.types_of_tiles["trap"]:
+                        tile.color = tile_types.trap_color
                     tile.render(console, x, y)
                 elif self.explored[x, y]:
                     tile.seen = True
@@ -47,9 +49,9 @@ class GameMap:
         for entity in self.entities:
             try:
                 if (
-                    self.visible[entity.x, entity.y]
-                    and not self.tiles[entity.x, entity.y] == tile_types.wall
-                    and self.in_bounds(entity.x, entity.y)
+                        self.visible[entity.x, entity.y]
+                        and not self.tiles[entity.x, entity.y] == tile_types.wall
+                        and self.in_bounds(entity.x, entity.y)
                 ):
                     entity.render(console, entity.x, entity.y)
             except IndexError:

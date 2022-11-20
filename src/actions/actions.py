@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import random
+import stage.tile_types as tile_types
 
 # Falskt på 'runtime'
 if TYPE_CHECKING:
-    from src.engine.engine import Engine
-    from src.creature.entity import Entity
+    from engine.engine import Engine
+    from creature.entity import Entity
 
 
 class Action:
@@ -61,5 +61,15 @@ class MovementAction(Action):
             return None
 
         entity.move(self.dx, self.dy)
-
+        
         return "moved"
+
+class AttackingAction(Action):
+    def perform(self, engine, player) -> None:
+        print("Attacking")
+
+
+class GoDown(Action):
+    def perform(self, engine: Engine, entity: Entity) -> None:
+        if engine.game_map.tiles[entity.x, entity.y] == tile_types.stair_case:
+            engine.update_game_map()
