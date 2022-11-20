@@ -70,9 +70,10 @@ class Monster(Entity):
 
 def generate_monsters(room, game_map):
     """Genererar en entity i ett given rum"""
-    x = room.center[0] + random.randint(0, room.width // 2)
 
-    y = room.center[1] + random.randint(0, room.height // 2)
+    x = random.randint(room.x1 + 1, room.x2 - 1)
+
+    y = random.randint(room.y1 + 1, room.y2 - 1)
 
     if not game_map.entity_at_location(x, y):
         if random.random() < 0.8:
@@ -80,3 +81,4 @@ def generate_monsters(room, game_map):
         else:
             monster = Monster(x, y, "T", (0, 0, 255), 16, 16, 3, 3, 3, 3)
         game_map.entities.add(monster)
+        room.type = "monster"

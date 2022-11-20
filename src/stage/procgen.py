@@ -11,13 +11,14 @@ from stage.game_map import GameMap
 
 
 class RectangularRoom:
-    def __init__(self, x: int, y: int, width: int, height: int):
+    def __init__(self, x: int, y: int, width: int, height: int, type: str = "room"):
         self.x1 = x
         self.y1 = y
         self.x2 = x + width
         self.y2 = y + height
         self.width = width
         self.height = height
+        self.type = type
 
     @property
     def center(self) -> Tuple[int, int]:
@@ -103,7 +104,7 @@ def generate_dungeon(
         rooms.append(new_room)
 
     for room in rooms[1::]:
-        for _ in range(0, random.randint(0, monsters_per_room)):
+        for _ in range(random.randint(0, monsters_per_room)):
             generate_monsters(room, dungeon)
 
     return dungeon

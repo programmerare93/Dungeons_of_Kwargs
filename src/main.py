@@ -45,7 +45,7 @@ def main():
         floor.max_monsters_per_room,
     )
 
-    engine = Engine(event_handler, game_map, player, radius=4, tick=0)
+    engine = Engine(event_handler, game_map, player, radius=player.perception, tick=0)
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
     while True:
         window.render_log(player, engine)
