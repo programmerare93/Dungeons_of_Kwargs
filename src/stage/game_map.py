@@ -2,6 +2,7 @@ from typing import Iterable, Set
 
 import numpy as np
 from tcod.console import Console
+import tcod.path
 
 import stage.tile_types as tile_types
 from creature.entity import Entity
@@ -54,9 +55,9 @@ class GameMap:
         for entity in self.entities:
             try:
                 if (
-                        self.visible[entity.x, entity.y]
-                        and not self.tiles[entity.x, entity.y] == tile_types.wall
-                        and self.in_bounds(entity.x, entity.y)
+                    self.visible[entity.x, entity.y]
+                    and not self.tiles[entity.x, entity.y] == tile_types.wall
+                    and self.in_bounds(entity.x, entity.y)
                 ):
                     entity.render(console, entity.x, entity.y)
             except IndexError:
@@ -68,3 +69,18 @@ class GameMap:
 
     def get_tile(self, x, y):
         return self.tiles[x, y]
+
+    def generate_pathfinding_map(self):
+        """Genererar en pathfinding map som används för att hitta vägen till spelaren"""
+        self.pathfinding_map = np.full(
+            (self.width, self.height), fill_value=0, order="F"
+        )
+        for (x, row) in enumerate(self.tiles):
+            for (y, tile) in enumerate(row):
+                if tile.transparent:
+                    self.pathfinding_map[x, y] = 1
+
+    def pathfinding(self, x1, y1, x2, y2):
+        """Tar emot två koordinater och returnerar en lista med koordinater som spelaren ska följa för att komma till målet"""
+        path = tcod.path.AStar(self.pathfinding_map)
+        return path.get_path(x1, y1, x2, y2)

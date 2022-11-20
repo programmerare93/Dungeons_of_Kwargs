@@ -5,6 +5,7 @@ import random
 from typing import TYPE_CHECKING
 
 import stage.tile_types as tile_types
+import random
 
 # Falskt på 'runtime'
 if TYPE_CHECKING:
@@ -77,8 +78,9 @@ class MovementAction(Action):
             return None
 
         entity.move(self.dx, self.dy)
-        
+
         return "moved"
+
 
 class AttackingAction(Action):
     def perform(self, engine, player) -> None:

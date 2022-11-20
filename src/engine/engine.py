@@ -38,6 +38,7 @@ class Engine:
         self.floor = floor
         self.generator = generator
         self.tick = 0
+        self.monster_tick = 0
         self.player_can_attack = player_can_attack
         self.player_attack_cool_down = player_attack_cool_down
         self.update_game_map()
@@ -64,6 +65,23 @@ class Engine:
             if action.perform(self, self.player) is not None:
                 self.tick += 1
                 self.update_fov()
+
+    def handle_enemy_AI(self):
+        if self.monster_tick + 1 == self.tick:  # Då får monster göra sitt
+            for monster in self.game_map.entities:
+                if (
+                    monster.char != "@"
+                    and self.game_map.calculate_distance(
+                        monster.x, monster.y, self.player.x, self.player.y
+                    )
+                    <= monster.perception
+                ):
+                    print("Monster is in range")
+                    monster.monster_pathfinding(self.player, self.game_map, self)
+                    self.monster_tick += 1
+                elif monster.char != "@":
+                    print("Monster is not in range")
+                    self.monster_tick += 1
 
     def can_player_attack(self):
         if not self.player_can_attack:

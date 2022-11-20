@@ -7,11 +7,12 @@ from stage.floor import Floor
 from stage.procgen import Generator
 from window.window import Window
 from window import color
+from window.log import Log
 
 max_monsters_per_room = 3
 
 tileset = tcod.tileset.load_tilesheet(
-    "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
+    "./assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )
 
 window = Window("Dungeons of Kwargs", 80, 70, tileset)
@@ -39,13 +40,18 @@ def main():
 
     engine = Engine(event_handler, game_map, player, floor, generator)
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
+    log = Log(window, player, engine)
+    engine.game_map.generate_pathfinding_map()
 
     while True:
         engine.render(window.console, window.context)
+        log.render()
 
         events = tcod.event.wait()
 
         engine.handle_events(events)
+
+        engine.handle_enemy_AI()
 
         engine.can_player_attack()
 
