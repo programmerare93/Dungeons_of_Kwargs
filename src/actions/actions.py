@@ -36,12 +36,15 @@ class MovementAction(Action):
             return
 
         if engine.game_map.entity_at_location(dest_x, dest_y):
-            list(engine.game_map.entity_at_location(dest_x, dest_y))[
-                0
-            ].hp -= engine.player.strength
-            engine.message_log.add_message(
-                f"{entity.char} took {engine.player.strength} damage!"
-            )
-            return
+            if engine.player_can_attack == True:
+                target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
+                target.hp -= engine.player.strength
+                engine.message_log.add_message(
+                    f"{target.char} took {engine.player.strength} damage!"
+                )
+                engine.player_can_attack = False
+                return
+            else:
+                return
 
         entity.move(self.dx, self.dy)

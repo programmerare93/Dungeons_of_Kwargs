@@ -1,4 +1,5 @@
 from typing import Set, Iterable, Any
+import datetime
 
 import tcod.constants
 from tcod.context import Context
@@ -23,6 +24,8 @@ class Engine:
         player: Entity,
         radius: int,
         tick: int,
+        player_can_attack: bool = True,
+        player_attack_cool_down: int = 0,
     ):
         self.event_handler = event_handler
         self.game_map = game_map
@@ -30,9 +33,18 @@ class Engine:
         self.player = player
         self.radius = radius
         self.tick = 0
+        self.player_can_attack = player_can_attack
+        self.player_attack_cool_down = player_attack_cool_down
         self.update_fov()
 
     def handle_events(self, events: Iterable[Any]) -> None:
+        if self.player_can_attack == False:
+            self.player_attack_cool_down = datetime.datetime.now().second
+            self.player_can_attack = None
+
+        if datetime.datetime.now().second - self.player_attack_cool_down >= 1:
+            self.player_can_attack = True
+
         for event in events:
             action = self.event_handler.dispatch(event)
 

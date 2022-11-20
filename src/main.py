@@ -27,7 +27,7 @@ def main():
         (255, 255, 255),
         max_hp=30,
         hp=30,
-        strength=5,
+        strength=2,
         dexterity=5,
         intelligence=5,
         perception=4,
