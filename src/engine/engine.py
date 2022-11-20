@@ -10,6 +10,7 @@ from actions.input_handlers import EventHandler
 from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.tile_types import *
+from stage.procgen import Generator
 from window.render_functions import render_bar
 from window.message_log import MessageLog
 from window import color
@@ -24,7 +25,6 @@ class Engine:
         game_map: GameMap,
         player: Entity,
         generator: Generator,
-        tick: int,
         player_can_attack: bool = True,
         player_attack_cool_down: int = 0,
     ):
