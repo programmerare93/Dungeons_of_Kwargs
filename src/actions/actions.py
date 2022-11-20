@@ -38,6 +38,22 @@ class MovementAction(Action):
         if not engine.game_map.get_tile(dest_x, dest_y).walkable:
             return None
 
+        if entity.char != "@" and engine.game_map.entity_at_location(dest_x, dest_y):
+            target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
+            if entity.perception + random.randint(
+                1, 20
+            ) > target.dexterity + random.randint(1, 20):
+                target.hp -= engine.player.strength
+                engine.message_log.add_message(
+                    f"{target.char} took {entity.strength} damage!"
+                )
+                return "hit"
+            else:
+                engine.message_log.add_message(
+                    f"{target.char} dodged {entity.char}'s attack!"
+                )
+                return "miss"
+
         if (
             engine.game_map.entity_at_location(dest_x, dest_y)
             and engine.player_can_attack == True
@@ -45,7 +61,7 @@ class MovementAction(Action):
             target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
             if entity.perception + random.randint(
                 1, 20
-            ) > target.perception + random.randint(1, 20):
+            ) > target.dexterity + random.randint(1, 20):
                 target.hp -= engine.player.strength
                 engine.message_log.add_message(
                     f"{target.char} took {entity.strength} damage!"
@@ -66,11 +82,6 @@ class MovementAction(Action):
         entity.move(self.dx, self.dy)
 
         return "moved"
-
-
-class AttackingAction(Action):
-    def perform(self, engine, player) -> None:
-        print("Attacking")
 
 
 class GoDown(Action):

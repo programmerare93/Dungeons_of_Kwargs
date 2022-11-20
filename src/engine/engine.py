@@ -60,7 +60,7 @@ class Engine:
                 self.update_fov()
 
     def handle_enemy_AI(self):
-        if self.monster_tick + 1 == self.tick:  # Då får monster göra sitt
+        if self.monster_tick + 1 == self.tick:
             for monster in self.game_map.entities:
                 if (
                     monster.char != "@"
@@ -69,12 +69,9 @@ class Engine:
                     )
                     <= monster.perception
                 ):
-                    print("Monster is in range")
                     monster.monster_pathfinding(self.player, self.game_map, self)
-                    self.monster_tick += 1
-                elif monster.char != "@":
-                    print("Monster is not in range")
-                    self.monster_tick += 1
+
+            self.monster_tick += 1
 
     def can_player_attack(self):
         if not self.player_can_attack:
