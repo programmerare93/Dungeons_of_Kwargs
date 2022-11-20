@@ -91,7 +91,7 @@ types_of_tiles = {"floor": 0, "wall": 1, "trap": 2, "stair": 3}
 seen_color = (55, 55, 55)
 floor_color = (155, 200, 255)
 wall_color = (255, 255, 255)
-trap_color = (0, 210, 0)
+trap_color = (100, 210, 210)
 
 floor = Floor(floor_color)
 
