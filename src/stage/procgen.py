@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+import numpy as np
 
 import tcod
 
@@ -55,6 +56,8 @@ class Generator:
         for (x, row) in enumerate(self.dungeon.tiles):
             for (y, value) in enumerate(row):
                 self.dungeon.tiles[x, y] = tile_types.wall
+        self.dungeon.explored = np.full((self.map_width, self.map_height), fill_value=False, order="F")
+        self.dungeon.transparent_tiles = np.full((self.map_width, self.map_height), fill_value=False, order="F")
 
         self.room_list.clear()
 
@@ -81,10 +84,14 @@ class Generator:
 
             self.room_list.append(new_room)
 
+        """
         # Tar bort start rummet från möjliga rum med trappa
         self.room_list.pop(0)
         # Gör om ett slumpmässigt rum till rummet med trappan i
         stair_room = random.choice(self.room_list)
+        self.dungeon.tiles[stair_room.center] = tile_types.stair_case
+        """
+        stair_room = self.room_list[0]
         self.dungeon.tiles[stair_room.center] = tile_types.stair_case
 
         for room in self.room_list[1::]:
