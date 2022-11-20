@@ -56,6 +56,8 @@ def main():
 
         engine.handle_events(events)
 
+        engine.can_player_attack()
+
         engine.check_entities()
 
 

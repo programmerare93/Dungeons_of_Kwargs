@@ -1,5 +1,6 @@
 from typing import Set, Iterable, Any
 import datetime
+import time
 
 import tcod.constants
 from tcod.context import Context
@@ -38,24 +39,23 @@ class Engine:
         self.update_fov()
 
     def handle_events(self, events: Iterable[Any]) -> None:
-        if self.player_can_attack == False:
-            self.player_attack_cool_down = datetime.datetime.now().second
-            self.player_can_attack = None
-
-        if datetime.datetime.now().second - self.player_attack_cool_down >= 1:
-            self.player_can_attack = True
-
         for event in events:
             action = self.event_handler.dispatch(event)
 
             if action is None:
                 continue
 
-            action.perform(self, self.player)
+            if action.perform(self, self.player) != None:
+                self.tick += 1
+                self.update_fov()
 
-            self.tick += 1
+    def can_player_attack(self):
+        if self.player_can_attack == False:
+            self.player_attack_cool_down = time.time()
+            self.player_can_attack = "None"
 
-            self.update_fov()
+        if time.time() - self.player_attack_cool_down >= 1:
+            self.player_can_attack = True
 
     def update_fov(self) -> None:
         for (x, row) in enumerate(self.game_map.tiles):
