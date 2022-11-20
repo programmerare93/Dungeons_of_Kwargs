@@ -1,5 +1,4 @@
 from typing import Set, Iterable, Any
-import datetime
 import time
 
 import tcod.constants
