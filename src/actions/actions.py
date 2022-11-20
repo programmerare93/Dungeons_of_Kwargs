@@ -35,10 +35,7 @@ class MovementAction(Action):
         if not engine.game_map.get_tile(dest_x, dest_y).walkable:
             return
 
-        if (
-            engine.game_map.entity_at_location(dest_x, dest_y)
-            and engine.player.stamina > 0
-        ):
+        if engine.game_map.entity_at_location(dest_x, dest_y):
             list(engine.game_map.entity_at_location(dest_x, dest_y))[
                 0
             ].hp -= engine.player.strength
