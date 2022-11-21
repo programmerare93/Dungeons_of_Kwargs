@@ -32,7 +32,7 @@ def main():
         strength=8,
         dexterity=5,
         intelligence=5,
-        perception=100,
+        perception=4,
     )
 
     generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
