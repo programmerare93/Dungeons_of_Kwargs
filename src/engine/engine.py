@@ -69,7 +69,7 @@ class Engine:
                 continue
 
     def handle_enemy_AI(self):
-        if self.monster_tick + 1 == self.tick:
+        if self.monster_tick != self.tick:
             # print([entity.char for entity in self.game_map.entities])
             for monster in self.game_map.entities:
                 # print(monster.char)

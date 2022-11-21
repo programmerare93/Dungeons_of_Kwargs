@@ -80,5 +80,4 @@ class GameMap:
     def pathfinding(self, x1, y1, x2, y2):
         """Tar emot två koordinater och returnerar en lista med koordinater som spelaren ska följa för att komma till målet"""
         path = tcod.path.AStar(self.pathfinding_map)
-        print(path.get_path(x1, y1, x2, y2))
         return path.get_path(x1, y1, x2, y2)

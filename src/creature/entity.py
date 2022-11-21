@@ -73,19 +73,13 @@ class Monster(Entity):
 
     def monster_pathfinding(self, player, game_map, engine):
         """Monster pathfinding"""
-        try:
-            tile_x, tile_y = (
-                game_map.pathfinding(self.x, self.y, player.x, player.y)[0][0],
-                game_map.pathfinding(self.x, self.y, player.x, player.y)[0][1],
-            )
-        except IndexError:
-            print("IndexError")
-            print(game_map.pathfinding(self.x, self.y, player.x, player.y))
-            return
+        tile_x, tile_y = (
+            game_map.pathfinding(self.x, self.y, player.x, player.y)[0][0],
+            game_map.pathfinding(self.x, self.y, player.x, player.y)[0][1],
+        )
 
         action = MovementAction(tile_x - self.x, tile_y - self.y)
         action.perform(engine, self)
-        self.internal_tick += 1
 
 
 def generate_monsters(room, game_map):
