@@ -87,3 +87,13 @@ class GoDown(Action):
     def perform(self, engine: Engine, entity: Entity) -> None:
         if engine.game_map.tiles[entity.x, entity.y] == tile_types.stair_case:
             engine.update_game_map()
+
+
+class HealingAction(Action):
+    def perform(self, engine: Engine, entity: Entity) -> None:
+        if entity.hp < entity.max_hp:
+            entity.hp += 10
+            engine.message_log.add_message(f"{entity.char} healed 10 hp!")
+            return "healed"
+        else:
+            engine.message_log.add_message(f"{entity.char} is at full health!")

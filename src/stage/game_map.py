@@ -1,4 +1,4 @@
-from typing import Iterable, Set
+from typing import Iterable, Set, List
 
 import numpy as np
 from tcod.console import Console
@@ -19,7 +19,7 @@ class GameMap:
         self.visible = np.full((width, height), fill_value=False, order="F")
         self.explored = np.full((width, height), fill_value=False, order="F")
 
-        self.entities = set(entities)
+        self.entities = []
 
     def in_bounds(self, x: int, y: int) -> bool:
         """Återvänder sant ifall koordinaten är inom kartan"""
@@ -80,4 +80,5 @@ class GameMap:
     def pathfinding(self, x1, y1, x2, y2):
         """Tar emot två koordinater och returnerar en lista med koordinater som spelaren ska följa för att komma till målet"""
         path = tcod.path.AStar(self.pathfinding_map)
+        print(path.get_path(x1, y1, x2, y2))
         return path.get_path(x1, y1, x2, y2)

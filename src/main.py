@@ -29,10 +29,10 @@ def main():
         (255, 255, 255),
         max_hp=30,
         hp=30,
-        strength=2,
+        strength=8,
         dexterity=5,
         intelligence=5,
-        perception=4,
+        perception=100,
     )
 
     generator = Generator(floor.max_rooms, window.width, window.height - 20, player)

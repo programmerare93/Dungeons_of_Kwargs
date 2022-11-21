@@ -47,6 +47,8 @@ class Engine:
         self.generator.generate_dungeon()
         self.game_map = self.generator.get_dungeon()
         self.update_fov()
+        self.tick = 0
+        self.monster_tick = 0
 
     def handle_events(self, events: Iterable[Any]) -> None:
         for event in events:
@@ -68,7 +70,9 @@ class Engine:
 
     def handle_enemy_AI(self):
         if self.monster_tick + 1 == self.tick:
+            # print([entity.char for entity in self.game_map.entities])
             for monster in self.game_map.entities:
+                # print(monster.char)
                 if (
                     monster.char != "@"
                     and self.game_map.calculate_distance(
@@ -76,9 +80,13 @@ class Engine:
                     )
                     <= monster.perception
                 ):
+                    # print("Monster sees player")
                     monster.monster_pathfinding(self.player, self.game_map, self)
+                elif monster.char != "@":
+                    # print("Monster is not in range")
+                    pass
 
-            self.monster_tick += 1
+            self.monster_tick = self.tick
 
     def can_player_attack(self):
         if not self.player_can_attack:
@@ -95,7 +103,7 @@ class Engine:
                     self.game_map.transparent_tiles[x, y] = True
 
         self.game_map.visible[:] = compute_fov(
-            transparency=self.game_map.transparent_tiles,
+            transparency=self.game_map.tiles,
             pov=(self.player.x, self.player.y),
             radius=self.player.perception,
             algorithm=tcod.FOV_SYMMETRIC_SHADOWCAST,
