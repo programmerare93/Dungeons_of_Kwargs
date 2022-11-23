@@ -12,11 +12,21 @@ from stage.rooms import Room
 
 
 class Generator:
-    def __init__(self, max_rooms: int, map_width: int, map_height: int, player: Entity, min_width=4, min_height=4):
+    def __init__(
+        self,
+        max_rooms: int,
+        map_width: int,
+        map_height: int,
+        player: Entity,
+        min_width=4,
+        min_height=4,
+    ):
         self.player = player
         self.dungeon = GameMap(map_width, map_height, entities=[player])
         self.room_list = []
         self.max_rooms = max_rooms
+        self.difficulty = 1
+        self.max_monsters_per_room = 1
         self.map_width = map_width
         self.map_height = map_height
 
@@ -56,8 +66,14 @@ class Generator:
         for (x, row) in enumerate(self.dungeon.tiles):
             for (y, value) in enumerate(row):
                 self.dungeon.tiles[x, y] = tile_types.wall
-        self.dungeon.explored = np.full((self.map_width, self.map_height), fill_value=False, order="F")
-        self.dungeon.transparent_tiles = np.full((self.map_width, self.map_height), fill_value=False, order="F")
+        self.dungeon.explored = np.full(
+            (self.map_width, self.map_height), fill_value=False, order="F"
+        )
+        self.dungeon.transparent_tiles = np.full(
+            (self.map_width, self.map_height), fill_value=False, order="F"
+        )
+
+        self.dungeon.entities = [self.player]
 
         self.room_list.clear()
 
@@ -95,10 +111,16 @@ class Generator:
             for (y, value) in enumerate(row):
                 if self.dungeon.tiles[x, y] == tile_types.floor:
                     if random.randint(0, 50) == 25:
-                        self.dungeon.tiles[x, y] = tile_types.Trap(tile_types.trap_color)
+                        self.dungeon.tiles[x, y] = tile_types.Trap(
+                            tile_types.trap_color, difficulty=self.difficulty
+                        )
+                        print(self.dungeon.tiles[x, y].difficulty)
 
         for room in self.room_list[1::]:
-            generate_monsters(room, self.dungeon)
+            for _ in range(random.randint(0, self.max_monsters_per_room)):
+                generate_monsters(room, self.dungeon)
+
+        self.dungeon.generate_pathfinding_map()
 
     def get_dungeon(self):
         return self.dungeon
