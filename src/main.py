@@ -55,6 +55,8 @@ def main():
 
         engine.can_player_attack()
 
+        engine.check_xp()
+
         if engine.check_entities() == "dead":
             while True:
                 engine.render(window.console, window.context)

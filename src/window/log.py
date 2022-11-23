@@ -44,3 +44,11 @@ class Log:
             self.window.height - 53,
             "Player HP: {}".format(self.player.hp),
         )
+
+        self.window.console.print_box(
+            55,
+            56,
+            self.window.width,
+            self.window.height - 53,
+            "Player XP: {}".format(self.player.xp),
+        )

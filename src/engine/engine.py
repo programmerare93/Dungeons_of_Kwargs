@@ -125,9 +125,19 @@ class Engine:
                     return "dead"
                 self.message_log.add_message(f"{entity.char} died!", color.death_text)
                 self.game_map.entities.remove(entity)
+                self.player.xp += entity.xp_value()
                 break
 
         self.game_map.explored |= self.game_map.visible
+
+    def check_xp(self):
+        if self.player.xp >= self.player.xp_to_next_level:
+            # self.level_up()
+            self.player.level += 1
+            self.message_log.add_message(
+                f"You are now level {self.player.level}!", (0, 0, 255)
+            )
+            self.player.xp_to_next_level *= 2
 
     def render(self, console: Console, context: Context) -> None:
         self.game_map.render(console)

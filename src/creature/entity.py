@@ -51,6 +51,9 @@ class Player(Entity):
             self,
             items=[small_healing_potion, small_healing_potion, small_healing_potion],
         )
+        self.xp = 0
+        self.xp_to_next_level = 100
+        self.level = 1
 
 
 class Monster(Entity):
@@ -79,6 +82,10 @@ class Monster(Entity):
             self,
             items=[small_healing_potion, small_healing_potion, small_healing_potion],
         )
+
+    def xp_value(self):
+        """Returnerar hur mycket xp en monster ger"""
+        return self.max_hp + self.strength + self.dexterity + self.intelligence
 
     def monster_pathfinding(self, player, game_map, engine):
         """Monster pathfinding"""
