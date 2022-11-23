@@ -1,8 +1,6 @@
 import tcod
 import tcod.sdl.render
 
-import pygame
-import sys
 
 class Window:
     """Klass för att skapa ett fönster med tcod"""

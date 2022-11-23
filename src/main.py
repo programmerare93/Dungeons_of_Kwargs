@@ -12,7 +12,7 @@ from window.log import Log
 max_monsters_per_room = 3
 
 tileset = tcod.tileset.load_tilesheet(
-    "./assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
+    "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )
 
 
@@ -20,8 +20,6 @@ window = Window("Dungeons of Kwargs", 80, 70, tileset)
 
 
 def main():
-    event_handler = EventHandler()
-
     floor = Floor()
     player = Player(
         int(window.width / 2),
@@ -39,7 +37,7 @@ def main():
     generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
     game_map = None
 
-    engine = Engine(event_handler, game_map, player, floor, generator)
+    engine = Engine(game_map, player, floor, generator)
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
     log = Log(window, player, engine)
     engine.game_map.generate_pathfinding_map()

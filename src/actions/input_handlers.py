@@ -2,11 +2,13 @@ from typing import Optional
 
 import tcod.event
 
-from actions.actions import Action, MovementAction, GoDown, HealingAction
-
+from actions.actions import *
 
 
 class EventHandler(tcod.event.EventDispatch[Action]):
+    inventory_is_open: bool
+    inventory_is_open = False
+
     def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
         raise SystemExit()
 
@@ -30,4 +32,19 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             action = GoDown()
         elif key == tcod.event.K_h:
             action = HealingAction()
+        elif key == tcod.event.K_i:
+            self.inventory_is_open = True
+            action = None
+        return action
+
+
+class InventoryHandler(EventHandler):
+    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
+        action: Optional[Action] = None
+        key = event.sym
+        mod = event.mod
+
+        if key == tcod.event.K_i:
+            self.inventory_is_open = False
+
         return action

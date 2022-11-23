@@ -39,21 +39,20 @@ class MovementAction(Action):
             difficulty = engine.game_map.tiles[dest_x, dest_y].difficulty
             dexterity = engine.player.dexterity
             if (
-                difficulty < dexterity
-                and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
+                    difficulty < dexterity
+                    and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
             ):
                 engine.message_log.add_message(
                     "You stepped on a trap. You avoided it!", (0, 255, 0)
                 )
             elif (
-                difficulty > dexterity
-                and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
+                    difficulty > dexterity
+                    and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
             ):
                 engine.message_log.add_message(
-                    f"You stepped on a trap. You took {difficulty - dexterity} damage!",
-                    (255, 0, 0),
+                    f"You stepped on a trap. You took {difficulty - dexterity} damage!", (255, 0, 0)
                 )
-                engine.player.hp -= difficulty - dexterity
+                engine.player.take_damage(difficulty - dexterity)
             else:
                 pass
             engine.game_map.tiles[dest_x, dest_y].hasBeenActivated = True
@@ -64,9 +63,9 @@ class MovementAction(Action):
         if entity.char != "@" and engine.game_map.entity_at_location(dest_x, dest_y):
             target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
             if entity.perception + random.randint(
-                1, 20
+                    1, 20
             ) > target.dexterity + random.randint(1, 20):
-                target.hp -= entity.strength
+                target.take_damage(entity.strength)
                 engine.message_log.add_message(
                     f"{target.char} took {entity.strength} damage!"
                 )
@@ -78,14 +77,14 @@ class MovementAction(Action):
                 return "miss"
 
         if (
-            engine.game_map.entity_at_location(dest_x, dest_y)
-            and engine.player_can_attack == True
+                engine.game_map.entity_at_location(dest_x, dest_y)
+                and engine.player_can_attack == True
         ):
             target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
             if entity.perception + random.randint(
-                1, 20
+                    1, 20
             ) > target.dexterity + random.randint(1, 20):
-                target.hp -= engine.player.strength
+                target.take_damage(engine.player.strength)
                 engine.message_log.add_message(
                     f"{target.char} took {entity.strength} damage!"
                 )
@@ -96,8 +95,8 @@ class MovementAction(Action):
                 engine.player_can_attack = False
                 return "miss"
         elif (
-            engine.game_map.entity_at_location(dest_x, dest_y)
-            and not engine.player_can_attack == True
+                engine.game_map.entity_at_location(dest_x, dest_y)
+                and not engine.player_can_attack == True
         ):
             return None
 
@@ -114,9 +113,19 @@ class GoDown(Action):
 
 class HealingAction(Action):
     def perform(self, engine: Engine, entity: Entity) -> None:
-        if entity.hp < entity.max_hp:
-            entity.hp += 10
+        if entity.heal(10) < entity.max_hp:
             engine.message_log.add_message(f"{entity.char} healed 10 hp!")
             return "healed"
         else:
             engine.message_log.add_message(f"{entity.char} is at full health!")
+
+
+class OpenInventory(Action):
+    def __init__(self) -> None:
+        super().__init__()
+        self.item = None
+
+    def perform(self, engine: Engine, entity: Entity) -> None:
+        self.item = engine.player.inventory.items[0]
+
+        self.item.use(engine)

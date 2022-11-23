@@ -114,7 +114,6 @@ class Generator:
                         self.dungeon.tiles[x, y] = tile_types.Trap(
                             tile_types.trap_color, difficulty=self.difficulty
                         )
-                        print(self.dungeon.tiles[x, y].difficulty)
 
         for room in self.room_list[1::]:
             for _ in range(random.randint(0, self.max_monsters_per_room)):

@@ -12,14 +12,14 @@ class Inventory:
 
 
 class Item:
-    def __init__(self, type, owner):
+    def __init__(self, type):
         self.type = type
         self.owner = None
 
 
 class StatItem(Item):
-    def __init__(self, type, owner, amplitude, duration):
-        super().__init__(type, owner)
+    def __init__(self, type, amplitude, duration):
+        super().__init__(type)
         self.amplitude = amplitude
         self.duration = inf
 
@@ -42,26 +42,26 @@ class StatItem(Item):
             return self.duration
 
 
-small_healing_potion = StatItem("health_potion", 10, duration=10)
+small_healing_potion = StatItem("health_potion", amplitude=10, duration=10)
 
-medium_healing_potion = StatItem("health_potion", 20, duration=20)
+medium_healing_potion = StatItem("health_potion", amplitude=20, duration=20)
 
-large_healing_potion = StatItem("health_potion", 30, duration=30)
+large_healing_potion = StatItem("health_potion", amplitude=30, duration=30)
 
-small_strength_potion = StatItem("strength_potion", 2, duration=10)
+small_strength_potion = StatItem("strength_potion", amplitude=2, duration=10)
 
-medium_strength_potion = StatItem("strength_potion", 4, duration=20)
+medium_strength_potion = StatItem("strength_potion", amplitude=4, duration=20)
 
-large_strength_potion = StatItem("strength_potion", 6, duration=30)
+large_strength_potion = StatItem("strength_potion", amplitude=6, duration=30)
 
-small_dexterity_potion = StatItem("dexterity_potion", 2, duration=10)
+small_dexterity_potion = StatItem("dexterity_potion", amplitude=2, duration=10)
 
-medium_dexterity_potion = StatItem("dexterity_potion", 4, duration=20)
+medium_dexterity_potion = StatItem("dexterity_potion", amplitude=4, duration=20)
 
-large_dexterity_potion = StatItem("dexterity_potion", 6, duration=30)
+large_dexterity_potion = StatItem("dexterity_potion", amplitude=6, duration=30)
 
-small_perception_potion = StatItem("perception_potion", 2, duration=10)
+small_perception_potion = StatItem("perception_potion", amplitude=2, duration=10)
 
-medium_perception_potion = StatItem("perception_potion", 4, duration=20)
+medium_perception_potion = StatItem("perception_potion", amplitude=4, duration=20)
 
-large_perception_potion = StatItem("perception_potion", 6, duration=30)
+large_perception_potion = StatItem("perception_potion", amplitude=6, duration=30)

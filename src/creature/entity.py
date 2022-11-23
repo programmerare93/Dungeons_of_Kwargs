@@ -4,23 +4,7 @@ import random
 
 from stage.floor import Floor
 from actions.actions import MovementAction
-from creature.items import (
-    Item,
-    Inventory,
-    StatItem,
-    small_dexterity_potion,
-    small_healing_potion,
-    small_strength_potion,
-    medium_dexterity_potion,
-    medium_healing_potion,
-    medium_strength_potion,
-    large_dexterity_potion,
-    large_healing_potion,
-    large_strength_potion,
-    small_perception_potion,
-    medium_perception_potion,
-    large_perception_potion,
-)
+from creature.items import *
 
 
 class Entity:
@@ -44,17 +28,17 @@ class Entity:
 
 class Player(Entity):
     def __init__(
-        self,
-        x: int,
-        y: int,
-        char: str,
-        color: Tuple[int, int, int],
-        max_hp: int,
-        hp: int,
-        strength: int,
-        perception: int,
-        dexterity: int,
-        intelligence: int,
+            self,
+            x: int,
+            y: int,
+            char: str,
+            color: Tuple[int, int, int],
+            max_hp: int,
+            hp: int,
+            strength: int,
+            perception: int,
+            dexterity: int,
+            intelligence: int,
     ):
         super().__init__(x, y, char, color)
         self.max_hp = max_hp
@@ -64,20 +48,40 @@ class Player(Entity):
         self.intelligence = intelligence
         self.perception = perception
 
+    def heal(self, amount: int) -> int:
+        if self.hp == self.max_hp:
+            # Detta är till för att när vi i en annan del av spelet
+            # kollar ifall self.heal(amount_of_healing) < entity.max_hp
+            # så kommer det inte leda till ett error
+            return self.max_hp + 1
+
+        new_hp = self.hp + amount
+
+        if new_hp > self.max_hp:
+            self.hp = self.max_hp
+        else:
+            self.hp = new_hp
+
+        amount_recovered = new_hp - self.hp
+
+        return amount_recovered
+    def take_damage(self, amount: int):
+        self.hp -= amount
+
 
 class Monster(Entity):
     def __init__(
-        self,
-        x: int,
-        y: int,
-        char: str,
-        color: Tuple[int, int, int],
-        max_hp: int,
-        hp: int,
-        strength: int,
-        perception: int,
-        dexterity: int,
-        intelligence: int,
+            self,
+            x: int,
+            y: int,
+            char: str,
+            color: Tuple[int, int, int],
+            max_hp: int,
+            hp: int,
+            strength: int,
+            perception: int,
+            dexterity: int,
+            intelligence: int,
     ):
         super().__init__(x, y, char, color)
         self.max_hp = max_hp
@@ -101,6 +105,26 @@ class Monster(Entity):
 
         action = MovementAction(tile_x - self.x, tile_y - self.y)
         action.perform(engine, self)
+
+    def heal(self, amount: int) -> int:
+        if self.hp == self.max_hp:
+            return
+
+        new_hp = self.hp + amount
+
+        if new_hp > self.max_hp:
+            self.hp = self.max_hp
+        else:
+            self.hp = new_hp
+
+        amount_recovered = new_hp - self.hp
+
+        return amount_recovered
+
+
+
+    def take_damage(self, amount: int):
+        self.hp -= amount
 
 
 def generate_monsters(room, game_map):

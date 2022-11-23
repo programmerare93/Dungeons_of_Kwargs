@@ -8,7 +8,7 @@ from tcod.map import compute_fov
 
 import stage.tile_types as tile_types
 
-from actions.input_handlers import EventHandler
+from actions.input_handlers import EventHandler, InventoryHandler
 from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.procgen import Generator
@@ -23,7 +23,6 @@ class Engine:
 
     def __init__(
         self,
-        event_handler: EventHandler,
         game_map: GameMap,
         player: Entity,
         floor: Floor,
@@ -31,7 +30,8 @@ class Engine:
         player_can_attack: bool = True,
         player_attack_cool_down: int = 0,
     ):
-        self.event_handler = event_handler
+        self.event_handler = EventHandler()
+        self.inventory_handler = InventoryHandler()
         self.game_map = game_map
         self.message_log = MessageLog()
         self.player = player
@@ -63,6 +63,10 @@ class Engine:
         for event in events:
             action = self.event_handler.dispatch(event)
 
+            if self.event_handler.inventory_is_open:
+                self.inventory_handler.inventory_is_open = True
+                action = self.inventory_handler.dispatch(event)
+
             if action is None:
                 continue
 
@@ -71,6 +75,9 @@ class Engine:
                 self.update_fov()
 
     def handle_death_events(self, events: Iterable[Any]) -> None:
+        self.player.char = '%'
+        self.player.color = (255, 0, 0)
+
         for event in events:
             action = self.event_handler.dispatch(event)
 
