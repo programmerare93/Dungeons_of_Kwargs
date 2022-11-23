@@ -120,3 +120,14 @@ class HealingAction(Action):
             return "healed"
         else:
             engine.message_log.add_message(f"{entity.char} is at full health!")
+
+
+class UseItem(Action):
+    def __init__(self) -> None:
+        super().__init__()
+        self.item = None
+
+    def perform(self, engine: Engine, entity: Entity) -> None:
+        self.item = engine.player.inventory.items[0]
+
+        self.item.use(engine)

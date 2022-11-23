@@ -2,7 +2,7 @@ from typing import Optional
 
 import tcod.event
 
-from actions.actions import Action, MovementAction, GoDown, HealingAction
+from actions.actions import Action, MovementAction, GoDown, HealingAction, UseItem
 
 
 class EventHandler(tcod.event.EventDispatch[Action]):
@@ -29,4 +29,6 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             action = GoDown()
         elif key == tcod.event.K_h:
             action = HealingAction()
+        elif key == tcod.event.K_1:
+            action = UseItem()
         return action

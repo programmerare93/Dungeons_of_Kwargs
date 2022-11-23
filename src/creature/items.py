@@ -25,45 +25,47 @@ class StatItem(Item):
         self.owner = None
         self.duration = duration
 
-    def use(self):
-        if self.type == "health_potion":
+    def use(self, engine):
+        if self.type == "health potion":
             self.owner.hp += self.amplitude
             self.owner.inventory.items.remove(self)
-            return self.duration
-        elif self.type == "strength_potion":
+            
+        elif self.type == "strength potion":
             self.owner.strength += self.amplitude
             self.owner.inventory.items.remove(self)
-            return self.duration
-        elif self.type == "dexterity_potion":
+            
+        elif self.type == "dexterity potion":
             self.owner.dexterity += self.amplitude
             self.owner.inventory.items.remove(self)
-            return self.duration
-        elif self.type == "perception_potion":
+            
+        elif self.type == "perception potion":
             self.owner.perception += self.amplitude
             self.owner.inventory.items.remove(self)
-            return self.duration
+        
+        engine.message_log.add_message("You used a {}!".format(self.type))
+        return self.duration
 
 
-small_healing_potion = StatItem("health_potion", 10, duration=10)
+small_healing_potion = StatItem("health potion", 10, duration=10)
 
-medium_healing_potion = StatItem("health_potion", 20, duration=20)
+medium_healing_potion = StatItem("health potion", 20, duration=20)
 
-large_healing_potion = StatItem("health_potion", 30, duration=30)
+large_healing_potion = StatItem("health potion", 30, duration=30)
 
-small_strength_potion = StatItem("strength_potion", 2, duration=10)
+small_strength_potion = StatItem("strength potion", 2, duration=10)
 
-medium_strength_potion = StatItem("strength_potion", 4, duration=20)
+medium_strength_potion = StatItem("strength potion", 4, duration=20)
 
-large_strength_potion = StatItem("strength_potion", 6, duration=30)
+large_strength_potion = StatItem("strength potion", 6, duration=30)
 
-small_dexterity_potion = StatItem("dexterity_potion", 2, duration=10)
+small_dexterity_potion = StatItem("dexterity potion", 2, duration=10)
 
-medium_dexterity_potion = StatItem("dexterity_potion", 4, duration=20)
+medium_dexterity_potion = StatItem("dexterity potion", 4, duration=20)
 
-large_dexterity_potion = StatItem("dexterity_potion", 6, duration=30)
+large_dexterity_potion = StatItem("dexterity potion", 6, duration=30)
 
-small_perception_potion = StatItem("perception_potion", 2, duration=10)
+small_perception_potion = StatItem("perception potion", 2, duration=10)
 
-medium_perception_potion = StatItem("perception_potion", 4, duration=20)
+medium_perception_potion = StatItem("perception potion", 4, duration=20)
 
-large_perception_potion = StatItem("perception_potion", 6, duration=30)
+large_perception_potion = StatItem("perception potion", 6, duration=30)

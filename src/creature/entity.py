@@ -47,6 +47,10 @@ class Player(Entity):
         self.dexterity = dexterity
         self.intelligence = intelligence
         self.perception = perception
+        self.inventory = Inventory(
+            self,
+            items=[small_healing_potion, small_healing_potion, small_healing_potion],
+        )
 
 
 class Monster(Entity):
