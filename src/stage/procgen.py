@@ -106,6 +106,12 @@ class Generator:
         stair_room = random.choice(available_stair_rooms)
         self.dungeon.tiles[stair_room.center] = tile_types.stair_case
 
+        for (x, row) in enumerate(self.dungeon.tiles):
+            for (y, value) in enumerate(row):
+                if self.dungeon.tiles[x, y] == tile_types.floor:
+                    if random.randint(0, 50) == 25:
+                        self.dungeon.tiles[x, y] = tile_types.Trap(tile_types.trap_color)
+
         for room in self.room_list[1::]:
             for _ in range(random.randint(0, self.max_monsters_per_room)):
                 generate_monsters(room, self.dungeon)

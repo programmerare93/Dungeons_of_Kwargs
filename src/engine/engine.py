@@ -6,10 +6,11 @@ from tcod import Console
 from tcod.context import Context
 from tcod.map import compute_fov
 
+import stage.tile_types as tile_types
+
 from actions.input_handlers import EventHandler
 from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
-from stage.tile_types import *
 from stage.procgen import Generator
 from stage.floor import Floor
 from window.render_functions import render_bar
@@ -21,14 +22,14 @@ class Engine:
     """Klassen för spel motorn, samlar all funktionalitet i metoder"""
 
     def __init__(
-        self,
-        event_handler: EventHandler,
-        game_map: GameMap,
-        player: Entity,
-        floor: Floor,
-        generator: Generator,
-        player_can_attack: bool = True,
-        player_attack_cool_down: int = 0,
+            self,
+            event_handler: EventHandler,
+            game_map: GameMap,
+            player: Entity,
+            floor: Floor,
+            generator: Generator,
+            player_can_attack: bool = True,
+            player_attack_cool_down: int = 0,
     ):
         self.event_handler = event_handler
         self.game_map = game_map
@@ -49,6 +50,12 @@ class Engine:
         self.update_fov()
         self.tick = 0
         self.monster_tick = 0
+
+    def player_activated_trap(self, x: int, y: int) -> bool:
+        if isinstance(self.game_map.tiles[x, y], tile_types.Trap):
+            return True
+        else:
+            return False
 
     def handle_events(self, events: Iterable[Any]) -> None:
         for event in events:

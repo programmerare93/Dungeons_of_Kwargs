@@ -35,6 +35,20 @@ class MovementAction(Action):
             # Koordinaten är utanför kartan
             return None
 
+        if engine.player_activated_trap(dest_x, dest_y):
+            difficulty = engine.game_map.tiles[dest_x, dest_y].difficulty
+            dexterity = engine.player.dexterity
+            if difficulty < dexterity and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated:
+                engine.message_log.add_message("You stepped on a trap. You avoided it!", (255, 0, 0))
+            elif difficulty > dexterity and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated:
+                engine.message_log.add_message(
+                    f"You stepped on a trap. You took {difficulty - dexterity} damage!", (255, 0, 0)
+                )
+                engine.player.hp -= (difficulty - dexterity)
+            else:
+                pass
+            engine.game_map.tiles[dest_x, dest_y].hasBeenActivated = True
+
         if not engine.game_map.get_tile(dest_x, dest_y).walkable:
             return None
 
