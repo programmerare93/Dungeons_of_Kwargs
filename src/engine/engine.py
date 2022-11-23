@@ -22,14 +22,14 @@ class Engine:
     """Klassen för spel motorn, samlar all funktionalitet i metoder"""
 
     def __init__(
-            self,
-            event_handler: EventHandler,
-            game_map: GameMap,
-            player: Entity,
-            floor: Floor,
-            generator: Generator,
-            player_can_attack: bool = True,
-            player_attack_cool_down: int = 0,
+        self,
+        event_handler: EventHandler,
+        game_map: GameMap,
+        player: Entity,
+        floor: Floor,
+        generator: Generator,
+        player_can_attack: bool = True,
+        player_attack_cool_down: int = 0,
     ):
         self.event_handler = event_handler
         self.game_map = game_map
@@ -52,6 +52,10 @@ class Engine:
         self.monster_tick = 0
         self.generator.difficulty += 1
         self.generator.max_monsters_per_room = self.generator.difficulty * 2
+        for row in self.game_map.tiles:
+            for tile in row:
+                if isinstance(tile, tile_types.Trap):
+                    tile.difficulty = self.generator.difficulty
 
     def player_activated_trap(self, x: int, y: int) -> bool:
         if isinstance(self.game_map.tiles[x, y], tile_types.Trap):
