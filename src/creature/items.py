@@ -12,16 +12,18 @@ class Inventory:
 
 
 class Item:
-    def __init__(self, type, owner):
+    def __init__(self, type):
         self.type = type
         self.owner = None
 
 
 class StatItem(Item):
-    def __init__(self, type, owner, amplitude, duration):
-        super().__init__(type, owner)
+    def __init__(self, type, amplitude, duration):
+        self.type = type
         self.amplitude = amplitude
         self.duration = inf
+        self.owner = None
+        self.duration = duration
 
     def use(self):
         if self.type == "health_potion":
