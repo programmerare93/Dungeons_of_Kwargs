@@ -4,6 +4,23 @@ import random
 
 from stage.floor import Floor
 from actions.actions import MovementAction
+from creature.items import (
+    Item,
+    Inventory,
+    StatItem,
+    small_dexterity_potion,
+    small_healing_potion,
+    small_strength_potion,
+    medium_dexterity_potion,
+    medium_healing_potion,
+    medium_strength_potion,
+    large_dexterity_potion,
+    large_healing_potion,
+    large_strength_potion,
+    small_perception_potion,
+    medium_perception_potion,
+    large_perception_potion,
+)
 
 
 class Entity:
@@ -70,6 +87,10 @@ class Monster(Entity):
         self.intelligence = intelligence
         self.perception = perception
         self.internal_tick = 0
+        self.inventory = Inventory(
+            self,
+            items=[small_healing_potion, small_healing_potion, small_healing_potion],
+        )
 
     def monster_pathfinding(self, player, game_map, engine):
         """Monster pathfinding"""
