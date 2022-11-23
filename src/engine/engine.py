@@ -49,6 +49,8 @@ class Engine:
         self.update_fov()
         self.tick = 0
         self.monster_tick = 0
+        self.generator.difficulty += 1
+        self.generator.max_monsters_per_room = self.generator.difficulty * 2
 
     def handle_events(self, events: Iterable[Any]) -> None:
         for event in events:

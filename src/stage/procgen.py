@@ -25,7 +25,8 @@ class Generator:
         self.dungeon = GameMap(map_width, map_height, entities=[player])
         self.room_list = []
         self.max_rooms = max_rooms
-        self.max_monsters_per_room = 3
+        self.difficulty = 1
+        self.max_monsters_per_room = 1
         self.map_width = map_width
         self.map_height = map_height
 
@@ -106,7 +107,7 @@ class Generator:
         stair_room = random.choice(available_stair_rooms)
         self.dungeon.tiles[stair_room.center] = tile_types.stair_case
 
-        for room in self.room_list[1::]:
+        for room in self.room_list:
             for _ in range(random.randint(0, self.max_monsters_per_room)):
                 generate_monsters(room, self.dungeon)
 
