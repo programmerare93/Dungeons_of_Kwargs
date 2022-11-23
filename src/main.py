@@ -15,6 +15,7 @@ tileset = tcod.tileset.load_tilesheet(
     "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )
 
+
 window = Window("Dungeons of Kwargs", 80, 70, tileset)
 
 
@@ -42,6 +43,8 @@ def main():
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
     log = Log(window, player, engine)
     engine.game_map.generate_pathfinding_map()
+
+    window.main_menu("../assets/test.png")
 
     while True:
         engine.render(window.console, window.context)

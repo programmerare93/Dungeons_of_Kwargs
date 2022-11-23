@@ -4,6 +4,7 @@ import tcod.event
 
 from actions.actions import Action, MovementAction, AttackingAction, GoDown
 
+
 class EventHandler(tcod.event.EventDispatch[Action]):
     def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
         raise SystemExit()
