@@ -39,12 +39,18 @@ class EventHandler(tcod.event.EventDispatch[Action]):
 
 
 class InventoryHandler(EventHandler):
+    inventory_screen_open: bool
+    inventory_screen_open = False
+
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         action: Optional[Action] = None
         key = event.sym
         mod = event.mod
 
-        if key == tcod.event.K_i:
+        if key == tcod.event.K_i and not self.inventory_screen_open:
+            #action = OpenInventory()
+            self.inventory_screen_open = True
+        elif key == tcod.event.K_i and self.inventory_screen_open:
             self.inventory_is_open = False
 
         return action

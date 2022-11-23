@@ -66,6 +66,7 @@ class Engine:
             if self.event_handler.inventory_is_open:
                 self.inventory_handler.inventory_is_open = True
                 action = self.inventory_handler.dispatch(event)
+                self.event_handler.inventory_is_open = self.inventory_handler.inventory_is_open
 
             if action is None:
                 continue
