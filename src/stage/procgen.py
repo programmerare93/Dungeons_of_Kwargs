@@ -116,7 +116,7 @@ class Generator:
                         )
 
         for room in self.room_list:
-            for _ in range(random.randint(0, self.max_monsters_per_room)):
+            for _ in range(random.randint(1, self.max_monsters_per_room)):
                 generate_monsters(room, self.dungeon)
 
         self.dungeon.generate_pathfinding_map()
