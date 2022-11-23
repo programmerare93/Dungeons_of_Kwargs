@@ -44,8 +44,6 @@ def main():
     log = Log(window, player, engine)
     engine.game_map.generate_pathfinding_map()
 
-    window.main_menu("../assets/test.png")
-
     while True:
         engine.render(window.console, window.context)
         log.render()

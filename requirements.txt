@@ -1,6 +1,2 @@
 numpy
 tcod
-# Krävs för kompilation av pygame
-requests
-wheel
-

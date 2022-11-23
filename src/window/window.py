@@ -27,25 +27,6 @@ class Window:
         self.height = height
         self.width = width
 
-    def main_menu(self, image_path: str):
-        pygame.init()
-        info = pygame.display.Info()
-        size = width, height = info.current_w, info.current_h
-        flags = pygame.FULLSCREEN
-        mainsurface = pygame.display.set_mode(size, flags)
-        screen = pygame.surface((800, 600))
-
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        pygame.quit()
-                        sys.exit()
-
-            pygame.display.update()
-
-        pygame.quit()
-
     def render_log(self, player, engine):
         self.console.draw_frame(0, 51, self.width, self.height - 51, "Log", clear=False)
         self.console.print_box(
