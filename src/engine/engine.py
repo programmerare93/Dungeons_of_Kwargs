@@ -8,7 +8,7 @@ from tcod.map import compute_fov
 
 import stage.tile_types as tile_types
 
-from actions.input_handlers import EventHandler
+from actions.input_handlers import EventHandler, DeathHandler
 from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.procgen import Generator
@@ -43,6 +43,7 @@ class Engine:
         self.player_attack_cool_down = player_attack_cool_down
         self.update_game_map()
         self.update_fov()
+        self.death_handler = DeathHandler()
 
     def update_game_map(self):
         self.generator.generate_dungeon()
@@ -72,7 +73,7 @@ class Engine:
 
     def handle_death_events(self, events: Iterable[Any]) -> None:
         for event in events:
-            action = self.event_handler.dispatch(event)
+            action = self.death_handler.dispatch(event)
 
             if action is None:
                 continue
@@ -151,3 +152,7 @@ class Engine:
         context.present(console)
 
         console.clear()
+
+    # def level_up(self):
+    #     while True:
+    #         pass

@@ -32,3 +32,13 @@ class EventHandler(tcod.event.EventDispatch[Action]):
         elif key == tcod.event.K_1:
             action = UseItem()
         return action
+
+
+class DeathHandler(tcod.event.EventDispatch[None]):
+    def ev_quit(self, event: tcod.event.Quit) -> None:
+        raise SystemExit()
+
+    def ev_keydown(self, event: tcod.event.KeyDown) -> None:
+        key = event.sym
+        if key == tcod.event.K_ESCAPE:
+            raise SystemExit()
