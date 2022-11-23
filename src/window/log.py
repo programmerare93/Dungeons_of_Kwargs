@@ -34,13 +34,5 @@ class Log:
             54,
             self.window.width,
             self.window.height - 53,
-            "Current Monster Tick: {}".format(self.engine.monster_tick),
-        )
-
-        self.window.console.print_box(
-            55,
-            55,
-            self.window.width,
-            self.window.height - 53,
             "Player HP: {}".format(self.player.hp),
         )
