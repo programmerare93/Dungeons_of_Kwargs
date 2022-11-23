@@ -1,4 +1,4 @@
-from typing import Iterable, Set, List
+from typing import Iterable, Set
 
 import numpy as np
 from tcod.console import Console
@@ -19,7 +19,7 @@ class GameMap:
         self.visible = np.full((width, height), fill_value=False, order="F")
         self.explored = np.full((width, height), fill_value=False, order="F")
 
-        self.entities = []
+        self.entities = set(entities)
 
     def in_bounds(self, x: int, y: int) -> bool:
         """Återvänder sant ifall koordinaten är inom kartan"""
