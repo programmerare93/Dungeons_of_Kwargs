@@ -22,14 +22,14 @@ class Engine:
     """Klassen för spel motorn, samlar all funktionalitet i metoder"""
 
     def __init__(
-            self,
-            event_handler: EventHandler,
-            game_map: GameMap,
-            player: Entity,
-            floor: Floor,
-            generator: Generator,
-            player_can_attack: bool = True,
-            player_attack_cool_down: int = 0,
+        self,
+        event_handler: EventHandler,
+        game_map: GameMap,
+        player: Entity,
+        floor: Floor,
+        generator: Generator,
+        player_can_attack: bool = True,
+        player_attack_cool_down: int = 0,
     ):
         self.event_handler = event_handler
         self.game_map = game_map
@@ -48,6 +48,10 @@ class Engine:
         self.generator.generate_dungeon()
         self.game_map = self.generator.get_dungeon()
         self.update_fov()
+        self.tick = 0
+        self.monster_tick = 0
+        self.generator.difficulty += 1
+        self.generator.max_monsters_per_room = self.generator.difficulty * 2
 
     def player_activated_trap(self, x: int, y: int) -> bool:
         if isinstance(self.game_map.tiles[x, y], tile_types.Trap):
@@ -66,9 +70,18 @@ class Engine:
                 self.tick += 1
                 self.update_fov()
 
+    def handle_death_events(self, events: Iterable[Any]) -> None:
+        for event in events:
+            action = self.event_handler.dispatch(event)
+
+            if action is None:
+                continue
+
     def handle_enemy_AI(self):
-        if self.monster_tick + 1 == self.tick:  # Då får monster göra sitt
+        if self.monster_tick != self.tick:
+            # print([entity.char for entity in self.game_map.entities])
             for monster in self.game_map.entities:
+                # print(monster.char)
                 if (
                     monster.char != "@"
                     and self.game_map.calculate_distance(
@@ -76,12 +89,13 @@ class Engine:
                     )
                     <= monster.perception
                 ):
-                    print("Monster is in range")
+                    # print("Monster sees player")
                     monster.monster_pathfinding(self.player, self.game_map, self)
-                    self.monster_tick += 1
                 elif monster.char != "@":
-                    print("Monster is not in range")
-                    self.monster_tick += 1
+                    # print("Monster is not in range")
+                    pass
+
+            self.monster_tick = self.tick
 
     def can_player_attack(self):
         if not self.player_can_attack:
@@ -107,9 +121,11 @@ class Engine:
     def check_entities(self):
         for entity in self.game_map.entities:
             if entity.hp <= 0:
-                self.game_map.entities.remove(entity)
+                if entity.char == "@":
+                    return "dead"
                 self.message_log.add_message(f"{entity.char} died!", color.death_text)
-                return
+                self.game_map.entities.remove(entity)
+                break
 
         self.game_map.explored |= self.game_map.visible
 

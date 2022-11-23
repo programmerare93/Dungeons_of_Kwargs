@@ -4,6 +4,23 @@ import random
 
 from stage.floor import Floor
 from actions.actions import MovementAction
+from creature.items import (
+    Item,
+    Inventory,
+    StatItem,
+    small_dexterity_potion,
+    small_healing_potion,
+    small_strength_potion,
+    medium_dexterity_potion,
+    medium_healing_potion,
+    medium_strength_potion,
+    large_dexterity_potion,
+    large_healing_potion,
+    large_strength_potion,
+    small_perception_potion,
+    medium_perception_potion,
+    large_perception_potion,
+)
 
 
 class Entity:
@@ -70,10 +87,13 @@ class Monster(Entity):
         self.intelligence = intelligence
         self.perception = perception
         self.internal_tick = 0
+        self.inventory = Inventory(
+            self,
+            items=[small_healing_potion, small_healing_potion, small_healing_potion],
+        )
 
     def monster_pathfinding(self, player, game_map, engine):
         """Monster pathfinding"""
-        print("tick")
         tile_x, tile_y = (
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][0],
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][1],
@@ -81,7 +101,6 @@ class Monster(Entity):
 
         action = MovementAction(tile_x - self.x, tile_y - self.y)
         action.perform(engine, self)
-        self.internal_tick += 1
 
 
 def generate_monsters(room, game_map):
@@ -93,7 +112,7 @@ def generate_monsters(room, game_map):
 
     if not game_map.entity_at_location(x, y):
         if random.random() < 0.8:
-            monster = Monster(x, y, "O", (0, 255, 120), 10, 10, 1, 5, 1, 1)
+            monster = Monster(x, y, "O", (0, 255, 120), 30, 10, 5, 5, 1, 1)
         else:
             monster = Monster(
                 x,
@@ -102,10 +121,10 @@ def generate_monsters(room, game_map):
                 (0, 0, 255),
                 max_hp=16,
                 hp=16,
-                strength=3,
+                strength=5,
                 perception=5,
                 dexterity=3,
                 intelligence=3,
             )
-        game_map.entities.add(monster)
+        game_map.entities.append(monster)
         room.type = "monster"
