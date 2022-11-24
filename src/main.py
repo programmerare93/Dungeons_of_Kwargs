@@ -9,7 +9,7 @@ from stage.procgen import Generator
 from window.window import Window
 from window import color
 from window.log import Log
-from engine.game_states import level_up_state
+from engine.game_states import level_up_state, death_state
 
 
 tileset = tcod.tileset.load_tilesheet(
@@ -57,18 +57,7 @@ def main():
         engine.can_player_attack()
 
         if engine.check_entities() == "dead":
-            while True:
-                events = tcod.event.wait()
-                engine.handle_death_events(events)
-                engine.render(window.console, window.context)
-                log.window.console.print_box(
-                    window.width // 2 - 5,
-                    window.height // 2,
-                    20,
-                    5,
-                    "You died!",
-                    fg=color.death_text,
-                )
+            death_state(engine, window)
 
         if engine.check_xp() == "Level Up":
             level_up_state(engine, window)
