@@ -139,7 +139,7 @@ class Engine:
                     return "dead"
                 self.message_log.add_message(f"{entity.char} died!", color.death_text)
                 self.game_map.entities.remove(entity)
-                self.player.xp += entity.xp_value()
+                self.player.xp += entity.xp_value
                 break
 
         self.game_map.explored |= self.game_map.visible

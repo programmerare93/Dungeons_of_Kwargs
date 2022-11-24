@@ -66,10 +66,11 @@ class MovementAction(Action):
             if entity.perception + random.randint(
                 1, 20
             ) > target.dexterity + random.randint(1, 20):
-                target.hp -= entity.strength
-                engine.message_log.add_message(
-                    f"{target.char} took {entity.strength} damage!"
+                damage = entity.strength + random.randint(
+                    -entity.strength // 4, entity.strength // 4
                 )
+                target.hp -= damage
+                engine.message_log.add_message(f"{target.char} took {damage} damage!")
                 return "hit"
             else:
                 engine.message_log.add_message(
@@ -85,10 +86,11 @@ class MovementAction(Action):
             if entity.perception + random.randint(
                 1, 20
             ) > target.dexterity + random.randint(1, 20):
-                target.hp -= engine.player.strength
-                engine.message_log.add_message(
-                    f"{target.char} took {entity.strength} damage!"
+                damage = engine.player.strength + random.randint(
+                    -engine.player.strength // 4, engine.player.strength // 4
                 )
+                target.hp -= damage
+                engine.message_log.add_message(f"{target.char} took {damage} damage!")
                 engine.player_can_attack = False
                 return "hit"
             else:
