@@ -8,14 +8,14 @@ from tcod.map import compute_fov
 
 import stage.tile_types as tile_types
 
-from actions.input_handlers import EventHandler, DeathHandler
+from actions.input_handlers import EventHandler, DeathHandler, LevelUpHandler
 from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.procgen import Generator
 from stage.floor import Floor
 from window.render_functions import render_bar
 from window.message_log import MessageLog
-from window import color
+from window import color, window
 
 
 class Engine:
@@ -44,6 +44,7 @@ class Engine:
         self.update_game_map()
         self.update_fov()
         self.death_handler = DeathHandler()
+        self.level_up_handler = LevelUpHandler()
 
     def update_game_map(self):
         self.generator.generate_dungeon()
@@ -67,7 +68,10 @@ class Engine:
             if action is None:
                 continue
 
-            if action.perform(self, self.player) is not None:
+            elif action == "Level Up":
+                self.player.xp += 100
+
+            elif action.perform(self, self.player) is not None:
                 self.tick += 1
                 self.update_fov()
 
@@ -77,6 +81,15 @@ class Engine:
 
             if action is None:
                 continue
+
+    def handle_level_up_events(self, events: Iterable[Any]) -> None:
+        for event in events:
+            action = self.level_up_handler.dispatch(event)
+
+            if action is None:
+                continue
+
+            return action
 
     def handle_enemy_AI(self):
         if self.monster_tick != self.tick:
@@ -139,20 +152,18 @@ class Engine:
                 f"You are now level {self.player.level}!", (0, 0, 255)
             )
             self.player.xp_to_next_level *= 2
+            return "Level Up"
 
-    def render(self, console: Console, context: Context) -> None:
-        self.game_map.render(console)
-        render_bar(
-            console=console,
-            current_value=self.player.hp,
-            maximum_value=self.player.max_hp,
-            total_width=20,
-        )
-        self.message_log.render(console=console, x=23, y=62, width=40, height=6)
+    def render(self, console: Console, context: Context, level_up=False) -> None:
+        if not level_up:
+            self.game_map.render(console)
+            render_bar(
+                console=console,
+                current_value=self.player.hp,
+                maximum_value=self.player.max_hp,
+                total_width=20,
+            )
+            self.message_log.render(console=console, x=23, y=62, width=40, height=6)
         context.present(console)
 
         console.clear()
-
-    # def level_up(self):
-    #     while True:
-    #         pass

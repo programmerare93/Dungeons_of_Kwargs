@@ -29,8 +29,8 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             action = GoDown()
         elif key == tcod.event.K_h:
             action = HealingAction()
-        elif key == tcod.event.K_1:
-            action = UseItem()
+        elif key == tcod.event.K_o:
+            return "Level Up"
         return action
 
 
@@ -42,3 +42,26 @@ class DeathHandler(tcod.event.EventDispatch[None]):
         key = event.sym
         if key == tcod.event.K_ESCAPE:
             raise SystemExit()
+
+
+class LevelUpHandler(tcod.event.EventDispatch[None]):
+    def ev_quit(self, event: tcod.event.Quit) -> None:
+        raise SystemExit()
+
+    def ev_keydown(self, event: tcod.event.KeyDown) -> None:
+        key = event.sym
+        if key == tcod.event.K_ESCAPE:
+            raise SystemExit()
+
+        elif key == tcod.event.K_1:
+            return "max_hp"
+        elif key == tcod.event.K_2:
+            return "perception"
+        elif key == tcod.event.K_3:
+            return "strength"
+        elif key == tcod.event.K_4:
+            return "intelligence"
+        elif key == tcod.event.K_5:
+            return "dexterity"
+        elif key == tcod.event.K_r:
+            return "reset"
