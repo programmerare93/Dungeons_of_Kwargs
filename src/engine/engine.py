@@ -53,6 +53,7 @@ class Engine:
         self.tick = 0
         self.monster_tick = 0
         self.generator.difficulty += 1
+        self.game_map.difficulty += 1
         self.generator.max_monsters_per_room = self.generator.difficulty * 2
 
     def player_activated_trap(self, x: int, y: int) -> bool:

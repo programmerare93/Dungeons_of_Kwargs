@@ -20,6 +20,7 @@ class GameMap:
         self.explored = np.full((width, height), fill_value=False, order="F")
 
         self.entities = []
+        self.difficulty = 1
 
     def in_bounds(self, x: int, y: int) -> bool:
         """Återvänder sant ifall koordinaten är inom kartan"""
