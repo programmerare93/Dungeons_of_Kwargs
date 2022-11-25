@@ -5,6 +5,13 @@ import tcod.event
 def level_up_state(engine, window):
     available_points = engine.player.intelligence // 2 + 5
     temp_player = engine.player
+    temp_stats = (
+        engine.player.max_hp,
+        engine.player.strength,
+        engine.player.perception,
+        engine.player.dexterity,
+        engine.player.intelligence,
+    )
 
     while available_points > 0:
         events = tcod.event.wait()
@@ -22,12 +29,14 @@ def level_up_state(engine, window):
                 engine.player.intelligence += 1
             available_points -= 1
         elif stat == "reset":
+            print(engine.player.max_hp)
+            print(temp_player.max_hp)
             engine.player.max_hp = temp_player.max_hp
             engine.player.strength = temp_player.strength
             engine.player.perception = temp_player.perception
             engine.player.dexterity = temp_player.dexterity
             engine.player.intelligence = temp_player.intelligence
-            available_points = engine.player.intelligence // 2 + 5
+            available_points = temp_stats // 2 + 5
         window.console.clear(bg=(0, 0, 0))
         window.console.draw_frame(
             window.width // 2 - 20,
@@ -96,7 +105,7 @@ def level_up_state(engine, window):
             fg=(255, 0, 0),
         )
 
-        engine.render(window.console, window.context, level_up=True)
+        window.context.present(window.console)
 
 
 def death_state(engine, window):

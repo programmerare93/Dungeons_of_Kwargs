@@ -154,16 +154,15 @@ class Engine:
             self.player.xp_to_next_level *= 2
             return "Level Up"
 
-    def render(self, console: Console, context: Context, level_up=False) -> None:
-        if not level_up:
-            self.game_map.render(console)
-            render_bar(
-                console=console,
-                current_value=self.player.hp,
-                maximum_value=self.player.max_hp,
-                total_width=20,
-            )
-            self.message_log.render(console=console, x=23, y=62, width=40, height=6)
+    def render(self, console: Console, context: Context) -> None:
+        self.game_map.render(console)
+        render_bar(
+            console=console,
+            current_value=self.player.hp,
+            maximum_value=self.player.max_hp,
+            total_width=20,
+        )
+        self.message_log.render(console=console, x=23, y=62, width=40, height=6)
         context.present(console)
 
         console.clear()
