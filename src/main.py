@@ -3,6 +3,7 @@ import tcod
 from actions.input_handlers import EventHandler
 from creature.entity import Player
 from engine.engine import Engine
+from engine.gamestate import *
 from stage.floor import Floor
 from stage.procgen import Generator
 from window.window import Window
@@ -37,7 +38,7 @@ def main():
     generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
     game_map = None
 
-    engine = Engine(game_map, player, floor, generator)
+    engine = Engine(window, game_map, player, floor, generator)
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
     log = Log(window, player, engine)
     engine.game_map.generate_pathfinding_map()
@@ -55,18 +56,10 @@ def main():
         engine.can_player_attack()
 
         if engine.check_entities() == "dead":
-            while True:
-                engine.render(window.console, window.context)
-                log.window.console.print_box(
-                    window.width // 2 - 5,
-                    window.height // 2,
-                    20,
-                    5,
-                    "You died!",
-                    fg=color.death_text,
-                )
-                events = tcod.event.wait()
-                engine.handle_death_events(events)
+            death_state(engine, window)
+
+        if engine.inventory_open:
+            inventory_state(engine, window)
 
 
 if __name__ == "__main__":

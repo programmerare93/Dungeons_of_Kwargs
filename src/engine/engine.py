@@ -8,7 +8,7 @@ from tcod.map import compute_fov
 
 import stage.tile_types as tile_types
 
-from actions.input_handlers import EventHandler, InventoryHandler
+from actions.input_handlers import EventHandler
 from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.procgen import Generator
@@ -16,23 +16,26 @@ from stage.floor import Floor
 from window.render_functions import render_bar
 from window.message_log import MessageLog
 from window import color
+from window.window import Window
 
 
 class Engine:
     """Klassen för spel motorn, samlar all funktionalitet i metoder"""
 
     def __init__(
-        self,
-        game_map: GameMap,
-        player: Entity,
-        floor: Floor,
-        generator: Generator,
-        player_can_attack: bool = True,
-        player_attack_cool_down: int = 0,
+            self,
+            window: Window,
+            game_map: GameMap,
+            player: Entity,
+            floor: Floor,
+            generator: Generator,
+            player_can_attack: bool = True,
+            player_attack_cool_down: int = 0,
     ):
+        self.window = window
         self.event_handler = EventHandler()
-        self.inventory_handler = InventoryHandler()
         self.game_map = game_map
+        self.inventory_open = False
         self.message_log = MessageLog()
         self.player = player
         self.floor = floor
@@ -63,10 +66,7 @@ class Engine:
         for event in events:
             action = self.event_handler.dispatch(event)
 
-            if self.event_handler.inventory_is_open:
-                self.inventory_handler.inventory_is_open = True
-                action = self.inventory_handler.dispatch(event)
-                self.event_handler.inventory_is_open = self.inventory_handler.inventory_is_open
+            self.inventory_open = self.event_handler.inventory_is_open
 
             if action is None:
                 continue
@@ -91,11 +91,11 @@ class Engine:
             for monster in self.game_map.entities:
                 # print(monster.char)
                 if (
-                    monster.char != "@"
-                    and self.game_map.calculate_distance(
-                        monster.x, monster.y, self.player.x, self.player.y
-                    )
-                    <= monster.perception
+                        monster.char != "@"
+                        and self.game_map.calculate_distance(
+                    monster.x, monster.y, self.player.x, self.player.y
+                )
+                        <= monster.perception
                 ):
                     # print("Monster sees player")
                     monster.monster_pathfinding(self.player, self.game_map, self)

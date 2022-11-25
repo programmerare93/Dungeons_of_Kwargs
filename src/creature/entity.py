@@ -4,7 +4,7 @@ import random
 
 from stage.floor import Floor
 from actions.actions import MovementAction
-from creature.items import *
+from creature.items import Inventory, potions
 
 
 class Entity:
@@ -47,6 +47,7 @@ class Player(Entity):
         self.dexterity = dexterity
         self.intelligence = intelligence
         self.perception = perception
+        self.inventory = Inventory(self)
 
     def heal(self, amount: int) -> int:
         if self.hp == self.max_hp:
@@ -65,6 +66,7 @@ class Player(Entity):
         amount_recovered = new_hp - self.hp
 
         return amount_recovered
+
     def take_damage(self, amount: int):
         self.hp -= amount
 
@@ -91,10 +93,6 @@ class Monster(Entity):
         self.intelligence = intelligence
         self.perception = perception
         self.internal_tick = 0
-        self.inventory = Inventory(
-            self,
-            items=[small_healing_potion, small_healing_potion, small_healing_potion],
-        )
 
     def monster_pathfinding(self, player, game_map, engine):
         """Monster pathfinding"""
@@ -120,8 +118,6 @@ class Monster(Entity):
         amount_recovered = new_hp - self.hp
 
         return amount_recovered
-
-
 
     def take_damage(self, amount: int):
         self.hp -= amount
