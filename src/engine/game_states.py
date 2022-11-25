@@ -29,14 +29,12 @@ def level_up_state(engine, window):
                 engine.player.intelligence += 1
             available_points -= 1
         elif stat == "reset":
-            print(engine.player.max_hp)
-            print(temp_player.max_hp)
-            engine.player.max_hp = temp_player.max_hp
-            engine.player.strength = temp_player.strength
-            engine.player.perception = temp_player.perception
-            engine.player.dexterity = temp_player.dexterity
-            engine.player.intelligence = temp_player.intelligence
-            available_points = temp_stats // 2 + 5
+            engine.player.max_hp = temp_stats[0]
+            engine.player.strength = temp_stats[1]
+            engine.player.perception = temp_stats[2]
+            engine.player.dexterity = temp_stats[3]
+            engine.player.intelligence = temp_stats[4]
+            available_points = engine.player.intelligence // 2 + 5
         window.console.clear(bg=(0, 0, 0))
         window.console.draw_frame(
             window.width // 2 - 20,
