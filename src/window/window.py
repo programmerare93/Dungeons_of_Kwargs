@@ -41,7 +41,31 @@ class Window:
             self.height - 53,
             "Current Tick: {}".format(engine.tick),
         )
-        
+
+        self.console.print_box(
+            55,
+            54,
+            self.width,
+            self.height - 53,
+            "Current Monster Tick: {}".format(engine.monster_tick),
+        )
+
+        self.console.print_box(
+            55,
+            55,
+            self.width,
+            self.height - 53,
+            "Player HP: {}".format(engine.player.hp),
+        )
+
+        self.console.print_box(
+            55,
+            56,
+            self.width,
+            self.height - 52,
+            "Player XP: {}".format(engine.player.xp),
+        )
+
     def print(self, x: int, y: int, string: str):
         self.console.print(x, y, string)
 

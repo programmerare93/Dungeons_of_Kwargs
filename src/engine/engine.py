@@ -1,5 +1,6 @@
 from typing import Set, Iterable, Any
 import time
+import winsound
 
 import tcod.constants
 from tcod import Console
@@ -17,6 +18,7 @@ from stage.floor import Floor
 from window.render_functions import render_bar
 from window.message_log import MessageLog
 from window import color, window
+from window.window import Window
 
 
 class Engine:
@@ -31,6 +33,7 @@ class Engine:
         generator: Generator,
         player_can_attack: bool = True,
         player_attack_cool_down: int = 0,
+        window: Window = None,
     ):
         self.event_handler = event_handler
         self.game_map = game_map
@@ -47,6 +50,7 @@ class Engine:
         self.death_handler = DeathHandler()
         self.level_up_handler = LevelUpHandler()
         self.sound_handler = SoundHandler()
+        self.window = window
 
     def update_game_map(self):
         self.generator.generate_dungeon()
@@ -73,8 +77,9 @@ class Engine:
 
             elif action == "Level Up":
                 self.player.xp += 100
+                continue
 
-            elif action.perform(self, self.player) is not None:
+            if action.perform(self, self.player) is not None:
                 self.tick += 1
                 self.update_fov()
 
@@ -99,6 +104,7 @@ class Engine:
             for monster in self.game_map.entities:
                 if (
                     monster.char != "@"
+                    and monster.hp > 0
                     and self.game_map.calculate_distance(
                         monster.x, monster.y, self.player.x, self.player.y
                     )
@@ -139,6 +145,7 @@ class Engine:
                 self.message_log.add_message(f"{entity.char} died!", color.death_text)
                 self.game_map.entities.remove(entity)
                 self.player.xp += entity.xp_value
+                self.render(console=self.window.console, context=self.window.context)
                 self.sound_handler.monster_death()
                 break
 
@@ -163,6 +170,10 @@ class Engine:
             total_width=20,
         )
         self.message_log.render(console=console, x=23, y=62, width=40, height=6)
+        self.window.render_log(
+            player=self.player,
+            engine=self,
+        )
         context.present(console)
 
         console.clear()

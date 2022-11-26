@@ -41,23 +41,23 @@ class SoundHandler:
     def sword_sound(self):
         winsound.PlaySound(
             self.SOUND_PATH + self.sword_sound_dict[random.randint(1, 5)],
-            winsound.SND_FILENAME | winsound.SND_ASYNC,
+            winsound.SND_FILENAME,
         )
 
     def player_hit(self):
         winsound.PlaySound(
             self.SOUND_PATH + self.player_hit_dict[random.randint(1, 5)],
-            winsound.SND_FILENAME | winsound.SND_ASYNC,
+            winsound.SND_FILENAME,
         )
 
     def attack_dodged(self):
         winsound.PlaySound(
             self.SOUND_PATH + self.attack_dodged_dict[random.randint(1, 5)],
-            winsound.SND_FILENAME | winsound.SND_ASYNC,
+            winsound.SND_FILENAME,
         )
 
     def monster_death(self):
         winsound.PlaySound(
             self.SOUND_PATH + self.monster_death_dict[random.randint(1, 8)],
-            winsound.SND_FILENAME | winsound.SND_ASYNC,
+            winsound.SND_FILENAME,
         )

@@ -66,6 +66,8 @@ class MovementAction(Action):
 
         if entity.char != "@" and engine.game_map.entity_at_location(dest_x, dest_y):
             target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
+            if target.char != "@":
+                return "tried to attack a monster"
             if entity.perception + random.randint(
                 1, 20
             ) > target.dexterity + random.randint(1, 20):
@@ -76,13 +78,19 @@ class MovementAction(Action):
                 engine.message_log.add_message(
                     f"{target.char} took {damage} damage!", target.color
                 )
-                if target.char == "@":
-                    sound_handler.player_hit()
-                return "hit"
+                engine.render(
+                    console=engine.window.console, context=engine.window.context
+                )
+                sound_handler.player_hit()
+                return "player_hit"
             else:
                 engine.message_log.add_message(
                     f"{target.char} dodged {entity.char}'s attack!", target.color
                 )
+                engine.render(
+                    console=engine.window.console, context=engine.window.context
+                )
+                sound_handler.attack_dodged()
                 return "miss"
 
         elif (
@@ -99,11 +107,17 @@ class MovementAction(Action):
                 target.hp -= damage
                 engine.message_log.add_message(f"{target.char} took {damage} damage!")
                 engine.player_can_attack = False
+                engine.render(
+                    console=engine.window.console, context=engine.window.context
+                )
                 sound_handler.sword_sound()
                 return "hit"
             else:
                 engine.message_log.add_message(f"{target.char} dodged your attack!")
                 engine.player_can_attack = False
+                engine.render(
+                    console=engine.window.console, context=engine.window.context
+                )
                 sound_handler.attack_dodged()
                 return "miss"
         elif (

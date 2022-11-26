@@ -39,14 +39,13 @@ def main():
     generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
     game_map = None
 
-    engine = Engine(event_handler, game_map, player, floor, generator)
+    engine = Engine(event_handler, game_map, player, floor, generator, window=window)
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
     log = Log(window, player, engine)
     engine.game_map.generate_pathfinding_map()
 
     while True:
         engine.render(window.console, window.context)
-        log.render()
 
         events = tcod.event.wait()
 
