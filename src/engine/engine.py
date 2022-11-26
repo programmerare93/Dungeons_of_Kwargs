@@ -9,6 +9,7 @@ from tcod.map import compute_fov
 import stage.tile_types as tile_types
 
 from actions.input_handlers import EventHandler, DeathHandler, LevelUpHandler
+from actions.soundhandler import SoundHandler
 from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.procgen import Generator
@@ -45,6 +46,7 @@ class Engine:
         self.update_fov()
         self.death_handler = DeathHandler()
         self.level_up_handler = LevelUpHandler()
+        self.sound_handler = SoundHandler()
 
     def update_game_map(self):
         self.generator.generate_dungeon()
@@ -141,6 +143,7 @@ class Engine:
                 self.message_log.add_message(f"{entity.char} died!", color.death_text)
                 self.game_map.entities.remove(entity)
                 self.player.xp += entity.xp_value
+                self.sound_handler.monster_death()
                 break
 
         self.game_map.explored |= self.game_map.visible

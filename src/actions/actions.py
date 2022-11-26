@@ -1,16 +1,19 @@
 from __future__ import annotations
 
 import random
+import winsound
 
 from typing import TYPE_CHECKING
 
 import stage.tile_types as tile_types
-import random
+from actions.soundhandler import SoundHandler
 
 # Falskt på 'runtime'
 if TYPE_CHECKING:
     from engine.engine import Engine
     from creature.entity import Entity
+
+sound_handler = SoundHandler()
 
 
 class Action:
@@ -70,15 +73,19 @@ class MovementAction(Action):
                     -entity.strength // 4, entity.strength // 4
                 )
                 target.hp -= damage
-                engine.message_log.add_message(f"{target.char} took {damage} damage!")
+                engine.message_log.add_message(
+                    f"{target.char} took {damage} damage!", target.color
+                )
+                if target.char == "@":
+                    sound_handler.player_hit()
                 return "hit"
             else:
                 engine.message_log.add_message(
-                    f"{target.char} dodged {entity.char}'s attack!"
+                    f"{target.char} dodged {entity.char}'s attack!", target.color
                 )
                 return "miss"
 
-        if (
+        elif (
             engine.game_map.entity_at_location(dest_x, dest_y)
             and engine.player_can_attack == True
         ):
@@ -92,10 +99,12 @@ class MovementAction(Action):
                 target.hp -= damage
                 engine.message_log.add_message(f"{target.char} took {damage} damage!")
                 engine.player_can_attack = False
+                sound_handler.sword_sound()
                 return "hit"
             else:
                 engine.message_log.add_message(f"{target.char} dodged your attack!")
                 engine.player_can_attack = False
+                sound_handler.attack_dodged()
                 return "miss"
         elif (
             engine.game_map.entity_at_location(dest_x, dest_y)
