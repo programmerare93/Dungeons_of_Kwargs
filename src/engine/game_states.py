@@ -107,6 +107,7 @@ def level_up_state(engine, window):
 
 
 def death_state(engine, window):
+    window.console.clear(bg=(0, 0, 0))
     while True:
         events = tcod.event.wait()
         engine.handle_death_events(events)
@@ -118,4 +119,4 @@ def death_state(engine, window):
             "You died!",
             fg=(255, 0, 0),
         )
-        engine.render(window.console, window.context)
+        window.context.present(window.console)

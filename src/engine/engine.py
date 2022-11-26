@@ -96,9 +96,7 @@ class Engine:
 
     def handle_enemy_AI(self):
         if self.monster_tick != self.tick:
-            # print([entity.char for entity in self.game_map.entities])
             for monster in self.game_map.entities:
-                # print(monster.char)
                 if (
                     monster.char != "@"
                     and self.game_map.calculate_distance(
@@ -106,10 +104,8 @@ class Engine:
                     )
                     <= monster.perception
                 ):
-                    # print("Monster sees player")
                     monster.monster_pathfinding(self.player, self.game_map, self)
                 elif monster.char != "@":
-                    # print("Monster is not in range")
                     pass
 
             self.monster_tick = self.tick
