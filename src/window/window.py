@@ -34,35 +34,21 @@ class Window:
             "Player position: {}, {}".format(player.x, player.y),
         )
 
-        self.console.print_box(
-            54,
+        self.console.print(
+            55,
             53,
-            self.width,
-            self.height - 53,
             "Current Tick: {}".format(engine.tick),
         )
 
-        self.console.print_box(
+        self.console.print(
             55,
             54,
-            self.width,
-            self.height - 53,
             "Current Monster Tick: {}".format(engine.monster_tick),
         )
 
-        self.console.print_box(
+        self.console.print(
             55,
             55,
-            self.width,
-            self.height - 53,
-            "Player HP: {}".format(engine.player.hp),
-        )
-
-        self.console.print_box(
-            55,
-            56,
-            self.width,
-            self.height - 52,
             "Player XP: {}".format(engine.player.xp),
         )
 
