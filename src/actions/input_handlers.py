@@ -34,6 +34,23 @@ class EventHandler(tcod.event.EventDispatch[Action]):
         return action
 
 
+class MainMenuHandler(tcod.event.EventDispatch[Action]):
+    def ev_quit(self, event: tcod.event.Quit) -> None:
+        raise SystemExit()
+
+    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
+        action: Optional[Action] = None
+
+        key = event.sym
+
+        if key == tcod.event.K_ESCAPE:
+            raise SystemExit()
+        elif key == tcod.event.K_RETURN:
+            print("Starting a new game")
+            action = "New Game"
+        return action
+
+
 class DeathHandler(tcod.event.EventDispatch[None]):
     def ev_quit(self, event: tcod.event.Quit) -> None:
         raise SystemExit()

@@ -9,7 +9,12 @@ from tcod.map import compute_fov
 
 import stage.tile_types as tile_types
 
-from actions.input_handlers import EventHandler, DeathHandler, LevelUpHandler
+from actions.input_handlers import (
+    EventHandler,
+    DeathHandler,
+    LevelUpHandler,
+    MainMenuHandler,
+)
 from actions.soundhandler import SoundHandler
 from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
@@ -47,6 +52,7 @@ class Engine:
         self.player_attack_cool_down = player_attack_cool_down
         self.update_game_map()
         self.update_fov()
+        self.main_menu_handler = MainMenuHandler()
         self.death_handler = DeathHandler()
         self.level_up_handler = LevelUpHandler()
         self.sound_handler = SoundHandler()
@@ -82,6 +88,16 @@ class Engine:
             if action.perform(self, self.player) is not None:
                 self.tick += 1
                 self.update_fov()
+
+    def handle_main_menu_events(self, events: Iterable[Any]) -> None:
+        for event in events:
+            action = self.main_menu_handler.dispatch(event)
+
+            if action is None:
+                continue
+
+            if action == "New Game":
+                return "new_game"
 
     def handle_death_events(self, events: Iterable[Any]) -> None:
         for event in events:

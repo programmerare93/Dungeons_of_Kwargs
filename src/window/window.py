@@ -26,11 +26,9 @@ class Window:
 
     def render_log(self, player, engine):
         self.console.draw_frame(0, 51, self.width, self.height - 51, "Log", clear=False)
-        self.console.print_box(
-            54,
+        self.console.print(
+            55,
             52,
-            self.width,
-            self.height + 20,
             "Player position: {}, {}".format(player.x, player.y),
         )
 

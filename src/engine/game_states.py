@@ -1,5 +1,34 @@
-from creature.entity import Player
 import tcod.event
+import tcod.sdl.render
+
+
+def main_menu(engine, window):
+    while True:
+        events = tcod.event.wait()
+        if engine.handle_main_menu_events(events) == "new_game":
+            return "playing"
+        window.console.clear(bg=(0, 0, 0))
+
+        window.console.draw_frame(
+            0,
+            0,
+            window.width,
+            window.height,
+            title="Main menu",
+            fg=(255, 255, 255),
+            bg=(0, 0, 0),
+            clear=True,
+        )
+
+        window.console.print(
+            x=window.width // 2,
+            y=window.height // 2 - 4,
+            string="Press enter to start",
+            fg=(255, 255, 255),
+            alignment=tcod.CENTER,
+        )
+
+        window.context.present(window.console)
 
 
 def level_up_state(engine, window):

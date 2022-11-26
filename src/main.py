@@ -8,7 +8,7 @@ from stage.floor import Floor
 from stage.procgen import Generator
 from window.window import Window
 from window import color
-from engine.game_states import level_up_state, death_state
+from engine.game_states import main_menu, level_up_state, death_state
 
 
 tileset = tcod.tileset.load_tilesheet(
@@ -41,6 +41,7 @@ def main():
     engine = Engine(event_handler, game_map, player, floor, generator, window=window)
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
     engine.game_map.generate_pathfinding_map()
+    main_menu(engine, window=window)
 
     while True:
         engine.render(window.console, window.context)
