@@ -8,7 +8,6 @@ from stage.floor import Floor
 from stage.procgen import Generator
 from window.window import Window
 from window import color
-from window.log import Log
 from engine.game_states import level_up_state, death_state
 
 
@@ -41,7 +40,6 @@ def main():
 
     engine = Engine(event_handler, game_map, player, floor, generator, window=window)
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
-    log = Log(window, player, engine)
     engine.game_map.generate_pathfinding_map()
 
     while True:
