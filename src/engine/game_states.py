@@ -110,7 +110,6 @@ def death_state(engine, window):
     while True:
         events = tcod.event.wait()
         engine.handle_death_events(events)
-        engine.render(window.console, window.context)
         window.console.print_box(
             window.width // 2 - 5,
             window.height // 2,
@@ -119,3 +118,4 @@ def death_state(engine, window):
             "You died!",
             fg=(255, 0, 0),
         )
+        engine.render(window.console, window.context)
