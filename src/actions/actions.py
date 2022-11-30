@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import random
-import winsound
 
 from typing import TYPE_CHECKING
 
@@ -11,7 +10,7 @@ from actions.soundhandler import SoundHandler
 # Falskt på 'runtime'
 if TYPE_CHECKING:
     from engine.engine import Engine
-    from creature.entity import Entity
+    from creature.entity import Entity, Chest
 
 sound_handler = SoundHandler()
 
@@ -106,19 +105,19 @@ class MovementAction(Action):
                 )
                 target.hp -= damage
                 engine.message_log.add_message(f"{target.char} took {damage} damage!")
-                engine.player_can_attack = False
                 engine.render(
                     console=engine.window.console, context=engine.window.context
                 )
                 sound_handler.sword_sound()
+                engine.player_can_attack = False
                 return "hit"
             else:
                 engine.message_log.add_message(f"{target.char} dodged your attack!")
-                engine.player_can_attack = False
                 engine.render(
                     console=engine.window.console, context=engine.window.context
                 )
                 sound_handler.attack_dodged()
+                engine.player_can_attack = False
                 return "miss"
         elif (
             engine.game_map.entity_at_location(dest_x, dest_y)
@@ -156,3 +155,20 @@ class UseItem(Action):
         self.item = engine.player.inventory.items[0]
 
         self.item.use(engine)
+
+
+class OpenChest(Action):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def perform(self, engine: Engine, entity: Entity, chest: Chest) -> None:
+        for entity in engine.game_map.entities:
+            if entity.char == "C" and engine.game_map.calculate_distance == 1:
+                engine.message_log.add_message("You opened a chest!")
+                for item in chest.inventory.items:
+                    engine.player.inventory.add_item(item)
+                engine.game_map.entities.remove(entity)
+                engine.render(
+                    console=engine.window.console, context=engine.window.context
+                )
+                return "opened_chest"

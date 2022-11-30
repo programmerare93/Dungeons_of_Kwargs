@@ -96,6 +96,22 @@ class Monster(Entity):
         action.perform(engine, self)
 
 
+class Chest(Entity):
+    def __init__(self, x: int, y: int):
+        self.hp = inf
+        self.x = x
+        self.y = y
+        self.char = "C"
+        self.color = (0, 255, 255)
+        self.inventory = Inventory(self, items=[])
+        self.closed = True
+
+    def generate_items(self):
+        """Genererar ett antal items i en kista"""
+        for _ in range(random.randint(1, 3)):
+            self.inventory.items.append(random.choice(all_items))
+
+
 def generate_monsters(room, game_map):
     """Genererar en entity i ett given rum"""
 

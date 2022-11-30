@@ -32,7 +32,7 @@ class GameMap:
     def render(self, console: Console) -> None:
         """Metod för att gå igenom alla tiles och sedan rendera varje tile"""
         # TODO: Kolla över metoden igen och se om det finns något bättre sätt, det funkar iallafall
-        for (x, row) in enumerate(self.tiles):
+        for (x, row) in enumerate(self.tiles):  # NAHHH GOOFY AHH LOOP 💀💀💀
             for (y, tile) in enumerate(row):
                 if self.visible[x, y]:
                     tile.visible = True
