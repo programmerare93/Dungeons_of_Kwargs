@@ -2,7 +2,7 @@ from typing import Optional
 
 import tcod.event
 
-from actions.actions import Action, MovementAction, GoDown, HealingAction, UseItem
+from actions.actions import Action, MovementAction, GoDown, HealingAction, OpenChest
 
 
 class EventHandler(tcod.event.EventDispatch[Action]):
@@ -29,6 +29,8 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             action = GoDown()
         elif key == tcod.event.K_h:
             action = HealingAction()
+        elif key == tcod.event.K_e:
+            action = OpenChest()
         elif key == tcod.event.K_o:
             return "Level Up"
         return action
@@ -82,10 +84,11 @@ class LevelUpHandler(tcod.event.EventDispatch[None]):
         elif key == tcod.event.K_r:
             return "reset"
 
+
 class PlayerCannotMove(tcod.event.EventDispatch[None]):
     def ev_quit(self, event: tcod.event.Quit) -> None:
         raise SystemExit()
-    
+
     def ev_keydown(self, event: tcod.event.KeyDown) -> None:
         key = event.sym
         if key == tcod.event.K_ESCAPE:

@@ -166,13 +166,19 @@ class OpenChest(Action):
     def __init__(self) -> None:
         super().__init__()
 
-    def perform(self, engine: Engine, entity: Entity, chest: Chest) -> None:
-        for entity in engine.game_map.entities:
-            if entity.char == "C" and engine.game_map.calculate_distance == 1:
+    def perform(self, engine: Engine, entity: Entity) -> None:
+        for monster in engine.game_map.entities:
+            if (
+                monster.char == "C"
+                and engine.game_map.calculate_distance(
+                    entity.x, entity.y, monster.x, monster.y
+                )
+                == 1
+            ):
+                chest = monster
                 engine.message_log.add_message("You opened a chest!")
-                for item in chest.inventory.items:
-                    engine.player.inventory.add_item(item)
-                engine.game_map.entities.remove(entity)
+                engine.player.inventory.items.extend(chest.inventory.items)
+                engine.game_map.entities.remove(chest)
                 engine.render(
                     console=engine.window.console, context=engine.window.context
                 )

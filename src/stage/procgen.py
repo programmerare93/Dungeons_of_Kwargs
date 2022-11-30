@@ -118,9 +118,15 @@ class Generator:
         for room in self.room_list:
             for _ in range(random.randint(1, self.max_monsters_per_room)):
                 generate_monsters(room, self.dungeon)
-        
+
         for room in self.room_list:
-            if random.randint(1, 4) == 4:
+            if (
+                random.randint(1, 4) == 4
+                and self.dungeon.get_tile(
+                    list(room.center)[0], list(room.center)[1]
+                ).type
+                != 3
+            ):
                 new_chest = Chest(list(room.center)[0], list(room.center)[1])
                 self.dungeon.entities.append(new_chest)
 
