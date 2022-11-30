@@ -94,6 +94,11 @@ class MovementAction(Action):
 
         elif (
             engine.game_map.entity_at_location(dest_x, dest_y)
+            and list(engine.game_map.entity_at_location(dest_x, dest_y))[0].char == "C"
+        ):
+            return None
+        elif (
+            engine.game_map.entity_at_location(dest_x, dest_y)
             and engine.player_can_attack == True
         ):
             target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
