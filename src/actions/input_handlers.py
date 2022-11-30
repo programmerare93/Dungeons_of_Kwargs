@@ -15,13 +15,13 @@ class EventHandler(tcod.event.EventDispatch[Action]):
         key = event.sym
         mod = event.mod
 
-        if key in (tcod.event.K_UP, tcod.event.K_KP_8):
+        if key in (tcod.event.K_UP, tcod.event.K_KP_8, tcod.event.K_w):
             action = MovementAction(dx=0, dy=-1)
-        elif key in (tcod.event.K_DOWN, tcod.event.K_KP_2):
+        elif key in (tcod.event.K_DOWN, tcod.event.K_KP_2, tcod.event.K_s):
             action = MovementAction(dx=0, dy=1)
-        elif key in (tcod.event.K_LEFT, tcod.event.K_KP_4):
+        elif key in (tcod.event.K_LEFT, tcod.event.K_KP_4, tcod.event.K_a):
             action = MovementAction(dx=-1, dy=0)
-        elif key in (tcod.event.K_RIGHT, tcod.event.K_KP_6):
+        elif key in (tcod.event.K_RIGHT, tcod.event.K_KP_6, tcod.event.K_d):
             action = MovementAction(dx=1, dy=0)
         elif key == tcod.event.K_ESCAPE:
             raise SystemExit()
@@ -46,7 +46,6 @@ class MainMenuHandler(tcod.event.EventDispatch[Action]):
         if key == tcod.event.K_ESCAPE:
             raise SystemExit()
         elif key == tcod.event.K_RETURN:
-            print("Starting a new game")
             action = "New Game"
         return action
 
@@ -82,3 +81,12 @@ class LevelUpHandler(tcod.event.EventDispatch[None]):
             return "dexterity"
         elif key == tcod.event.K_r:
             return "reset"
+
+class PlayerCannotMove(tcod.event.EventDispatch[None]):
+    def ev_quit(self, event: tcod.event.Quit) -> None:
+        raise SystemExit()
+    
+    def ev_keydown(self, event: tcod.event.KeyDown) -> None:
+        key = event.sym
+        if key == tcod.event.K_ESCAPE:
+            raise SystemExit()

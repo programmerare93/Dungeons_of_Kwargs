@@ -6,9 +6,8 @@ class Inventory:
         self.owner = owner
         self.items = []
 
-    def add(self, item):
+    def add_item(self, item):
         self.items.append(item)
-        pass
 
 
 class Item:
@@ -29,19 +28,19 @@ class StatItem(Item):
         if self.type == "health potion":
             self.owner.hp += self.amplitude
             self.owner.inventory.items.remove(self)
-            
+
         elif self.type == "strength potion":
             self.owner.strength += self.amplitude
             self.owner.inventory.items.remove(self)
-            
+
         elif self.type == "dexterity potion":
             self.owner.dexterity += self.amplitude
             self.owner.inventory.items.remove(self)
-            
+
         elif self.type == "perception potion":
             self.owner.perception += self.amplitude
             self.owner.inventory.items.remove(self)
-        
+
         engine.message_log.add_message("You used a {}!".format(self.type))
         return self.duration
 
@@ -69,3 +68,18 @@ small_perception_potion = StatItem("perception potion", 2, duration=10)
 medium_perception_potion = StatItem("perception potion", 4, duration=20)
 
 large_perception_potion = StatItem("perception potion", 6, duration=30)
+
+all_items = [
+    small_healing_potion,
+    medium_healing_potion,
+    large_healing_potion,
+    small_strength_potion,
+    medium_strength_potion,
+    large_strength_potion,
+    small_dexterity_potion,
+    medium_dexterity_potion,
+    large_dexterity_potion,
+    small_perception_potion,
+    medium_perception_potion,
+    large_perception_potion,
+]

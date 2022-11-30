@@ -118,18 +118,15 @@ class Engine:
     def handle_enemy_AI(self):
         if self.monster_tick != self.tick:
             for monster in self.game_map.entities:
-                if (
-                    monster.char != "@"
-                    and monster.hp > 0
-                    and self.game_map.calculate_distance(
-                        monster.x, monster.y, self.player.x, self.player.y
-                    )
-                    <= monster.perception
-                ):
-                    monster.monster_pathfinding(self.player, self.game_map, self)
-                elif monster.char != "@":
-                    pass
-
+                if monster.char not in ("@", "C"):
+                    if (
+                        monster.hp > 0
+                        and self.game_map.calculate_distance(
+                            monster.x, monster.y, self.player.x, self.player.y
+                        )
+                        <= monster.perception
+                    ):
+                        monster.monster_pathfinding(self.player, self.game_map, self)
             self.monster_tick = self.tick
 
     def can_player_attack(self):

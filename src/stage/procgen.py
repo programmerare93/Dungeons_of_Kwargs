@@ -6,7 +6,7 @@ import numpy as np
 import tcod
 
 import stage.tile_types as tile_types
-from creature.entity import Entity, generate_monsters
+from creature.entity import Entity, generate_monsters, Chest
 from stage.game_map import GameMap
 from stage.rooms import Room
 
@@ -118,6 +118,11 @@ class Generator:
         for room in self.room_list:
             for _ in range(random.randint(1, self.max_monsters_per_room)):
                 generate_monsters(room, self.dungeon)
+        
+        for room in self.room_list:
+            if random.randint(1, 4) == 4:
+                new_chest = Chest(list(room.center)[0], list(room.center)[1])
+                self.dungeon.entities.append(new_chest)
 
         self.dungeon.generate_pathfinding_map()
 

@@ -1,5 +1,4 @@
 import tcod
-import numpy as np
 
 from actions.input_handlers import EventHandler
 from creature.entity import Player
@@ -44,7 +43,6 @@ def main():
     main_menu(engine, window=window)
 
     while True:
-        engine.render(window.console, window.context)
 
         events = tcod.event.wait()
 
@@ -59,6 +57,8 @@ def main():
 
         if engine.check_xp() == "Level Up":
             level_up_state(engine, window)
+
+        engine.render(window.console, window.context)
 
 
 if __name__ == "__main__":
