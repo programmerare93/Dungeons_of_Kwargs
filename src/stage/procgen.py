@@ -120,14 +120,11 @@ class Generator:
                 generate_monsters(room, self.dungeon)
 
         for room in self.room_list:
-            if (
-                random.randint(1, 4) == 4
-                and self.dungeon.get_tile(
-                    list(room.center)[0], list(room.center)[1]
-                ).type
-                != 3
+            a, b = room.center
+            if random.randint(1, 4) == 4 and not isinstance(
+                self.dungeon.get_tile(a, b), tile_types.StairCase
             ):
-                new_chest = Chest(list(room.center)[0], list(room.center)[1])
+                new_chest = Chest(a, b)
                 self.dungeon.entities.append(new_chest)
 
         self.dungeon.generate_pathfinding_map()
