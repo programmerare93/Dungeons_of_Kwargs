@@ -97,13 +97,13 @@ class Monster(Entity):
 
 
 class Chest(Entity):
-    def __init__(self, x: int, y: int):
+    def __init__(self, x: int, y: int, inventory: Inventory):
         self.hp = inf
         self.x = x
         self.y = y
         self.char = "C"
         self.color = (0, 255, 255)
-        self.inventory = Inventory(self, items=[])
+        self.inventory = inventory
         self.closed = True
 
     def generate_items(self):

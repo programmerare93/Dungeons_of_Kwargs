@@ -2,9 +2,9 @@ from math import inf
 
 
 class Inventory:
-    def __init__(self, owner, items):
+    def __init__(self, owner=None, items=[]):
         self.owner = owner
-        self.items = []
+        self.items = items
 
     def add_item(self, item):
         self.items.append(item)
@@ -45,29 +45,29 @@ class StatItem(Item):
         return self.duration
 
 
-small_healing_potion = StatItem("health potion", 10, duration=10)
+small_healing_potion = StatItem("small health potion", 10, duration=10)
 
-medium_healing_potion = StatItem("health potion", 20, duration=20)
+medium_healing_potion = StatItem("medium health potion", 20, duration=20)
 
-large_healing_potion = StatItem("health potion", 30, duration=30)
+large_healing_potion = StatItem("large health potion", 30, duration=30)
 
-small_strength_potion = StatItem("strength potion", 2, duration=10)
+small_strength_potion = StatItem("small strength potion", 2, duration=10)
 
-medium_strength_potion = StatItem("strength potion", 4, duration=20)
+medium_strength_potion = StatItem("medium strength potion", 4, duration=20)
 
-large_strength_potion = StatItem("strength potion", 6, duration=30)
+large_strength_potion = StatItem("large strength potion", 6, duration=30)
 
-small_dexterity_potion = StatItem("dexterity potion", 2, duration=10)
+small_dexterity_potion = StatItem("small dexterity potion", 2, duration=10)
 
-medium_dexterity_potion = StatItem("dexterity potion", 4, duration=20)
+medium_dexterity_potion = StatItem("medium dexterity potion", 4, duration=20)
 
-large_dexterity_potion = StatItem("dexterity potion", 6, duration=30)
+large_dexterity_potion = StatItem("large dexterity potion", 6, duration=30)
 
-small_perception_potion = StatItem("perception potion", 2, duration=10)
+small_perception_potion = StatItem("small perception potion", 2, duration=10)
 
-medium_perception_potion = StatItem("perception potion", 4, duration=20)
+medium_perception_potion = StatItem("medium perception potion", 4, duration=20)
 
-large_perception_potion = StatItem("perception potion", 6, duration=30)
+large_perception_potion = StatItem("large perception potion", 6, duration=30)
 
 all_items = [
     small_healing_potion,

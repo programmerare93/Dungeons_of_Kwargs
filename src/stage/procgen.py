@@ -9,6 +9,7 @@ import stage.tile_types as tile_types
 from creature.entity import Entity, generate_monsters, Chest
 from stage.game_map import GameMap
 from stage.rooms import Room
+from creature.items import Inventory, all_items
 
 
 class Generator:
@@ -124,7 +125,16 @@ class Generator:
             if random.randint(1, 4) == 4 and not isinstance(
                 self.dungeon.get_tile(a, b), tile_types.StairCase
             ):
-                new_chest = Chest(a, b)
+                new_chest = Chest(
+                    a,
+                    b,
+                    inventory=Inventory(
+                        items=[
+                            random.choice(all_items)
+                            for _ in range(random.randint(1, 3))
+                        ]
+                    ),
+                )
                 self.dungeon.entities.append(new_chest)
 
         self.dungeon.generate_pathfinding_map()

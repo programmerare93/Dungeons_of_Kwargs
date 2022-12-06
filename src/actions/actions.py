@@ -178,6 +178,9 @@ class OpenChest(Action):
                 chest = monster
                 engine.message_log.add_message("You opened a chest!")
                 engine.player.inventory.items.extend(chest.inventory.items)
+                engine.message_log.add_message(
+                    f"You Recieved {tuple([item.type for item in chest.inventory.items])}"
+                )
                 engine.game_map.entities.remove(chest)
                 engine.render(
                     console=engine.window.console, context=engine.window.context
