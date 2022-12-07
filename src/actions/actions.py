@@ -75,7 +75,7 @@ class MovementAction(Action):
                 )
                 target.hp -= damage
                 engine.message_log.add_message(
-                    f"{target.char} took {damage} damage!", target.color
+                    f"{target.name} took {damage} damage!", target.color
                 )
                 engine.render(
                     console=engine.window.console, context=engine.window.context
@@ -84,7 +84,7 @@ class MovementAction(Action):
                 return "player_hit"
             else:
                 engine.message_log.add_message(
-                    f"{target.char} dodged {entity.char}'s attack!", target.color
+                    f"{target.name} dodged {entity.name}'s attack!", target.color
                 )
                 engine.render(
                     console=engine.window.console, context=engine.window.context
@@ -109,7 +109,7 @@ class MovementAction(Action):
                     -engine.player.strength // 4, engine.player.strength // 4
                 )
                 target.hp -= damage
-                engine.message_log.add_message(f"{target.char} took {damage} damage!")
+                engine.message_log.add_message(f"{target.name} took {damage} damage!")
                 engine.render(
                     console=engine.window.console, context=engine.window.context
                 )
@@ -117,7 +117,7 @@ class MovementAction(Action):
                 engine.player_can_attack = False
                 return "hit"
             else:
-                engine.message_log.add_message(f"{target.char} dodged your attack!")
+                engine.message_log.add_message(f"{target.name} dodged your attack!")
                 engine.render(
                     console=engine.window.console, context=engine.window.context
                 )
@@ -145,10 +145,10 @@ class HealingAction(Action):
     def perform(self, engine: Engine, entity: Entity) -> None:
         if entity.hp < entity.max_hp:
             entity.hp += 10
-            engine.message_log.add_message(f"{entity.char} healed 10 hp!")
+            engine.message_log.add_message(f"{entity.name} healed 10 hp!")
             return "healed"
         else:
-            engine.message_log.add_message(f"{entity.char} is at full health!")
+            engine.message_log.add_message(f"{entity.name} is at full health!")
 
 
 class UseItem(Action):
@@ -179,7 +179,7 @@ class OpenChest(Action):
                 engine.message_log.add_message("You opened a chest!")
                 engine.player.inventory.items.extend(chest.inventory.items)
                 engine.message_log.add_message(
-                    f"You Recieved {tuple([item.type for item in chest.inventory.items])}"
+                    f"You Received {tuple([item.type for item in chest.inventory.items])}"
                 )
                 engine.game_map.entities.remove(chest)
                 engine.render(

@@ -155,7 +155,7 @@ class Engine:
             if entity.hp <= 0:
                 if entity.char == "@":
                     return "dead"
-                self.message_log.add_message(f"{entity.char} died!", color.death_text)
+                self.message_log.add_message(f"{entity.name} died!", color.death_text)
                 self.game_map.entities.remove(entity)
                 self.player.xp += entity.xp_value
                 self.render(console=self.window.console, context=self.window.context)

@@ -26,6 +26,7 @@ def main():
         int(window.height / 2),
         "@",
         (255, 255, 255),
+        name="Player",
         max_hp=30,
         hp=30,
         strength=50,

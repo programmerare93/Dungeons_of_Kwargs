@@ -10,7 +10,10 @@ from creature.items import *
 class Entity:
     """Generisk klass för att representera en 'entitet', något som en fiende eller spelare"""
 
-    def __init__(self, x: int, y: int, char: str, color: Tuple[int, int, int]):
+    def __init__(
+        self, x: int, y: int, char: str, color: Tuple[int, int, int], name: str = None
+    ):
+        self.name = name
         self.x = x
         self.y = y
         self.char = char
@@ -39,8 +42,10 @@ class Player(Entity):
         perception: int,
         dexterity: int,
         intelligence: int,
+        name: str = None,
     ):
-        super().__init__(x, y, char, color)
+        super().__init__(x, y, char, color, name)
+        self.name = name
         self.max_hp = max_hp
         self.hp = hp
         self.strength = strength
@@ -69,8 +74,9 @@ class Monster(Entity):
         perception: int,
         dexterity: int,
         intelligence: int,
+        name: str,
     ):
-        super().__init__(x, y, char, color)
+        super().__init__(x, y, char, color, name)
         self.difficulty = difficulty
         self.max_hp = max_hp * self.difficulty
         self.hp = self.max_hp * self.difficulty
@@ -97,7 +103,8 @@ class Monster(Entity):
 
 
 class Chest(Entity):
-    def __init__(self, x: int, y: int, inventory: Inventory):
+    def __init__(self, x: int, y: int, inventory: Inventory, name: str = "Chest"):
+        self.name = name
         self.hp = inf
         self.x = x
         self.y = y
@@ -122,6 +129,7 @@ def generate_monsters(room, game_map):
     if not game_map.entity_at_location(x, y):
         if random.random() < 0.8:
             monster = Monster(
+                name="Orc",
                 x=x,
                 y=y,
                 char="O",
@@ -135,10 +143,11 @@ def generate_monsters(room, game_map):
             )
         else:
             monster = Monster(
-                x,
-                y,
-                "T",
-                (0, 0, 255),
+                name="Troll",
+                x=x,
+                y=y,
+                char="T",
+                color=(0, 0, 255),
                 difficulty=game_map.difficulty,
                 max_hp=16,
                 strength=5,
