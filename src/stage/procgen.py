@@ -7,6 +7,7 @@ import tcod
 
 import stage.tile_types as tile_types
 from creature.entity import Entity, generate_monsters
+from creature.items import potions
 from stage.game_map import GameMap
 from stage.rooms import Room
 
@@ -95,8 +96,18 @@ class Generator:
             for (y, value) in enumerate(row):
                 if self.dungeon.tiles[x, y] == tile_types.floor:
                     if random.randint(0, 50) == 25:
-                        self.dungeon.tiles[x, y] = tile_types.Trap(tile_types.trap_color)
+                        self.dungeon.tiles[x, y] = tile_types.Trap(
+                            tile_types.trap_color
+                        )
 
+        # Potions generation
+        for room in self.room_list[1::]:
+            if random.random() < 0.25:  # 25% chans att ett rum innehåller en potion
+                x = random.randint(room.center[0] - (room.width // 2), room.center[0] + (room.width // 2))
+                y = random.randint(room.center[1] - (room.height // 2), room.center[1] + (room.height // 2))
+                self.dungeon.tiles[x, y] = random.choice(potions)
+
+        # Monster generation
         for room in self.room_list[1::]:
             generate_monsters(room, self.dungeon)
 

@@ -1,4 +1,5 @@
 import tcod
+import tcod.sdl.render
 
 
 class Window:
@@ -41,7 +42,7 @@ class Window:
             self.height - 53,
             "Current Tick: {}".format(engine.tick),
         )
-        
+
     def print(self, x: int, y: int, string: str):
         self.console.print(x, y, string)
 

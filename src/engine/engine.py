@@ -16,6 +16,7 @@ from stage.floor import Floor
 from window.render_functions import render_bar
 from window.message_log import MessageLog
 from window import color
+from window.window import Window
 
 
 class Engine:
@@ -23,7 +24,7 @@ class Engine:
 
     def __init__(
             self,
-            event_handler: EventHandler,
+            window: Window,
             game_map: GameMap,
             player: Entity,
             floor: Floor,
@@ -31,8 +32,10 @@ class Engine:
             player_can_attack: bool = True,
             player_attack_cool_down: int = 0,
     ):
-        self.event_handler = event_handler
+        self.window = window
+        self.event_handler = EventHandler()
         self.game_map = game_map
+        self.inventory_open = False
         self.message_log = MessageLog()
         self.player = player
         self.floor = floor
@@ -59,6 +62,8 @@ class Engine:
         for event in events:
             action = self.event_handler.dispatch(event)
 
+            self.inventory_open = self.event_handler.inventory_is_open
+
             if action is None:
                 continue
 
@@ -66,15 +71,25 @@ class Engine:
                 self.tick += 1
                 self.update_fov()
 
+    def handle_death_events(self, events: Iterable[Any]) -> None:
+        self.player.char = '%'
+        self.player.color = (255, 0, 0)
+
+        for event in events:
+            action = self.event_handler.dispatch(event)
+
+            if action is None:
+                continue
+
     def handle_enemy_AI(self):
         if self.monster_tick + 1 == self.tick:  # Då får monster göra sitt
             for monster in self.game_map.entities:
                 if (
-                    monster.char != "@"
-                    and self.game_map.calculate_distance(
-                        monster.x, monster.y, self.player.x, self.player.y
-                    )
-                    <= monster.perception
+                        monster.char != "@"
+                        and self.game_map.calculate_distance(
+                    monster.x, monster.y, self.player.x, self.player.y
+                )
+                        <= monster.perception
                 ):
                     print("Monster is in range")
                     monster.monster_pathfinding(self.player, self.game_map, self)

@@ -52,9 +52,25 @@ class MovementAction(Action):
         if not engine.game_map.get_tile(dest_x, dest_y).walkable:
             return None
 
+        if entity.char != "@" and engine.game_map.entity_at_location(dest_x, dest_y):
+            target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
+            if entity.perception + random.randint(
+                    1, 20
+            ) > target.dexterity + random.randint(1, 20):
+                target.take_damage(entity.strength)
+                engine.message_log.add_message(
+                    f"{target.char} took {entity.strength} damage!"
+                )
+                return "hit"
+            else:
+                engine.message_log.add_message(
+                    f"{target.char} dodged {entity.char}'s attack!"
+                )
+                return "miss"
+
         if (
-            engine.game_map.entity_at_location(dest_x, dest_y)
-            and engine.player_can_attack == True
+                engine.game_map.entity_at_location(dest_x, dest_y)
+                and engine.player_can_attack == True
         ):
             target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
             if entity.perception + random.randint(
@@ -71,8 +87,8 @@ class MovementAction(Action):
                 engine.player_can_attack = False
                 return "miss"
         elif (
-            engine.game_map.entity_at_location(dest_x, dest_y)
-            and not engine.player_can_attack == True
+                engine.game_map.entity_at_location(dest_x, dest_y)
+                and not engine.player_can_attack == True
         ):
             engine.message_log.add_message("Your attack is on cooldown!")
             return None
@@ -91,3 +107,13 @@ class GoDown(Action):
     def perform(self, engine: Engine, entity: Entity) -> None:
         if engine.game_map.tiles[entity.x, entity.y] == tile_types.stair_case:
             engine.update_game_map()
+
+
+class HealingAction(Action):
+    def perform(self, engine: Engine, entity: Entity) -> None:
+        if entity.heal(10) < entity.max_hp:
+            engine.message_log.add_message(f"{entity.char} healed 10 hp!")
+            return "healed"
+        else:
+            engine.message_log.add_message(f"{entity.char} is at full health!")
+

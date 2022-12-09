@@ -3,6 +3,7 @@ import tcod
 from actions.input_handlers import EventHandler
 from creature.entity import Player
 from engine.engine import Engine
+from engine.gamestate import *
 from stage.floor import Floor
 from stage.procgen import Generator
 from window.window import Window
@@ -15,12 +16,11 @@ tileset = tcod.tileset.load_tilesheet(
     "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )
 
+
 window = Window("Dungeons of Kwargs", 80, 70, tileset)
 
 
 def main():
-    event_handler = EventHandler()
-
     floor = Floor()
     player = Player(
         int(window.width / 2),
@@ -38,7 +38,7 @@ def main():
     generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
     game_map = None
 
-    engine = Engine(event_handler, game_map, player, floor, generator)
+    engine = Engine(window, game_map, player, floor, generator)
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
     log = Log(window, player, engine)
     engine.game_map.generate_pathfinding_map()
@@ -55,7 +55,11 @@ def main():
 
         engine.can_player_attack()
 
-        engine.check_entities()
+        if engine.check_entities() == "dead":
+            death_state(engine, window)
+
+        if engine.inventory_open:
+            inventory_state(engine, window)
 
 
 if __name__ == "__main__":
