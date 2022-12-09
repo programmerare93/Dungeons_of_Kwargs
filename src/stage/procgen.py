@@ -6,10 +6,10 @@ import numpy as np
 import tcod
 
 import stage.tile_types as tile_types
-from creature.entity import Entity, generate_monsters
-from creature.items import potions
+from creature.entity import Entity, generate_monsters, Chest
 from stage.game_map import GameMap
 from stage.rooms import Room
+from creature.items import Inventory, all_items
 
 
 class Generator:
@@ -97,19 +97,32 @@ class Generator:
                 if self.dungeon.tiles[x, y] == tile_types.floor:
                     if random.randint(0, 50) == 25:
                         self.dungeon.tiles[x, y] = tile_types.Trap(
-                            tile_types.trap_color
+                            tile_types.trap_color, difficulty=self.difficulty
                         )
 
-        # Potions generation
-        for room in self.room_list[1::]:
-            if random.random() < 0.25:  # 25% chans att ett rum innehåller en potion
-                x = random.randint(room.center[0] - (room.width // 2), room.center[0] + (room.width // 2))
-                y = random.randint(room.center[1] - (room.height // 2), room.center[1] + (room.height // 2))
-                self.dungeon.tiles[x, y] = random.choice(potions)
+        for room in self.room_list:
+            for _ in range(random.randint(1, self.max_monsters_per_room)):
+                generate_monsters(room, self.dungeon)
 
-        # Monster generation
-        for room in self.room_list[1::]:
-            generate_monsters(room, self.dungeon)
+        for room in self.room_list:
+            a, b = room.center
+            if random.randint(1, 4) == 4 and not isinstance(
+                self.dungeon.get_tile(a, b), tile_types.StairCase
+            ):
+                new_chest = Chest(
+                    a,
+                    b,
+                    inventory=Inventory(
+                        items=[
+                            random.choice(all_items)
+                            for _ in range(random.randint(1, 3))
+                        ]
+                    ),
+                )
+                self.dungeon.entities.append(new_chest)
+
+        self.dungeon.generate_pathfinding_map()
+
 
     def get_dungeon(self):
         return self.dungeon

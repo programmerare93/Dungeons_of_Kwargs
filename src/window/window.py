@@ -27,22 +27,30 @@ class Window:
 
     def render_log(self, player, engine):
         self.console.draw_frame(0, 51, self.width, self.height - 51, "Log", clear=False)
-        self.console.print_box(
-            54,
+        self.console.print(
+            55,
             52,
-            self.width,
-            self.height + 20,
             "Player position: {}, {}".format(player.x, player.y),
         )
 
-        self.console.print_box(
-            54,
+        self.console.print(
+            55,
             53,
-            self.width,
-            self.height - 53,
             "Current Tick: {}".format(engine.tick),
         )
 
+        self.console.print(
+            55,
+            54,
+            "Current Monster Tick: {}".format(engine.monster_tick),
+        )
+
+        self.console.print(
+            55,
+            55,
+            "Player XP: {}".format(engine.player.xp),
+        )
+        
     def print(self, x: int, y: int, string: str):
         self.console.print(x, y, string)
 

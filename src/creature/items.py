@@ -1,98 +1,85 @@
-from typing import Tuple, List
-
-from stage.tile_types import Tile
+from math import inf
 
 
 class Inventory:
-    def __init__(self, owner, items=None):
-        if items is None:
-            self.items: List[Item] = []
-        else:
-            self.items: List[Item] = items
+    def __init__(self, owner=None, items=[]):
         self.owner = owner
+        self.items = items
 
-    def add(self, item):
+    def add_item(self, item):
         self.items.append(item)
-        pass
-
-    def get_items(self):
-        return self.items
 
 
-class Item(Tile):
-    """En subklass av tile klassen som ska representera föremål"""
-    def __init__(self, item_type: str, char: str, color: Tuple[int, int, int]):
-        super().__init__(
-            walkable=True,
-            visible=False,
-            transparent=True,
-            seen=False,
-            color=color,
-            char=char
-        )
-        self.type = item_type
+class Item:
+    def __init__(self, type):
+        self.type = type
         self.owner = None
 
 
 class StatItem(Item):
-    def __init__(self, item_type: str, char: str, color: Tuple[int, int, int], amplitude: int, duration: int):
-        super().__init__(item_type, char, color)
+    def __init__(self, type, amplitude, duration):
+        self.type = type
         self.amplitude = amplitude
+        self.duration = inf
+        self.owner = None
         self.duration = duration
 
-    def use(self):
-        if self.type == "health_potion":
+    def use(self, engine):
+        if self.type == "health potion":
             self.owner.hp += self.amplitude
             self.owner.inventory.items.remove(self)
-            return self.duration
-        elif self.type == "strength_potion":
+
+        elif self.type == "strength potion":
             self.owner.strength += self.amplitude
             self.owner.inventory.items.remove(self)
-            return self.duration
-        elif self.type == "dexterity_potion":
+
+        elif self.type == "dexterity potion":
             self.owner.dexterity += self.amplitude
             self.owner.inventory.items.remove(self)
-            return self.duration
-        elif self.type == "perception_potion":
+
+        elif self.type == "perception potion":
             self.owner.perception += self.amplitude
             self.owner.inventory.items.remove(self)
-            return self.duration
+
+        engine.message_log.add_message("You used a {}!".format(self.type))
+        return self.duration
 
 
-small_healing_potion = StatItem("health_potion", 'P', (0, 255, 0), amplitude=10, duration=10)
+small_healing_potion = StatItem("small health potion", 10, duration=10)
 
-medium_healing_potion = StatItem("health_potion", 'P', (0, 255, 0), amplitude=20, duration=20)
+medium_healing_potion = StatItem("medium health potion", 20, duration=20)
 
-large_healing_potion = StatItem("health_potion", 'P', (0, 255, 0), amplitude=30, duration=30)
+large_healing_potion = StatItem("large health potion", 30, duration=30)
 
-small_strength_potion = StatItem("strength_potion", 'P', (0, 255, 0), amplitude=2, duration=10)
+small_strength_potion = StatItem("small strength potion", 2, duration=10)
 
-medium_strength_potion = StatItem("strength_potion", 'P', (0, 255, 0), amplitude=4, duration=20)
+medium_strength_potion = StatItem("medium strength potion", 4, duration=20)
 
-large_strength_potion = StatItem("strength_potion", 'P', (0, 255, 0), amplitude=6, duration=30)
+large_strength_potion = StatItem("large strength potion", 6, duration=30)
 
-small_dexterity_potion = StatItem("dexterity_potion", 'P', (0, 255, 0), amplitude=2, duration=10)
+small_dexterity_potion = StatItem("small dexterity potion", 2, duration=10)
 
-medium_dexterity_potion = StatItem("dexterity_potion", 'P', (0, 255, 0), amplitude=4, duration=20)
+medium_dexterity_potion = StatItem("medium dexterity potion", 4, duration=20)
 
-large_dexterity_potion = StatItem("dexterity_potion", 'P', (0, 255, 0), amplitude=6, duration=30)
+large_dexterity_potion = StatItem("large dexterity potion", 6, duration=30)
 
-small_perception_potion = StatItem("perception_potion", 'P', (0, 255, 0), amplitude=2, duration=10)
+small_perception_potion = StatItem("small perception potion", 2, duration=10)
 
-medium_perception_potion = StatItem("perception_potion", 'P', (0, 255, 0), amplitude=4, duration=20)
+medium_perception_potion = StatItem("medium perception potion", 4, duration=20)
 
-large_perception_potion = StatItem("perception_potion", 'P', (0, 255, 0), amplitude=6, duration=30)
+large_perception_potion = StatItem("large perception potion", 6, duration=30)
 
-potions = [small_healing_potion,
-           medium_healing_potion,
-           large_healing_potion,
-           small_strength_potion,
-           medium_strength_potion,
-           large_strength_potion,
-           small_dexterity_potion,
-           medium_dexterity_potion,
-           large_dexterity_potion,
-           small_perception_potion,
-           medium_perception_potion,
-           large_perception_potion
-           ]
+all_items = [
+    small_healing_potion,
+    medium_healing_potion,
+    large_healing_potion,
+    small_strength_potion,
+    medium_strength_potion,
+    large_strength_potion,
+    small_dexterity_potion,
+    medium_dexterity_potion,
+    large_dexterity_potion,
+    small_perception_potion,
+    medium_perception_potion,
+    large_perception_potion,
+]

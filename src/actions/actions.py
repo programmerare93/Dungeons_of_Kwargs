@@ -5,12 +5,14 @@ import random
 from typing import TYPE_CHECKING
 
 import stage.tile_types as tile_types
-import random
+from actions.soundhandler import SoundHandler
 
 # Falskt på 'runtime'
 if TYPE_CHECKING:
     from engine.engine import Engine
-    from creature.entity import Entity
+    from creature.entity import Entity, Chest
+
+sound_handler = SoundHandler()
 
 
 class Action:
@@ -54,36 +56,63 @@ class MovementAction(Action):
 
         if entity.char != "@" and engine.game_map.entity_at_location(dest_x, dest_y):
             target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
+            if target.char != "@":
+                return "tried to attack a monster"
             if entity.perception + random.randint(
-                    1, 20
+                1, 20
             ) > target.dexterity + random.randint(1, 20):
-                target.take_damage(entity.strength)
-                engine.message_log.add_message(
-                    f"{target.char} took {entity.strength} damage!"
+                damage = entity.strength + random.randint(
+                    -entity.strength // 4, entity.strength // 4
                 )
-                return "hit"
+                target.hp -= damage
+                engine.message_log.add_message(
+                    f"{target.name} took {damage} damage!", target.color
+                )
+                engine.render(
+                    console=engine.window.console, context=engine.window.context
+                )
+                # sound_handler.player_hit()
+                return "player_hit"
             else:
                 engine.message_log.add_message(
-                    f"{target.char} dodged {entity.char}'s attack!"
+                    f"{target.name} dodged {entity.name}'s attack!", target.color
                 )
+                engine.render(
+                    console=engine.window.console, context=engine.window.context
+                )
+                # sound_handler.attack_dodged()
                 return "miss"
 
-        if (
-                engine.game_map.entity_at_location(dest_x, dest_y)
-                and engine.player_can_attack == True
+        elif (
+            engine.game_map.entity_at_location(dest_x, dest_y)
+            and list(engine.game_map.entity_at_location(dest_x, dest_y))[0].char == "C"
+        ):
+            return None
+        elif (
+            engine.game_map.entity_at_location(dest_x, dest_y)
+            and engine.player_can_attack == True
         ):
             target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
             if entity.perception + random.randint(
                 1, 20
-            ) > target.perception + random.randint(1, 20):
-                target.hp -= engine.player.strength
-                engine.message_log.add_message(
-                    f"{target.char} took {entity.strength} damage!"
+            ) > target.dexterity + random.randint(1, 20):
+                damage = engine.player.strength + random.randint(
+                    -engine.player.strength // 4, engine.player.strength // 4
                 )
+                target.hp -= damage
+                engine.message_log.add_message(f"{target.name} took {damage} damage!")
+                engine.render(
+                    console=engine.window.console, context=engine.window.context
+                )
+                # sound_handler.sword_sound()
                 engine.player_can_attack = False
                 return "hit"
             else:
-                engine.message_log.add_message(f"{target.char} dodged your attack!")
+                engine.message_log.add_message(f"{target.name} dodged your attack!")
+                engine.render(
+                    console=engine.window.console, context=engine.window.context
+                )
+                # sound_handler.attack_dodged()
                 engine.player_can_attack = False
                 return "miss"
         elif (
@@ -111,9 +140,46 @@ class GoDown(Action):
 
 class HealingAction(Action):
     def perform(self, engine: Engine, entity: Entity) -> None:
-        if entity.heal(10) < entity.max_hp:
-            engine.message_log.add_message(f"{entity.char} healed 10 hp!")
+        if entity.hp < entity.max_hp:
+            entity.hp += 10
+            engine.message_log.add_message(f"{entity.name} healed 10 hp!")
             return "healed"
         else:
-            engine.message_log.add_message(f"{entity.char} is at full health!")
+            engine.message_log.add_message(f"{entity.name} is at full health!")
 
+
+class UseItem(Action):
+    def __init__(self) -> None:
+        super().__init__()
+        self.item = None
+
+    def perform(self, engine: Engine, entity: Entity) -> None:
+        self.item = engine.player.inventory.items[0]
+
+        self.item.use(engine)
+
+
+class OpenChest(Action):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def perform(self, engine: Engine, entity: Entity) -> None:
+        for monster in engine.game_map.entities:
+            if (
+                monster.char == "C"
+                and engine.game_map.calculate_distance(
+                    entity.x, entity.y, monster.x, monster.y
+                )
+                == 1
+            ):
+                chest = monster
+                engine.message_log.add_message("You opened a chest!")
+                engine.player.inventory.items.extend(chest.inventory.items)
+                engine.message_log.add_message(
+                    f"You Received {tuple([item.type for item in chest.inventory.items])}"
+                )
+                engine.game_map.entities.remove(chest)
+                engine.render(
+                    console=engine.window.console, context=engine.window.context
+                )
+                return "opened_chest"

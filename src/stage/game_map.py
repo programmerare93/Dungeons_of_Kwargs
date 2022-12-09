@@ -19,7 +19,8 @@ class GameMap:
         self.visible = np.full((width, height), fill_value=False, order="F")
         self.explored = np.full((width, height), fill_value=False, order="F")
 
-        self.entities = set(entities)
+        self.entities = []
+        self.difficulty = 1
 
     def in_bounds(self, x: int, y: int) -> bool:
         """Återvänder sant ifall koordinaten är inom kartan"""
@@ -31,7 +32,7 @@ class GameMap:
     def render(self, console: Console) -> None:
         """Metod för att gå igenom alla tiles och sedan rendera varje tile"""
         # TODO: Kolla över metoden igen och se om det finns något bättre sätt, det funkar iallafall
-        for (x, row) in enumerate(self.tiles):
+        for (x, row) in enumerate(self.tiles):  # NAHHH GOOFY AHH LOOP 💀💀💀
             for (y, tile) in enumerate(row):
                 if self.visible[x, y]:
                     tile.visible = True
@@ -39,13 +40,14 @@ class GameMap:
                         tile.color = tile_types.floor_color
                     elif tile.type == tile_types.types_of_tiles["wall"]:
                         tile.color = tile_types.wall_color
+                    elif tile.type == tile_types.types_of_tiles["stair"]:
+                        tile.color = tile_types.wall_color
                     elif tile.type == tile_types.types_of_tiles["trap"]:
                         if tile.hasBeenActivated:
                             tile.color = (255, 0, 0)
                         else:
                             tile.color = tile_types.trap_color
-                    elif tile_types == tile_types.types_of_tiles["stair"]:
-                        tile.color = tile_types.wall_color
+
                     tile.render(console, x, y)
                 elif self.explored[x, y]:
                     tile.seen = True

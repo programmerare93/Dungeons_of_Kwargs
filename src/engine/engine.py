@@ -1,5 +1,6 @@
 from typing import Set, Iterable, Any
 import time
+import winsound
 
 import tcod.constants
 from tcod import Console
@@ -8,14 +9,20 @@ from tcod.map import compute_fov
 
 import stage.tile_types as tile_types
 
-from actions.input_handlers import EventHandler
+from actions.input_handlers import (
+    EventHandler,
+    DeathHandler,
+    LevelUpHandler,
+    MainMenuHandler,
+)
+from actions.soundhandler import SoundHandler
 from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.procgen import Generator
 from stage.floor import Floor
 from window.render_functions import render_bar
 from window.message_log import MessageLog
-from window import color
+from window import color, window
 from window.window import Window
 
 
@@ -23,14 +30,15 @@ class Engine:
     """Klassen för spel motorn, samlar all funktionalitet i metoder"""
 
     def __init__(
-            self,
-            window: Window,
-            game_map: GameMap,
-            player: Entity,
-            floor: Floor,
-            generator: Generator,
-            player_can_attack: bool = True,
-            player_attack_cool_down: int = 0,
+        self,
+        event_handler: EventHandler,
+        game_map: GameMap,
+        player: Entity,
+        floor: Floor,
+        generator: Generator,
+        player_can_attack: bool = True,
+        player_attack_cool_down: int = 0,
+        window: Window = None,
     ):
         self.window = window
         self.event_handler = EventHandler()
@@ -46,11 +54,21 @@ class Engine:
         self.player_attack_cool_down = player_attack_cool_down
         self.update_game_map()
         self.update_fov()
+        self.main_menu_handler = MainMenuHandler()
+        self.death_handler = DeathHandler()
+        self.level_up_handler = LevelUpHandler()
+        self.sound_handler = SoundHandler()
+        self.window = window
 
     def update_game_map(self):
         self.generator.generate_dungeon()
         self.game_map = self.generator.get_dungeon()
         self.update_fov()
+        self.tick = 0
+        self.monster_tick = 0
+        self.generator.difficulty += 1
+        self.game_map.difficulty += 1
+        self.generator.max_monsters_per_room = self.generator.difficulty * 2
 
     def player_activated_trap(self, x: int, y: int) -> bool:
         if isinstance(self.game_map.tiles[x, y], tile_types.Trap):
@@ -67,36 +85,53 @@ class Engine:
             if action is None:
                 continue
 
+            elif action == "Level Up":
+                self.player.xp += 100
+                continue
+
             if action.perform(self, self.player) is not None:
                 self.tick += 1
                 self.update_fov()
-
-    def handle_death_events(self, events: Iterable[Any]) -> None:
-        self.player.char = '%'
-        self.player.color = (255, 0, 0)
-
+                
+    def handle_main_menu_events(self, events: Iterable[Any]) -> None:
         for event in events:
-            action = self.event_handler.dispatch(event)
+            action = self.main_menu_handler.dispatch(event)
 
             if action is None:
                 continue
 
+            if action == "New Game":
+                return "new_game"
+
+    def handle_death_events(self, events: Iterable[Any]) -> None:
+        for event in events:
+            action = self.death_handler.dispatch(event)
+
+            if action is None:
+                continue
+
+    def handle_level_up_events(self, events: Iterable[Any]) -> None:
+        for event in events:
+            action = self.level_up_handler.dispatch(event)
+
+            if action is None:
+                continue
+                
+            return action
+            
     def handle_enemy_AI(self):
-        if self.monster_tick + 1 == self.tick:  # Då får monster göra sitt
+        if self.monster_tick != self.tick:
             for monster in self.game_map.entities:
-                if (
-                        monster.char != "@"
+                if monster.char not in ("@", "C"):
+                    if (
+                        monster.hp > 0
                         and self.game_map.calculate_distance(
-                    monster.x, monster.y, self.player.x, self.player.y
-                )
+                            monster.x, monster.y, self.player.x, self.player.y
+                        )
                         <= monster.perception
-                ):
-                    print("Monster is in range")
-                    monster.monster_pathfinding(self.player, self.game_map, self)
-                    self.monster_tick += 1
-                elif monster.char != "@":
-                    print("Monster is not in range")
-                    self.monster_tick += 1
+                    ):
+                        monster.monster_pathfinding(self.player, self.game_map, self)
+            self.monster_tick = self.tick
 
     def can_player_attack(self):
         if not self.player_can_attack:
@@ -122,11 +157,26 @@ class Engine:
     def check_entities(self):
         for entity in self.game_map.entities:
             if entity.hp <= 0:
+                if entity.char == "@":
+                    return "dead"
+                self.message_log.add_message(f"{entity.name} died!", color.death_text)
                 self.game_map.entities.remove(entity)
-                self.message_log.add_message(f"{entity.char} died!", color.death_text)
-                return
+                self.player.xp += entity.xp_value
+                self.render(console=self.window.console, context=self.window.context)
+                # self.sound_handler.monster_death()
+                break
 
         self.game_map.explored |= self.game_map.visible
+
+    def check_xp(self):
+        if self.player.xp >= self.player.xp_to_next_level:
+            # self.level_up()
+            self.player.level += 1
+            self.message_log.add_message(
+                f"You are now level {self.player.level}!", (0, 0, 255)
+            )
+            self.player.xp_to_next_level *= 2
+            return "Level Up"
 
     def render(self, console: Console, context: Context) -> None:
         self.game_map.render(console)
@@ -137,6 +187,10 @@ class Engine:
             total_width=20,
         )
         self.message_log.render(console=console, x=23, y=62, width=40, height=6)
+        self.window.render_log(
+            player=self.player,
+            engine=self,
+        )
         context.present(console)
 
         console.clear()
