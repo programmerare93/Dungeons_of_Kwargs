@@ -80,7 +80,7 @@ class MovementAction(Action):
                 engine.render(
                     console=engine.window.console, context=engine.window.context
                 )
-                sound_handler.player_hit()
+                # sound_handler.player_hit()
                 return "player_hit"
             else:
                 engine.message_log.add_message(
@@ -89,7 +89,7 @@ class MovementAction(Action):
                 engine.render(
                     console=engine.window.console, context=engine.window.context
                 )
-                sound_handler.attack_dodged()
+                # sound_handler.attack_dodged()
                 return "miss"
 
         elif (
@@ -113,7 +113,7 @@ class MovementAction(Action):
                 engine.render(
                     console=engine.window.console, context=engine.window.context
                 )
-                sound_handler.sword_sound()
+                # sound_handler.sword_sound()
                 engine.player_can_attack = False
                 return "hit"
             else:
@@ -121,7 +121,7 @@ class MovementAction(Action):
                 engine.render(
                     console=engine.window.console, context=engine.window.context
                 )
-                sound_handler.attack_dodged()
+                # sound_handler.attack_dodged()
                 engine.player_can_attack = False
                 return "miss"
         elif (

@@ -143,9 +143,17 @@ def death_state(engine, window):
         window.console.print_box(
             window.width // 2 - 5,
             window.height // 2,
-            20,
-            5,
+            100,
+            200,
             "You died!",
             fg=(255, 0, 0),
+        )
+        window.console.print_box(
+            window.width // 2 - 10,
+            window.height - 5,
+            20,
+            5,
+            "Press esc to to quit",
+            fg=(255, 255, 255),
         )
         window.context.present(window.console)

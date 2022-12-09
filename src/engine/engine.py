@@ -159,7 +159,7 @@ class Engine:
                 self.game_map.entities.remove(entity)
                 self.player.xp += entity.xp_value
                 self.render(console=self.window.console, context=self.window.context)
-                self.sound_handler.monster_death()
+                # self.sound_handler.monster_death()
                 break
 
         self.game_map.explored |= self.game_map.visible
