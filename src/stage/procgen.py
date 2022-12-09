@@ -13,21 +13,11 @@ from creature.items import Inventory, all_items
 
 
 class Generator:
-    def __init__(
-        self,
-        max_rooms: int,
-        map_width: int,
-        map_height: int,
-        player: Entity,
-        min_width=4,
-        min_height=4,
-    ):
+    def __init__(self, max_rooms: int, map_width: int, map_height: int, player: Entity, min_width=4, min_height=4):
         self.player = player
         self.dungeon = GameMap(map_width, map_height, entities=[player])
         self.room_list = []
         self.max_rooms = max_rooms
-        self.difficulty = 1
-        self.max_monsters_per_room = 1
         self.map_width = map_width
         self.map_height = map_height
 
@@ -67,14 +57,8 @@ class Generator:
         for (x, row) in enumerate(self.dungeon.tiles):
             for (y, value) in enumerate(row):
                 self.dungeon.tiles[x, y] = tile_types.wall
-        self.dungeon.explored = np.full(
-            (self.map_width, self.map_height), fill_value=False, order="F"
-        )
-        self.dungeon.transparent_tiles = np.full(
-            (self.map_width, self.map_height), fill_value=False, order="F"
-        )
-
-        self.dungeon.entities = [self.player]
+        self.dungeon.explored = np.full((self.map_width, self.map_height), fill_value=False, order="F")
+        self.dungeon.transparent_tiles = np.full((self.map_width, self.map_height), fill_value=False, order="F")
 
         self.room_list.clear()
 

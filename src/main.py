@@ -11,7 +11,7 @@ from engine.game_states import main_menu, level_up_state, death_state
 
 
 tileset = tcod.tileset.load_tilesheet(
-    "./assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
+    "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )
 
 window = Window("Dungeons of Kwargs", 80, 70, tileset)
@@ -29,7 +29,7 @@ def main():
         name="Player",
         max_hp=30,
         hp=30,
-        strength=50,
+        strength=5,
         dexterity=8,
         intelligence=5,
         perception=5,

@@ -15,13 +15,13 @@ class Tile:
     has_monster: bool
 
     def __init__(
-        self,
-        walkable: bool,
-        visible: bool,
-        transparent: bool,
-        seen: bool,
-        color: Tuple[int, int, int],
-        char: str,
+            self,
+            walkable: bool,
+            visible: bool,
+            transparent: bool,
+            seen: bool,
+            color: Tuple[int, int, int],
+            char: str,
     ):
         self.walkable = walkable
         self.visible = visible
@@ -61,7 +61,7 @@ class Wall(Tile):
 # Vi har inget specifikt objekt för att kopiera för Trap
 # då det resulterar i att all fällor har samma svårighet
 class Trap(Tile):
-    def __init__(self, color, difficulty):
+    def __init__(self, color):
         self.walkable = True
         self.visible = False
         self.transparent = True
@@ -70,7 +70,7 @@ class Trap(Tile):
         self.char = "."
         self.type = 2
         self.has_monster = False
-        self.difficulty = difficulty
+        self.difficulty = random.randint(6, 10)
         self.hasBeenActivated = False
 
 

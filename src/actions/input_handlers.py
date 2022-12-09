@@ -25,6 +25,8 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             action = MovementAction(dx=1, dy=0)
         elif key == tcod.event.K_ESCAPE:
             raise SystemExit()
+        elif key == tcod.event.K_SPACE:
+            action = AttackingAction()
         elif key == tcod.event.K_LESS:
             action = GoDown()
         elif key == tcod.event.K_h:

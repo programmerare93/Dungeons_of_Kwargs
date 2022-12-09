@@ -1,4 +1,4 @@
-from typing import Iterable, Set, List
+from typing import Iterable, Set
 
 import numpy as np
 from tcod.console import Console
