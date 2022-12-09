@@ -3,14 +3,13 @@ import tcod
 from actions.input_handlers import EventHandler
 from creature.entity import Player
 from engine.engine import Engine
-from engine.gamestate import *
+from engine.game_states import *
 from stage.floor import Floor
 from stage.procgen import Generator
 from window.window import Window
 from window import color
-from window.log import Log
+from engine.game_states import main_menu, level_up_state, death_state
 
-max_monsters_per_room = 3
 
 tileset = tcod.tileset.load_tilesheet(
     "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
@@ -21,31 +20,31 @@ window = Window("Dungeons of Kwargs", 80, 70, tileset)
 
 
 def main():
+    event_handler = EventHandler()
     floor = Floor()
     player = Player(
         int(window.width / 2),
         int(window.height / 2),
         "@",
         (255, 255, 255),
+        name="Player",
         max_hp=30,
         hp=30,
-        strength=2,
-        dexterity=5,
+        strength=5,
+        dexterity=8,
         intelligence=5,
-        perception=4,
+        perception=5,
     )
 
     generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
     game_map = None
 
-    engine = Engine(window, game_map, player, floor, generator)
+    engine = Engine(event_handler, game_map, player, floor, generator, window=window)
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
-    log = Log(window, player, engine)
     engine.game_map.generate_pathfinding_map()
+    main_menu(engine, window=window)
 
     while True:
-        engine.render(window.console, window.context)
-        log.render()
 
         events = tcod.event.wait()
 
@@ -58,8 +57,10 @@ def main():
         if engine.check_entities() == "dead":
             death_state(engine, window)
 
-        if engine.inventory_open:
-            inventory_state(engine, window)
+        if engine.check_xp() == "Level Up":
+            level_up_state(engine, window)
+
+        engine.render(window.console, window.context)
 
 
 if __name__ == "__main__":

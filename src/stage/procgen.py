@@ -6,21 +6,23 @@ import numpy as np
 import tcod
 
 import stage.tile_types as tile_types
-from creature.entity import Entity, generate_monsters
-from creature.items import potions
+from creature.entity import Entity, generate_monsters, Chest
 from stage.game_map import GameMap
 from stage.rooms import Room
+from stage.floor import Floor
+from creature.items import Inventory, all_items
 
 
 class Generator:
     def __init__(self, max_rooms: int, map_width: int, map_height: int, player: Entity, min_width=4, min_height=4):
         self.player = player
+        self.difficulty = 1
         self.dungeon = GameMap(map_width, map_height, entities=[player])
         self.room_list = []
         self.max_rooms = max_rooms
         self.map_width = map_width
         self.map_height = map_height
-
+        self.max_monsters_per_room = 2 * self.difficulty
         self.max_width = 14
         self.min_width = 6
         self.max_height = 14
@@ -100,16 +102,29 @@ class Generator:
                             tile_types.trap_color
                         )
 
-        # Potions generation
-        for room in self.room_list[1::]:
-            if random.random() < 0.25:  # 25% chans att ett rum innehåller en potion
-                x = random.randint(room.center[0] - (room.width // 2), room.center[0] + (room.width // 2))
-                y = random.randint(room.center[1] - (room.height // 2), room.center[1] + (room.height // 2))
-                self.dungeon.tiles[x, y] = random.choice(potions)
+        for room in self.room_list:
+            for _ in range(random.randint(1, self.max_monsters_per_room)):
+                generate_monsters(room, self.dungeon)
 
-        # Monster generation
-        for room in self.room_list[1::]:
-            generate_monsters(room, self.dungeon)
+        for room in self.room_list:
+            a, b = room.center
+            if random.randint(1, 4) == 4 and not isinstance(
+                self.dungeon.get_tile(a, b), tile_types.StairCase
+            ):
+                new_chest = Chest(
+                    a,
+                    b,
+                    inventory=Inventory(
+                        items=[
+                            random.choice(all_items)
+                            for _ in range(random.randint(1, 3))
+                        ]
+                    ),
+                )
+                self.dungeon.entities.append(new_chest)
+
+        self.dungeon.generate_pathfinding_map()
+
 
     def get_dungeon(self):
         return self.dungeon
