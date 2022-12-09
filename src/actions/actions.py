@@ -59,7 +59,7 @@ class MovementAction(Action):
             if target.char != "@":
                 return "tried to attack a monster"
             if entity.perception + random.randint(
-                1, 20
+                    1, 20
             ) > target.dexterity + random.randint(1, 20):
                 damage = entity.strength + random.randint(
                     -entity.strength // 4, entity.strength // 4
@@ -84,17 +84,17 @@ class MovementAction(Action):
                 return "miss"
 
         elif (
-            engine.game_map.entity_at_location(dest_x, dest_y)
-            and list(engine.game_map.entity_at_location(dest_x, dest_y))[0].char == "C"
+                engine.game_map.entity_at_location(dest_x, dest_y)
+                and list(engine.game_map.entity_at_location(dest_x, dest_y))[0].char == "C"
         ):
             return None
         elif (
-            engine.game_map.entity_at_location(dest_x, dest_y)
-            and engine.player_can_attack == True
+                engine.game_map.entity_at_location(dest_x, dest_y)
+                and engine.player_can_attack == True
         ):
             target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
             if entity.perception + random.randint(
-                1, 20
+                    1, 20
             ) > target.dexterity + random.randint(1, 20):
                 damage = engine.player.strength + random.randint(
                     -engine.player.strength // 4, engine.player.strength // 4
@@ -119,17 +119,11 @@ class MovementAction(Action):
                 engine.game_map.entity_at_location(dest_x, dest_y)
                 and not engine.player_can_attack == True
         ):
-            engine.message_log.add_message("Your attack is on cooldown!")
             return None
 
         entity.move(self.dx, self.dy)
 
         return "moved"
-
-
-class AttackingAction(Action):
-    def perform(self, engine, player) -> None:
-        print("Attacking")
 
 
 class GoDown(Action):
@@ -166,11 +160,11 @@ class OpenChest(Action):
     def perform(self, engine: Engine, entity: Entity) -> None:
         for monster in engine.game_map.entities:
             if (
-                monster.char == "C"
-                and engine.game_map.calculate_distance(
-                    entity.x, entity.y, monster.x, monster.y
-                )
-                == 1
+                    monster.char == "C"
+                    and engine.game_map.calculate_distance(
+                entity.x, entity.y, monster.x, monster.y
+            )
+                    == 1
             ):
                 chest = monster
                 engine.message_log.add_message("You opened a chest!")

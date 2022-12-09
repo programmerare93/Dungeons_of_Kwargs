@@ -3,7 +3,7 @@ import tcod
 from actions.input_handlers import EventHandler
 from creature.entity import Player
 from engine.engine import Engine
-from engine.gamestate import *
+from engine.game_states import *
 from stage.floor import Floor
 from stage.procgen import Generator
 from window.window import Window
@@ -20,6 +20,7 @@ window = Window("Dungeons of Kwargs", 80, 70, tileset)
 
 
 def main():
+    event_handler = EventHandler()
     floor = Floor()
     player = Player(
         int(window.width / 2),

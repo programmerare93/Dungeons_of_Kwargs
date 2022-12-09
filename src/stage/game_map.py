@@ -19,7 +19,7 @@ class GameMap:
         self.visible = np.full((width, height), fill_value=False, order="F")
         self.explored = np.full((width, height), fill_value=False, order="F")
 
-        self.entities = []
+        self.entities = entities
         self.difficulty = 1
 
     def in_bounds(self, x: int, y: int) -> bool:

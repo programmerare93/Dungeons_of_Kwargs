@@ -9,18 +9,20 @@ import stage.tile_types as tile_types
 from creature.entity import Entity, generate_monsters, Chest
 from stage.game_map import GameMap
 from stage.rooms import Room
+from stage.floor import Floor
 from creature.items import Inventory, all_items
 
 
 class Generator:
     def __init__(self, max_rooms: int, map_width: int, map_height: int, player: Entity, min_width=4, min_height=4):
         self.player = player
+        self.difficulty = 1
         self.dungeon = GameMap(map_width, map_height, entities=[player])
         self.room_list = []
         self.max_rooms = max_rooms
         self.map_width = map_width
         self.map_height = map_height
-
+        self.max_monsters_per_room = 2 * self.difficulty
         self.max_width = 14
         self.min_width = 6
         self.max_height = 14
@@ -97,7 +99,7 @@ class Generator:
                 if self.dungeon.tiles[x, y] == tile_types.floor:
                     if random.randint(0, 50) == 25:
                         self.dungeon.tiles[x, y] = tile_types.Trap(
-                            tile_types.trap_color, difficulty=self.difficulty
+                            tile_types.trap_color
                         )
 
         for room in self.room_list:

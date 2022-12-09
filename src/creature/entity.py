@@ -193,7 +193,7 @@ def generate_monsters(room, game_map):
                 dexterity=3,
                 intelligence=3,
             )
-        game_map.entities.add(monster)
+        game_map.entities.append(monster)
         room.type = "monster"
     else:  # Om det redan finns en entity på den platsen, kör funktionen igen
         generate_monsters(room, game_map)
