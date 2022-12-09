@@ -59,7 +59,25 @@ class Player(Entity):
         self.xp = 0
         self.xp_to_next_level = 100
         self.level = 1
+        self.inventory = Inventory(self)
 
+    def heal(self, amount: int) -> int:
+        if self.hp == self.max_hp:
+            # Detta är till för att när vi i en annan del av spelet
+            # kollar ifall self.heal(amount_of_healing) < entity.max_hp
+            # så kommer det inte leda till ett error
+            return self.max_hp + 1
+
+        new_hp = self.hp + amount
+
+        if new_hp > self.max_hp:
+            self.hp = self.max_hp
+        else:
+            self.hp = new_hp
+
+        amount_recovered = new_hp - self.hp
+
+        return amount_recovered
 
 class Monster(Entity):
     def __init__(
@@ -102,6 +120,24 @@ class Monster(Entity):
         action = MovementAction(tile_x - self.x, tile_y - self.y)
         action.perform(engine, self)
         self.internal_tick += 1
+
+    def heal(self, amount: int) -> int:
+        if self.hp == self.max_hp:
+            return
+
+        new_hp = self.hp + amount
+
+        if new_hp > self.max_hp:
+            self.hp = self.max_hp
+        else:
+            self.hp = new_hp
+
+        amount_recovered = new_hp - self.hp
+
+        return amount_recovered
+
+    def take_damage(self, amount: int):
+        self.hp -= amount
 
 
 class Chest(Entity):

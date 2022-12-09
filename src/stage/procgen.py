@@ -123,5 +123,6 @@ class Generator:
 
         self.dungeon.generate_pathfinding_map()
 
+
     def get_dungeon(self):
         return self.dungeon

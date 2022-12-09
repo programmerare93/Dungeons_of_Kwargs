@@ -3,6 +3,7 @@ import tcod
 from actions.input_handlers import EventHandler
 from creature.entity import Player
 from engine.engine import Engine
+from engine.gamestate import *
 from stage.floor import Floor
 from stage.procgen import Generator
 from window.window import Window
@@ -14,12 +15,11 @@ tileset = tcod.tileset.load_tilesheet(
     "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )
 
+
 window = Window("Dungeons of Kwargs", 80, 70, tileset)
 
 
 def main():
-    event_handler = EventHandler()
-
     floor = Floor()
     player = Player(
         int(window.width / 2),

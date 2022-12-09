@@ -76,12 +76,13 @@ class Trap(Tile):
 
 class StairCase(Tile):
     def __init__(self, color):
-        self.walkable = True
-        self.visible = False
-        self.transparent = True
-        self.seen = False
-        self.color = color
-        self.char = "<"
+        super().__init__(
+            walkable=True,
+            visible=False,
+            transparent=True,
+            seen=False,
+            color=color,
+            char="<")
         self.type = 3
         self.has_monster = False
 

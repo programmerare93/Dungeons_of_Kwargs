@@ -3,9 +3,12 @@ from typing import Optional
 import tcod.event
 
 from actions.actions import Action, MovementAction, GoDown, HealingAction, OpenChest
-
+from actions.actions import *
 
 class EventHandler(tcod.event.EventDispatch[Action]):
+    inventory_is_open: bool
+    inventory_is_open = False
+
     def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
         raise SystemExit()
 

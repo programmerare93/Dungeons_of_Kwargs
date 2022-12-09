@@ -116,8 +116,8 @@ class MovementAction(Action):
                 engine.player_can_attack = False
                 return "miss"
         elif (
-            engine.game_map.entity_at_location(dest_x, dest_y)
-            and not engine.player_can_attack == True
+                engine.game_map.entity_at_location(dest_x, dest_y)
+                and not engine.player_can_attack == True
         ):
             engine.message_log.add_message("Your attack is on cooldown!")
             return None

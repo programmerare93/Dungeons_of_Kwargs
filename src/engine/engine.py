@@ -40,8 +40,10 @@ class Engine:
         player_attack_cool_down: int = 0,
         window: Window = None,
     ):
-        self.event_handler = event_handler
+        self.window = window
+        self.event_handler = EventHandler()
         self.game_map = game_map
+        self.inventory_open = False
         self.message_log = MessageLog()
         self.player = player
         self.floor = floor
@@ -78,6 +80,8 @@ class Engine:
         for event in events:
             action = self.event_handler.dispatch(event)
 
+            self.inventory_open = self.event_handler.inventory_is_open
+
             if action is None:
                 continue
 
@@ -88,7 +92,7 @@ class Engine:
             if action.perform(self, self.player) is not None:
                 self.tick += 1
                 self.update_fov()
-
+                
     def handle_main_menu_events(self, events: Iterable[Any]) -> None:
         for event in events:
             action = self.main_menu_handler.dispatch(event)
@@ -112,9 +116,9 @@ class Engine:
 
             if action is None:
                 continue
-
+                
             return action
-
+            
     def handle_enemy_AI(self):
         if self.monster_tick != self.tick:
             for monster in self.game_map.entities:
