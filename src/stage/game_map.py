@@ -19,7 +19,7 @@ class GameMap:
         self.visible = np.full((width, height), fill_value=False, order="F")
         self.explored = np.full((width, height), fill_value=False, order="F")
 
-        self.entities = []
+        self.entities = entities
         self.difficulty = 1
 
     def in_bounds(self, x: int, y: int) -> bool:
@@ -55,16 +55,12 @@ class GameMap:
                     tile.render(console, x, y)
 
         for entity in self.entities:
-            try:
-                if (
-                    self.visible[entity.x, entity.y]
-                    and not self.tiles[entity.x, entity.y] == tile_types.wall
-                    and self.in_bounds(entity.x, entity.y)
-                ):
-                    entity.render(console, entity.x, entity.y)
-            except IndexError:
-                print("IndexError: ", entity.x, entity.y)
-                continue
+            if (
+                self.visible[entity.x, entity.y]
+                and not self.tiles[entity.x, entity.y] == tile_types.wall
+                and self.in_bounds(entity.x, entity.y)
+            ):
+                entity.render(console, entity.x, entity.y)
 
     def entity_at_location(self, x: int, y: int) -> Set[Entity]:
         return {entity for entity in self.entities if entity.x == x and entity.y == y}

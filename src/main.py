@@ -3,7 +3,7 @@ import tcod
 from actions.input_handlers import EventHandler
 from creature.entity import Player
 from engine.engine import Engine
-from engine.gamestate import *
+from engine.game_states import *
 from stage.floor import Floor
 from stage.procgen import Generator
 from window.window import Window
@@ -12,7 +12,7 @@ from engine.game_states import main_menu, level_up_state, death_state
 
 
 tileset = tcod.tileset.load_tilesheet(
-    "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
+    "./assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )
 
 
@@ -20,6 +20,7 @@ window = Window("Dungeons of Kwargs", 80, 70, tileset)
 
 
 def main():
+    event_handler = EventHandler()
     floor = Floor()
     player = Player(
         int(window.width / 2),
@@ -29,7 +30,7 @@ def main():
         name="Player",
         max_hp=30,
         hp=30,
-        strength=5,
+        strength=50,
         dexterity=8,
         intelligence=5,
         perception=5,

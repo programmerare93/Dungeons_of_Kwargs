@@ -79,6 +79,7 @@ class Player(Entity):
 
         return amount_recovered
 
+
 class Monster(Entity):
     def __init__(
         self,
@@ -111,7 +112,6 @@ class Monster(Entity):
 
     def monster_pathfinding(self, player, game_map, engine):
         """Monster pathfinding"""
-        print("tick")
         tile_x, tile_y = (
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][0],
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][1],
@@ -193,7 +193,7 @@ def generate_monsters(room, game_map):
                 dexterity=3,
                 intelligence=3,
             )
-        game_map.entities.add(monster)
+        game_map.entities.append(monster)
         room.type = "monster"
     else:  # Om det redan finns en entity på den platsen, kör funktionen igen
         generate_monsters(room, game_map)
