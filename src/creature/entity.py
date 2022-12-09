@@ -111,7 +111,6 @@ class Monster(Entity):
 
     def monster_pathfinding(self, player, game_map, engine):
         """Monster pathfinding"""
-        print("tick")
         tile_x, tile_y = (
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][0],
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][1],
