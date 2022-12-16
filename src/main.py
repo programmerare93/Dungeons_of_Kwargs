@@ -35,7 +35,7 @@ def main():
         intelligence=5,
         perception=5,
     )
-    print(player.inventory.items)
+    print(player.inventory.items[0].type)
 
     generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
     game_map = None
@@ -54,6 +54,8 @@ def main():
         engine.handle_enemy_AI()
 
         engine.can_player_attack()
+
+        engine.handle_used_items()
 
         if engine.check_entities() == "dead":
             death_state(engine, window)

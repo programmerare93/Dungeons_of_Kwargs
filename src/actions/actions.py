@@ -159,7 +159,7 @@ class UseItem(Action):
     def perform(self, engine: Engine, entity: Entity) -> None:
         self.item = entity.inventory.items[0]
 
-        self.item.use(engine)
+        self.item.use(engine, entity)
         entity.used_items.append(self.item)
 
 

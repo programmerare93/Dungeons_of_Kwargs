@@ -92,7 +92,7 @@ class Engine:
             if action.perform(self, self.player) is not None:
                 self.tick += 1
                 self.update_fov()
-                
+
     def handle_main_menu_events(self, events: Iterable[Any]) -> None:
         for event in events:
             action = self.main_menu_handler.dispatch(event)
@@ -116,9 +116,9 @@ class Engine:
 
             if action is None:
                 continue
-                
+
             return action
-            
+
     def handle_enemy_AI(self):
         if self.monster_tick != self.tick:
             for monster in self.game_map.entities:
@@ -140,6 +140,16 @@ class Engine:
 
         if time.time() - self.player_attack_cool_down >= 1:
             self.player_can_attack = True
+
+    def handle_used_items(self):
+        if self.player.used_items != []:
+            for item in self.player.used_items:
+                if self.tick - item.activated_tick >= item.duration:
+                    item.remove_effect(self.player)
+                    self.player.used_items.remove(item)
+                    self.message_log.add_message(
+                        f"{item.type} has worn off!", color.white
+                    )
 
     def update_fov(self) -> None:
         for (x, row) in enumerate(self.game_map.tiles):
