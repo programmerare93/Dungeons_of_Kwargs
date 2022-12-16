@@ -3,8 +3,8 @@ from math import inf
 
 class Inventory:
     def __init__(self, owner=None, items=[]):
-        self.owner = owner
         self.items = items
+        self.owner = owner
 
     def add_item(self, item):
         self.items.append(item)

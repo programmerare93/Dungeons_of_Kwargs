@@ -23,14 +23,12 @@ def main():
     event_handler = EventHandler()
     floor = Floor()
     player = Player(
-        int(window.width / 2),
-        int(window.height / 2),
         "@",
         (255, 255, 255),
         name="Player",
         max_hp=30,
         hp=30,
-        strength=5,
+        strength=10,
         dexterity=8,
         intelligence=5,
         perception=5,
@@ -59,6 +57,9 @@ def main():
 
         if engine.check_xp() == "Level Up":
             level_up_state(engine, window)
+
+        if engine.check_inventory() == "open":
+            inventory_state(engine, window)
 
         engine.render(window.console, window.context)
 
