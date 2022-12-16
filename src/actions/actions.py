@@ -157,9 +157,10 @@ class UseItem(Action):
         self.item = None
 
     def perform(self, engine: Engine, entity: Entity) -> None:
-        self.item = engine.player.inventory.items[0]
+        self.item = entity.inventory.items[0]
 
         self.item.use(engine)
+        entity.used_items.append(self.item)
 
 
 class OpenChest(Action):

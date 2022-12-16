@@ -35,6 +35,7 @@ def main():
         intelligence=5,
         perception=5,
     )
+    print(player.inventory.items)
 
     generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
     game_map = None

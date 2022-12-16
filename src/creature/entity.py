@@ -59,7 +59,8 @@ class Player(Entity):
         self.xp = 0
         self.xp_to_next_level = 100
         self.level = 1
-        self.inventory = Inventory(self)
+        self.inventory = Inventory(self, items=[small_healing_potion])
+        self.used_items = []
 
     def heal(self, amount: int) -> int:
         if self.hp == self.max_hp:
