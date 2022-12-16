@@ -75,10 +75,13 @@ class GameMap:
         )
         for (x, row) in enumerate(self.tiles):
             for (y, tile) in enumerate(row):
-                if tile.transparent:
+                if tile.type in (
+                    tile_types.types_of_tiles["floor"],
+                    tile_types.types_of_tiles["trap"],
+                ):
                     self.pathfinding_map[x, y] = 1
 
     def pathfinding(self, x1, y1, x2, y2):
-        """Tar emot två koordinater och returnerar en lista med koordinater som spelaren ska följa för att komma till målet"""
+        """Tar emot två koordinater och returnerar en lista med koordinater som ett monster ska följa för att komma till spelaren"""
         path = tcod.path.AStar(self.pathfinding_map)
         return path.get_path(x1, y1, x2, y2)

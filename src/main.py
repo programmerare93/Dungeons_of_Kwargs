@@ -8,7 +8,6 @@ from stage.floor import Floor
 from stage.procgen import Generator
 from window.window import Window
 from window import color
-from engine.game_states import main_menu, level_up_state, death_state
 
 
 tileset = tcod.tileset.load_tilesheet(
@@ -28,14 +27,12 @@ def main():
         "@",
         (255, 255, 255),
         name="Player",
-        max_hp=30,
-        hp=30,
-        strength=50,
-        dexterity=8,
+        max_hp=3000000000000,
+        strength=5000000000000,
+        dexterity=8000000000000,
         intelligence=5,
-        perception=5,
+        perception=50,
     )
-    print(player.inventory.items[0].type)
 
     generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
     game_map = None
