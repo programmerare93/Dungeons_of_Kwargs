@@ -101,6 +101,7 @@ class Engine:
             if action == "close":
                 return "close"
             elif action in [f"N{x}" for x in range(1, 10)]:
+                self.player.used_items.append(self.player.inventory.items[int(action[1]) - 1])
                 self.player.inventory.items[int(action[1]) - 1].use(self, self.player)
                 return "close"
 

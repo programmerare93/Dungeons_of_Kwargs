@@ -51,6 +51,8 @@ def main():
 
         engine.can_player_attack()
 
+        engine.handle_used_items()
+
         if engine.check_entities() == "dead":
             death_state(engine, window)
 
