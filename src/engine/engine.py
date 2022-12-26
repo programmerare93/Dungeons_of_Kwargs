@@ -9,12 +9,7 @@ from tcod.map import compute_fov
 
 import stage.tile_types as tile_types
 
-from actions.input_handlers import (
-    EventHandler,
-    DeathHandler,
-    LevelUpHandler,
-    MainMenuHandler,
-)
+from actions.input_handlers import *
 from actions.soundhandler import SoundHandler
 from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
@@ -30,15 +25,15 @@ class Engine:
     """Klassen för spel motorn, samlar all funktionalitet i metoder"""
 
     def __init__(
-        self,
-        event_handler: EventHandler,
-        game_map: GameMap,
-        player: Entity,
-        floor: Floor,
-        generator: Generator,
-        player_can_attack: bool = True,
-        player_attack_cool_down: int = 0,
-        window: Window = None,
+            self,
+            event_handler: EventHandler,
+            game_map: GameMap,
+            player: Entity,
+            floor: Floor,
+            generator: Generator,
+            player_can_attack: bool = True,
+            player_attack_cool_down: int = 0,
+            window: Window = None,
     ):
         self.window = window
         self.event_handler = EventHandler()
@@ -54,6 +49,7 @@ class Engine:
         self.player_attack_cool_down = player_attack_cool_down
         self.update_game_map()
         self.update_fov()
+        self.inventory_handler = InventoryHandler()
         self.main_menu_handler = MainMenuHandler()
         self.death_handler = DeathHandler()
         self.level_up_handler = LevelUpHandler()
@@ -80,9 +76,12 @@ class Engine:
         for event in events:
             action = self.event_handler.dispatch(event)
 
-            self.inventory_open = self.event_handler.inventory_is_open
-
             if action is None:
+                continue
+
+            elif action == "inventory":
+                # Sätter inventory_open attributet till motsatsen sv sig själv
+                self.inventory_open = not self.inventory_open
                 continue
 
             elif action == "Level Up":
@@ -92,7 +91,20 @@ class Engine:
             if action.perform(self, self.player) is not None:
                 self.tick += 1
                 self.update_fov()
-                
+
+    def handle_inventory_events(self, events: Iterable[Any]) -> None:
+        for event in events:
+            action = self.inventory_handler.dispatch(event)
+
+            if action is None:
+                continue
+            if action == "close":
+                return "close"
+            elif action in [f"N{x}" for x in range(1, 10)]:
+                self.player.used_items.append(self.player.inventory.items[int(action[1]) - 1])
+                self.player.inventory.items[int(action[1]) - 1].use(self, self.player)
+                return "close"
+
     def handle_main_menu_events(self, events: Iterable[Any]) -> None:
         for event in events:
             action = self.main_menu_handler.dispatch(event)
@@ -116,19 +128,19 @@ class Engine:
 
             if action is None:
                 continue
-                
+
             return action
-            
+
     def handle_enemy_AI(self):
         if self.monster_tick != self.tick:
             for monster in self.game_map.entities:
                 if monster.char not in ("@", "C"):
                     if (
-                        monster.hp > 0
-                        and self.game_map.calculate_distance(
-                            monster.x, monster.y, self.player.x, self.player.y
-                        )
-                        <= monster.perception
+                            monster.hp > 0
+                            and self.game_map.calculate_distance(
+                        monster.x, monster.y, self.player.x, self.player.y
+                    )
+                            <= monster.perception
                     ):
                         monster.monster_pathfinding(self.player, self.game_map, self)
             self.monster_tick = self.tick
@@ -140,6 +152,16 @@ class Engine:
 
         if time.time() - self.player_attack_cool_down >= 1:
             self.player_can_attack = True
+
+    def handle_used_items(self):
+        if self.player.used_items != []:
+            for item in self.player.used_items:
+                if self.tick - item.activated_tick >= item.duration:
+                    item.remove_effect(self.player)
+                    self.player.used_items.remove(item)
+                    self.message_log.add_message(
+                        f"{item.type} has worn off!", color.white
+                    )
 
     def update_fov(self) -> None:
         for (x, row) in enumerate(self.game_map.tiles):
@@ -153,6 +175,10 @@ class Engine:
             radius=self.player.perception,
             algorithm=tcod.FOV_SYMMETRIC_SHADOWCAST,
         )
+
+    def check_inventory(self):
+        if self.inventory_open:
+            return "open"
 
     def check_entities(self):
         for entity in self.game_map.entities:

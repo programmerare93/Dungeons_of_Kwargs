@@ -3,8 +3,8 @@ from math import inf
 
 class Inventory:
     def __init__(self, owner=None, items=[]):
-        self.owner = owner
         self.items = items
+        self.owner = owner
 
     def add_item(self, item):
         self.items.append(item)
@@ -23,26 +23,42 @@ class StatItem(Item):
         self.duration = inf
         self.owner = None
         self.duration = duration
+        self.activated_tick = 0
 
-    def use(self, engine):
-        if self.type == "health potion":
-            self.owner.hp += self.amplitude
-            self.owner.inventory.items.remove(self)
+    def use(self, engine, entity):
+        if self.type.endswith("health potion"):
+            entity.hp += self.amplitude
+            entity.inventory.items.remove(self)
 
-        elif self.type == "strength potion":
-            self.owner.strength += self.amplitude
-            self.owner.inventory.items.remove(self)
+        elif self.type.endswith("strength potion"):
+            entity.strength += self.amplitude
+            entity.inventory.items.remove(self)
 
-        elif self.type == "dexterity potion":
-            self.owner.dexterity += self.amplitude
-            self.owner.inventory.items.remove(self)
+        elif self.type.endswith("dexterity potion"):
+            entity.dexterity += self.amplitude
+            entity.inventory.items.remove(self)
 
-        elif self.type == "perception potion":
-            self.owner.perception += self.amplitude
-            self.owner.inventory.items.remove(self)
+        elif self.type.endswith("perception potion"):
+            entity.perception += self.amplitude
+            entity.inventory.items.remove(self)
 
         engine.message_log.add_message("You used a {}!".format(self.type))
-        return self.duration
+        self.activated_tick = engine.tick
+        return
+
+    def remove_effect(self, entity):
+        if self.type.endswith("health potion"):
+            entity.hp -= self.amplitude
+
+        elif self.type.endswith("strength potion"):
+            entity.strength -= self.amplitude
+
+        elif self.type.endswith("dexterity potion"):
+            entity.dexterity -= self.amplitude
+
+        elif self.type.endswith("perception potion"):
+            entity.perception -= self.amplitude
+        return
 
 
 small_healing_potion = StatItem("small health potion", 10, duration=10)
@@ -63,7 +79,7 @@ medium_dexterity_potion = StatItem("medium dexterity potion", 4, duration=20)
 
 large_dexterity_potion = StatItem("large dexterity potion", 6, duration=30)
 
-small_perception_potion = StatItem("small perception potion", 2, duration=10)
+small_perception_potion = StatItem("small perception potion", 2, duration=3)
 
 medium_perception_potion = StatItem("medium perception potion", 4, duration=20)
 
