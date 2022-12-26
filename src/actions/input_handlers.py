@@ -64,6 +64,8 @@ class InventoryHandler(tcod.event.EventDispatch[Action]):
             raise SystemExit()
         elif key == tcod.event.K_i:
             action = "close"
+        elif key.name in [f"N{x}" for x in range(1, 10)]:
+            action = key.name
         return action
 
 

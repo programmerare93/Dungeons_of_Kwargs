@@ -32,7 +32,7 @@ def inventory_state(engine, window):
                 if place_in_inventory == 0:
                     # På första enumerationen ändra inte x och y värdet
                     pass
-                elif y >= window.width:
+                elif y >= window.height - 4:
                     x += 25
                     y = 1
                 else:
@@ -95,7 +95,6 @@ def main_menu(engine, window):
 
 def level_up_state(engine, window):
     available_points = engine.player.intelligence // 2 + 5
-    temp_player = engine.player
     temp_stats = (
         engine.player.max_hp,
         engine.player.strength,
@@ -195,6 +194,7 @@ def level_up_state(engine, window):
         )
 
         window.context.present(window.console)
+        engine.update_fov()
 
 
 def death_state(engine, window):
