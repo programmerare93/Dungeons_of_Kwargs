@@ -49,58 +49,13 @@ class Player(Entity):
         self.dexterity = dexterity
         self.intelligence = intelligence
         self.perception = perception
-        self.inventory = Inventory(
-            self,
-            items=[small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   ],
-        )
+        self.armor = obama_armor
         self.xp = 0
         self.xp_to_next_level = 100
         self.level = 1
-        self.inventory = Inventory(self, items=[small_perception_potion])
+        self.inventory = Inventory(
+            self, items=[small_perception_potion, small_healing_potion]
+        )
         self.used_items = []
 
     def heal(self, amount: int) -> int:
@@ -150,12 +105,13 @@ class Monster(Entity):
             items=[small_healing_potion, small_healing_potion, small_healing_potion],
         )
         self.xp_value = self.max_hp + self.strength + self.dexterity + self.intelligence
+        self.armor = obama_armor
 
     def monster_pathfinding(self, player, game_map, engine):
         """Monster pathfinding"""
         if game_map.pathfinding(self.x, self.y, player.x, player.y) == []:
             return
-            
+
         tile_x, tile_y = (
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][0],
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][1],
@@ -201,7 +157,7 @@ class Chest(Entity):
 
 
 def generate_monsters(room, game_map):
-    """Genererar en entity i ett given rum"""
+    """Genererar en entity i ett givet rum"""
 
     x = random.randint(room.x1 + 1, room.x2 - 1)
 

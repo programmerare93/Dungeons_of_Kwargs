@@ -12,7 +12,7 @@ from engine.game_states import main_menu, level_up_state, death_state
 
 
 tileset = tcod.tileset.load_tilesheet(
-    "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
+    "./assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )
 
 
