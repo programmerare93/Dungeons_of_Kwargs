@@ -69,6 +69,8 @@ large_healing_potion = StatItem("large health potion", amplitude=40)
 
 very_large_healing_potion = StatItem("very large health potion", amplitude=50)
 
+giant_healing_potion = StatItem("giant health potion", amplitude=60)
+
 small_strength_potion = StatItem("small strength potion", 2, duration=10)
 
 medium_strength_potion = StatItem("medium strength potion", 4, duration=20)
@@ -76,6 +78,8 @@ medium_strength_potion = StatItem("medium strength potion", 4, duration=20)
 large_strength_potion = StatItem("large strength potion", 6, duration=30)
 
 very_large_strength_potion = StatItem("very large strength potion", 10, duration=30)
+
+giant_strength_potion = StatItem("giant strength potion", 15, duration=30)
 
 small_dexterity_potion = StatItem("small dexterity potion", 2, duration=10)
 
@@ -85,6 +89,8 @@ large_dexterity_potion = StatItem("large dexterity potion", 6, duration=30)
 
 very_large_dexterity_potion = StatItem("very large dexterity potion", 10, duration=30)
 
+giant_dexterity_potion = StatItem("giant dexterity potion", 15, duration=30)
+
 small_perception_potion = StatItem("small perception potion", 2, duration=3)
 
 medium_perception_potion = StatItem("medium perception potion", 4, duration=20)
@@ -92,6 +98,8 @@ medium_perception_potion = StatItem("medium perception potion", 4, duration=20)
 large_perception_potion = StatItem("large perception potion", 6, duration=30)
 
 very_large_perception_potion = StatItem("very large perception potion", 10, duration=30)
+
+giant_perception_potion = StatItem("giant perception potion", 15, duration=30)
 
 
 class Armor:
@@ -103,7 +111,8 @@ class Armor:
 leather_armor = Armor("leather armor", 5)
 iron_armor = Armor("iron armor", 10)
 diamond_armor = Armor("diamond armor", 20)
-obama_armor = Armor("obama armor", 1000)
+netherite_armor = Armor("netherite armor", 30)
+obama_armor = Armor("obama armor", 50)
 
 
 tier_1_items = [
@@ -131,11 +140,19 @@ tier_3_items = [
 ]
 
 tier_4_items = [
-    obama_armor,
+    netherite_armor,
     very_large_dexterity_potion,
     very_large_healing_potion,
     very_large_perception_potion,
     very_large_strength_potion,
+]
+
+tier_5_items = [
+    obama_armor,
+    giant_dexterity_potion,
+    giant_healing_potion,
+    giant_perception_potion,
+    giant_strength_potion,
 ]
 
 all_items = [
@@ -143,4 +160,5 @@ all_items = [
     tier_2_items,
     tier_3_items,
     tier_4_items,
+    tier_5_items,
 ]
