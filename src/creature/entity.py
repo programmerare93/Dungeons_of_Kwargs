@@ -105,7 +105,7 @@ class Monster(Entity):
             items=[small_healing_potion, small_healing_potion, small_healing_potion],
         )
         self.xp_value = self.max_hp + self.strength + self.dexterity + self.intelligence
-        self.armor = obama_armor
+        self.armor = leather_armor
 
     def monster_pathfinding(self, player, game_map, engine):
         """Monster pathfinding"""
@@ -140,20 +140,27 @@ class Monster(Entity):
 
 
 class Chest(Entity):
-    def __init__(self, x: int, y: int, inventory: Inventory, name: str = "Chest"):
+    def __init__(self, x: int, y: int, name: str = "Chest", tier: int = 1):
         self.name = name
         self.hp = inf
         self.x = x
         self.y = y
         self.char = "C"
         self.color = (0, 255, 255)
-        self.inventory = inventory
         self.closed = True
+        self.tier = tier
+        self.inventory = Inventory(
+            self,
+            items=[
+                random.choice(all_items[self.tier - 1])
+                for _ in range(random.randint(1, 3))
+            ],
+        )
 
     def generate_items(self):
         """Genererar ett antal items i en kista"""
         for _ in range(random.randint(1, 3)):
-            self.inventory.items.append(random.choice(all_items))
+            self.inventory.items.append(random.choice(all_items[self.tier - 1]))
 
 
 def generate_monsters(room, game_map):

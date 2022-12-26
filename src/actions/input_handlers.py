@@ -46,8 +46,6 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             action = OpenChest()
         elif key == tcod.event.K_o:
             return "Level Up"
-        elif key == tcod.event.K_1:
-            action = UseItem()
         return action
 
 

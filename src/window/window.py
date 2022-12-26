@@ -1,4 +1,3 @@
-import tcod
 import tcod.sdl.render
 
 
@@ -50,7 +49,7 @@ class Window:
             55,
             "Player XP: {}".format(engine.player.xp),
         )
-        
+
     def print(self, x: int, y: int, string: str):
         self.console.print(x, y, string)
 
