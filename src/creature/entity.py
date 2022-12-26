@@ -32,8 +32,6 @@ class Entity:
 class Player(Entity):
     def __init__(
         self,
-        x: int,
-        y: int,
         char: str,
         color: Tuple[int, int, int],
         max_hp: int,
@@ -43,7 +41,7 @@ class Player(Entity):
         intelligence: int,
         name: str = None,
     ):
-        super().__init__(x, y, char, color, name)
+        super().__init__(0, 0, char, color, name)
         self.name = name
         self.max_hp = max_hp
         self.hp = max_hp
@@ -53,7 +51,10 @@ class Player(Entity):
         self.perception = perception
         self.inventory = Inventory(
             self,
-            items=[small_healing_potion, small_healing_potion, small_healing_potion],
+            items=[small_healing_potion,
+                   small_healing_potion,
+                   small_healing_potion,
+                   ],
         )
         self.xp = 0
         self.xp_to_next_level = 100
@@ -113,6 +114,7 @@ class Monster(Entity):
         """Monster pathfinding"""
         if game_map.pathfinding(self.x, self.y, player.x, player.y) == []:
             return
+            
         tile_x, tile_y = (
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][0],
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][1],
@@ -173,8 +175,8 @@ def generate_monsters(room, game_map):
                 char="O",
                 color=(0, 255, 120),
                 difficulty=game_map.difficulty,
-                max_hp=30,
-                strength=10,
+                max_hp=16,
+                strength=5,
                 dexterity=5,
                 perception=5,
                 intelligence=1,
@@ -187,8 +189,8 @@ def generate_monsters(room, game_map):
                 char="T",
                 color=(0, 0, 255),
                 difficulty=game_map.difficulty,
-                max_hp=16,
-                strength=5,
+                max_hp=30,
+                strength=8,
                 perception=5,
                 dexterity=3,
                 intelligence=3,

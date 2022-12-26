@@ -9,6 +9,7 @@ import stage.tile_types as tile_types
 from creature.entity import Entity, generate_monsters, Chest
 from stage.game_map import GameMap
 from stage.rooms import Room
+from stage.floor import Floor
 from creature.items import Inventory, all_items
 from stage.floor import Floor
 
@@ -24,12 +25,13 @@ class Generator:
         min_height=4,
     ):
         self.player = player
+        self.difficulty = 1
         self.dungeon = GameMap(map_width, map_height, entities=[player])
         self.room_list = []
         self.max_rooms = max_rooms
         self.map_width = map_width
         self.map_height = map_height
-
+        self.max_monsters_per_room = 2 * self.difficulty
         self.max_width = 14
         self.min_width = 6
         self.max_height = 14

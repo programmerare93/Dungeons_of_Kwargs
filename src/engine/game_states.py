@@ -2,6 +2,68 @@ import tcod.event
 import tcod.sdl.render
 
 
+def inventory_state(engine, window):
+    while True:
+        window.console.clear()
+
+        window.console.draw_frame(
+            0,
+            0,
+            window.width,
+            window.height,
+            title="Inventory",
+            fg=(255, 255, 255),
+            bg=(0, 0, 0),
+            clear=True,
+        )
+
+        x = 1
+        y = 1
+        if len(engine.player.inventory.items) == 0:
+            window.console.print(
+                window.width // 2,
+                window.height // 2,
+                "Inventory is empty",
+                fg=(255, 255, 255),
+                alignment=tcod.CENTER,
+            )
+        else:
+            for (place_in_inventory, item) in enumerate(engine.player.inventory.items):
+                if place_in_inventory == 0:
+                    # På första enumerationen ändra inte x och y värdet
+                    pass
+                elif y >= window.width:
+                    x += 25
+                    y = 1
+                else:
+                    y += 2
+
+                window.console.print(
+                    x,
+                    y,
+                    string=f"{item.type}({place_in_inventory + 1})",
+                    fg=(255, 255, 255),
+                    bg=(0, 0, 0),
+                    alignment=tcod.LEFT
+                )
+
+        window.console.print(
+            window.width // 2,
+            window.height,
+            "Press the number next to the item to use it"
+        )
+
+        window.context.present(window.console)
+
+        events = tcod.event.wait()
+
+        event = engine.handle_inventory_events(events)
+
+        if event == "close":
+            engine.inventory_open = False
+            break
+
+
 def main_menu(engine, window):
     while True:
         events = tcod.event.wait()
