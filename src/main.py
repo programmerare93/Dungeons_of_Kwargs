@@ -8,11 +8,10 @@ from stage.floor import Floor
 from stage.procgen import Generator
 from window.window import Window
 from window import color
-from engine.game_states import main_menu, level_up_state, death_state
 
 
 tileset = tcod.tileset.load_tilesheet(
-    "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
+    "./assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )
 
 
@@ -31,7 +30,7 @@ def main():
         strength=10,
         dexterity=8,
         intelligence=5,
-        perception=5,
+        perception=50,
     )
 
     generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
@@ -51,6 +50,8 @@ def main():
         engine.handle_enemy_AI()
 
         engine.can_player_attack()
+
+        engine.handle_used_items()
 
         if engine.check_entities() == "dead":
             death_state(engine, window)

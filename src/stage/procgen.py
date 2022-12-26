@@ -11,10 +11,19 @@ from stage.game_map import GameMap
 from stage.rooms import Room
 from stage.floor import Floor
 from creature.items import Inventory, all_items
+from stage.floor import Floor
 
 
 class Generator:
-    def __init__(self, max_rooms: int, map_width: int, map_height: int, player: Entity, min_width=4, min_height=4):
+    def __init__(
+        self,
+        max_rooms: int,
+        map_width: int,
+        map_height: int,
+        player: Entity,
+        min_width=4,
+        min_height=4,
+    ):
         self.player = player
         self.difficulty = 1
         self.dungeon = GameMap(map_width, map_height, entities=[player])
@@ -27,6 +36,8 @@ class Generator:
         self.min_width = 6
         self.max_height = 14
         self.min_height = 6
+        self.difficulty = 1
+        self.max_monsters_per_room = 2 * self.difficulty
 
     def create_tunnel(self, start: tuple[int, int], end: tuple[int, int]) -> None:
         """
@@ -59,8 +70,12 @@ class Generator:
         for (x, row) in enumerate(self.dungeon.tiles):
             for (y, value) in enumerate(row):
                 self.dungeon.tiles[x, y] = tile_types.wall
-        self.dungeon.explored = np.full((self.map_width, self.map_height), fill_value=False, order="F")
-        self.dungeon.transparent_tiles = np.full((self.map_width, self.map_height), fill_value=False, order="F")
+        self.dungeon.explored = np.full(
+            (self.map_width, self.map_height), fill_value=False, order="F"
+        )
+        self.dungeon.transparent_tiles = np.full(
+            (self.map_width, self.map_height), fill_value=False, order="F"
+        )
 
         self.room_list.clear()
 
@@ -124,7 +139,6 @@ class Generator:
                 self.dungeon.entities.append(new_chest)
 
         self.dungeon.generate_pathfinding_map()
-
 
     def get_dungeon(self):
         return self.dungeon

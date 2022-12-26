@@ -40,13 +40,22 @@ class MovementAction(Action):
         if engine.player_activated_trap(dest_x, dest_y):
             difficulty = engine.game_map.tiles[dest_x, dest_y].difficulty
             dexterity = engine.player.dexterity
-            if difficulty < dexterity and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated:
-                engine.message_log.add_message("You stepped on a trap. You avoided it!", (255, 0, 0))
-            elif difficulty > dexterity and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated:
+            if (
+                difficulty < dexterity
+                and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
+            ):
                 engine.message_log.add_message(
-                    f"You stepped on a trap. You took {difficulty - dexterity} damage!", (255, 0, 0)
+                    "You stepped on a trap. You avoided it!", (0, 255, 0)
                 )
-                engine.player.hp -= (difficulty - dexterity)
+            elif (
+                difficulty > dexterity
+                and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
+            ):
+                engine.message_log.add_message(
+                    f"You stepped on a trap. You took {difficulty - dexterity} damage!",
+                    (255, 0, 0),
+                )
+                engine.player.hp -= difficulty - dexterity
             else:
                 pass
             engine.game_map.tiles[dest_x, dest_y].hasBeenActivated = True
@@ -116,8 +125,8 @@ class MovementAction(Action):
                 engine.player_can_attack = False
                 return "miss"
         elif (
-                engine.game_map.entity_at_location(dest_x, dest_y)
-                and not engine.player_can_attack == True
+            engine.game_map.entity_at_location(dest_x, dest_y)
+            and not engine.player_can_attack == True
         ):
             return None
 
@@ -148,9 +157,10 @@ class UseItem(Action):
         self.item = None
 
     def perform(self, engine: Engine, entity: Entity) -> None:
-        self.item = engine.player.inventory.items[0]
+        self.item = entity.inventory.items[0]
 
-        self.item.use(engine)
+        self.item.use(engine, entity)
+        entity.used_items.append(self.item)
 
 
 class OpenChest(Action):

@@ -2,8 +2,16 @@ from typing import Optional
 
 import tcod.event
 
-from actions.actions import Action, MovementAction, GoDown, HealingAction, OpenChest
+from actions.actions import (
+    Action,
+    MovementAction,
+    GoDown,
+    HealingAction,
+    OpenChest,
+    UseItem,
+)
 from actions.actions import *
+
 
 class EventHandler(tcod.event.EventDispatch[Action]):
     inventory_is_open: bool
@@ -38,6 +46,8 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             action = OpenChest()
         elif key == tcod.event.K_o:
             return "Level Up"
+        elif key == tcod.event.K_1:
+            action = UseItem()
         return action
 
 

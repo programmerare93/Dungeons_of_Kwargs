@@ -55,16 +55,12 @@ class GameMap:
                     tile.render(console, x, y)
 
         for entity in self.entities:
-            try:
-                if (
-                    self.visible[entity.x, entity.y]
-                    and not self.tiles[entity.x, entity.y] == tile_types.wall
-                    and self.in_bounds(entity.x, entity.y)
-                ):
-                    entity.render(console, entity.x, entity.y)
-            except IndexError:
-                print("IndexError: ", entity.x, entity.y)
-                continue
+            if (
+                self.visible[entity.x, entity.y]
+                and not self.tiles[entity.x, entity.y] == tile_types.wall
+                and self.in_bounds(entity.x, entity.y)
+            ):
+                entity.render(console, entity.x, entity.y)
 
     def entity_at_location(self, x: int, y: int) -> Set[Entity]:
         return {entity for entity in self.entities if entity.x == x and entity.y == y}
@@ -79,10 +75,13 @@ class GameMap:
         )
         for (x, row) in enumerate(self.tiles):
             for (y, tile) in enumerate(row):
-                if tile.transparent:
+                if tile.type in (
+                    tile_types.types_of_tiles["floor"],
+                    tile_types.types_of_tiles["trap"],
+                ):
                     self.pathfinding_map[x, y] = 1
 
     def pathfinding(self, x1, y1, x2, y2):
-        """Tar emot två koordinater och returnerar en lista med koordinater som spelaren ska följa för att komma till målet"""
+        """Tar emot två koordinater och returnerar en lista med koordinater som ett monster ska följa för att komma till spelaren"""
         path = tcod.path.AStar(self.pathfinding_map)
         return path.get_path(x1, y1, x2, y2)

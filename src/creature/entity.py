@@ -35,7 +35,6 @@ class Player(Entity):
         char: str,
         color: Tuple[int, int, int],
         max_hp: int,
-        hp: int,
         strength: int,
         perception: int,
         dexterity: int,
@@ -45,7 +44,7 @@ class Player(Entity):
         super().__init__(0, 0, char, color, name)
         self.name = name
         self.max_hp = max_hp
-        self.hp = hp
+        self.hp = max_hp
         self.strength = strength
         self.dexterity = dexterity
         self.intelligence = intelligence
@@ -60,6 +59,8 @@ class Player(Entity):
         self.xp = 0
         self.xp_to_next_level = 100
         self.level = 1
+        self.inventory = Inventory(self, items=[small_perception_potion])
+        self.used_items = []
 
     def heal(self, amount: int) -> int:
         if self.hp == self.max_hp:
@@ -78,6 +79,7 @@ class Player(Entity):
         amount_recovered = new_hp - self.hp
 
         return amount_recovered
+
 
 class Monster(Entity):
     def __init__(
@@ -102,7 +104,6 @@ class Monster(Entity):
         self.dexterity = dexterity * self.difficulty
         self.intelligence = intelligence * self.difficulty
         self.perception = perception * self.difficulty
-        self.internal_tick = 0
         self.inventory = Inventory(
             self,
             items=[small_healing_potion, small_healing_potion, small_healing_potion],
@@ -111,6 +112,9 @@ class Monster(Entity):
 
     def monster_pathfinding(self, player, game_map, engine):
         """Monster pathfinding"""
+        if game_map.pathfinding(self.x, self.y, player.x, player.y) == []:
+            return
+            
         tile_x, tile_y = (
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][0],
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][1],
@@ -118,7 +122,6 @@ class Monster(Entity):
 
         action = MovementAction(tile_x - self.x, tile_y - self.y)
         action.perform(engine, self)
-        self.internal_tick += 1
 
     def heal(self, amount: int) -> int:
         if self.hp == self.max_hp:

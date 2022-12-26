@@ -149,6 +149,16 @@ class Engine:
         if time.time() - self.player_attack_cool_down >= 1:
             self.player_can_attack = True
 
+    def handle_used_items(self):
+        if self.player.used_items != []:
+            for item in self.player.used_items:
+                if self.tick - item.activated_tick >= item.duration:
+                    item.remove_effect(self.player)
+                    self.player.used_items.remove(item)
+                    self.message_log.add_message(
+                        f"{item.type} has worn off!", color.white
+                    )
+
     def update_fov(self) -> None:
         for (x, row) in enumerate(self.game_map.tiles):
             for (y, value) in enumerate(row):
