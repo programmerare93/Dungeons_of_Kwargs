@@ -2,7 +2,36 @@ import tcod.event
 import tcod.sdl.render
 
 
+class InventoryBox:
+    def __init__(self, x, y, width, height, item=None):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.item = item
+
+    def render(self, x, y, window):
+        window.console.print_box(
+            x=x,
+            y=y,
+            width=self.width,
+            height=self.height,
+            string=self.item.type,
+        )
+
+
 def inventory_state(engine, window):
+    box_width = 14
+    box_height = 20
+    player_items = engine.player.inventory.items
+    num_pages = len(player_items) // 15
+    all_page_items = [[] for _ in range(num_pages + 1)]
+    i = 0
+    for item in player_items:
+        all_page_items[i].append(item)
+        if len(all_page_items[i]) == 15:
+            i += 1
+    current_page = 0
     while True:
         window.console.clear()
 
@@ -17,9 +46,9 @@ def inventory_state(engine, window):
             clear=True,
         )
 
-        x = 1
-        y = 1
-        if len(engine.player.inventory.items) == 0:
+        x_offset = 3
+        y_offset = 4
+        if len(player_items) == 0:
             window.console.print(
                 window.width // 2,
                 window.height // 2,
@@ -28,29 +57,23 @@ def inventory_state(engine, window):
                 alignment=tcod.CENTER,
             )
         else:
-            for (place_in_inventory, item) in enumerate(engine.player.inventory.items):
-                if place_in_inventory == 0:
-                    # På första enumerationen ändra inte x och y värdet
-                    pass
-                elif y >= window.height - 4:
-                    x += 25
-                    y = 1
-                else:
-                    y += 2
-
-                window.console.print(
-                    x,
-                    y,
-                    string=f"{item.type}({place_in_inventory + 1})",
-                    fg=(255, 255, 255),
-                    bg=(0, 0, 0),
-                    alignment=tcod.LEFT
+            for item in all_page_items[current_page]:
+                if x_offset + 5 > window.width:
+                    x_offset = 3
+                    y_offset += box_height + 1
+                window.console.print_box(
+                    x=x_offset,
+                    y=y_offset,
+                    width=box_width,
+                    height=box_height,
+                    string=item.type,
                 )
+                x_offset += box_width + 1
 
         window.console.print(
             window.width // 2,
             window.height,
-            "Press the number next to the item to use it"
+            "Press the number next to the item to use it",
         )
 
         window.context.present(window.console)
@@ -62,6 +85,12 @@ def inventory_state(engine, window):
         if event == "close":
             engine.inventory_open = False
             break
+        elif event == "next_page":
+            if current_page < num_pages:
+                current_page += 1
+        elif event == "previous_page":
+            if current_page > 0:
+                current_page -= 1
 
 
 def main_menu(engine, window):

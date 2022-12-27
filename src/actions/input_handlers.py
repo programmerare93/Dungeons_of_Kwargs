@@ -64,6 +64,10 @@ class InventoryHandler(tcod.event.EventDispatch[Action]):
             action = "close"
         elif key.name in [f"N{x}" for x in range(1, 10)]:
             action = key.name
+        elif key == tcod.event.K_RIGHT:
+            action = "next_page"
+        elif key == tcod.event.K_LEFT:
+            action = "previous_page"
         return action
 
 
