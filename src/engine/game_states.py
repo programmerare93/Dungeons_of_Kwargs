@@ -10,10 +10,10 @@ class InventoryBox:
         self.height = height
         self.item = item
 
-    def render(self, x, y, window):
+    def render(self, window):
         window.console.print_box(
-            x=x,
-            y=y,
+            x=self.x,
+            y=self.y,
             width=self.width,
             height=self.height,
             string=self.item.type,
@@ -21,17 +21,27 @@ class InventoryBox:
 
 
 def inventory_state(engine, window):
+    x_offset = 3
+    y_offset = 4
     box_width = 14
     box_height = 20
     player_items = engine.player.inventory.items
-    num_pages = len(player_items) // 15
-    all_page_items = [[] for _ in range(num_pages + 1)]
-    i = 0
-    for item in player_items:
-        all_page_items[i].append(item)
-        if len(all_page_items[i]) == 15:
-            i += 1
-    current_page = 0
+    if len(player_items) != 0:
+        num_pages = len(player_items) // 15
+        all_page_items = [[] for _ in range(num_pages + 1)]
+        i = 0
+        for item in player_items:
+            if len(all_page_items[i]) == 15:
+                i += 1
+                y_offset = 4
+                x_offset = 3
+            elif x_offset + 5 > window.width:
+                x_offset = 3
+                y_offset += box_height + 1
+            new_box = InventoryBox(x_offset, y_offset, box_width, box_height, item)
+            all_page_items[i].append(new_box)
+            x_offset += box_width + 1
+        current_page = 0
     while True:
         window.console.clear()
 
@@ -46,8 +56,6 @@ def inventory_state(engine, window):
             clear=True,
         )
 
-        x_offset = 3
-        y_offset = 4
         if len(player_items) == 0:
             window.console.print(
                 window.width // 2,
@@ -57,24 +65,8 @@ def inventory_state(engine, window):
                 alignment=tcod.CENTER,
             )
         else:
-            for item in all_page_items[current_page]:
-                if x_offset + 5 > window.width:
-                    x_offset = 3
-                    y_offset += box_height + 1
-                window.console.print_box(
-                    x=x_offset,
-                    y=y_offset,
-                    width=box_width,
-                    height=box_height,
-                    string=item.type,
-                )
-                x_offset += box_width + 1
-
-        window.console.print(
-            window.width // 2,
-            window.height,
-            "Press the number next to the item to use it",
-        )
+            for inventory_box in all_page_items[current_page]:
+                inventory_box.render(window)
 
         window.context.present(window.console)
 
