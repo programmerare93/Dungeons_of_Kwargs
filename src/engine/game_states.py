@@ -16,22 +16,23 @@ class InventoryBox:
             y=self.y,
             width=self.width,
             height=self.height,
-            string=self.item.type,
+            string=self.item.name,
         )
 
 
 def inventory_state(engine, window):
+    max_items_per_page = 18
     x_offset = 3
     y_offset = 4
-    box_width = 14
+    box_width = 12
     box_height = 20
     player_items = engine.player.inventory.items
     if len(player_items) != 0:
-        num_pages = len(player_items) // 15
+        num_pages = len(player_items) // max_items_per_page
         all_page_items = [[] for _ in range(num_pages + 1)]
         i = 0
         for item in player_items:
-            if len(all_page_items[i]) == 15:
+            if len(all_page_items[i]) == max_items_per_page:
                 i += 1
                 y_offset = 4
                 x_offset = 3

@@ -202,7 +202,7 @@ class OpenChest(Action):
                 engine.message_log.add_message("You opened a chest!")
                 engine.player.inventory.items.extend(chest.inventory.items)
                 engine.message_log.add_message(
-                    f"You Received {tuple([item.type for item in chest.inventory.items])}"
+                    f"You Received {tuple([item.name for item in chest.inventory.items])}"
                 )
                 engine.game_map.entities.remove(chest)
                 engine.render(
