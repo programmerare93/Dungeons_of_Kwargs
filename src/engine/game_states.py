@@ -16,14 +16,14 @@ class InventoryBox:
             y=self.y,
             width=self.width,
             height=self.height,
-            string=self.item.type,
+            string=self.item.name,
         )
 
 
 def inventory_state(engine, window):
     x_offset = 3
     y_offset = 4
-    box_width = 14
+    box_width = 12
     box_height = 20
     player_items = engine.player.inventory.items
     if len(player_items) != 0:

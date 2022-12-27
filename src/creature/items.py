@@ -11,7 +11,8 @@ class Inventory:
 
 
 class StatItem:
-    def __init__(self, type, amplitude, duration=inf):
+    def __init__(self, name, type, amplitude, duration=inf):
+        self.name = name
         self.type = type
         self.amplitude = amplitude
         self.owner = None
@@ -19,100 +20,145 @@ class StatItem:
         self.activated_tick = 0
 
     def use(self, engine, entity):
-        if self.type.endswith("health potion") and entity.hp < entity.max_hp:
-            hp_diff = entity.max_hp - entity.hp
-            if hp_diff < self.amplitude:
-                entity.hp = entity.max_hp
-            else:
-                entity.hp += self.amplitude
-            entity.inventory.items.remove(self)
-        elif self.type.endswith("health potion") and entity.hp == entity.max_hp:
-            engine.message_log.add_message("You are already at full health!")
-            return
+        potion_dict = {
+            "strength potion": entity.strength,
+            "dexterity potion": entity.dexterity,
+            "perception potion": entity.perception,
+        }
+        potion_dict[self.type] += self.amplitude
 
-        elif self.type.endswith("strength potion"):
-            entity.strength += self.amplitude
-            entity.inventory.items.remove(self)
-
-        elif self.type.endswith("dexterity potion"):
-            entity.dexterity += self.amplitude
-            entity.inventory.items.remove(self)
-
-        elif self.type.endswith("perception potion"):
-            entity.perception += self.amplitude
-            entity.inventory.items.remove(self)
-
-        engine.message_log.add_message("You used a {}!".format(self.type))
+        entity.inventory.items.remove(self)
+        engine.message_log.add_message("You used a {}!".format(self.name))
         self.activated_tick = engine.tick
         entity.used_items.append(self)
         return
 
     def remove_effect(self, entity):
-        if self.type.endswith("health potion"):
-            return
-
-        elif self.type.endswith("strength potion"):
-            entity.strength -= self.amplitude
-
-        elif self.type.endswith("dexterity potion"):
-            entity.dexterity -= self.amplitude
-
-        elif self.type.endswith("perception potion"):
-            entity.perception -= self.amplitude
+        potion_dict = {
+            "strength potion": entity.strength,
+            "dexterity potion": entity.dexterity,
+            "perception potion": entity.perception,
+        }
+        potion_dict[self.type] -= self.amplitude
+        entity.used_items.remove(self)
         return
 
 
-small_healing_potion = StatItem("small health potion", amplitude=20)
+class HealthPotion:
+    def __init__(self, name, type, amplitude):
+        self.name = name
+        self.amplitude = amplitude
+        self.type = type
 
-medium_healing_potion = StatItem("medium health potion", amplitude=30)
+    def use(self, engine, entity):
+        if entity.hp == entity.max_hp:
+            engine.message_log.add_message("You are already at full health!")
+            return
+        hp_diff = entity.max_hp - entity.hp
+        if hp_diff < self.amplitude:
+            entity.hp = entity.max_hp
+        else:
+            entity.hp += self.amplitude
+        return
 
-large_healing_potion = StatItem("large health potion", amplitude=40)
 
-very_large_healing_potion = StatItem("very large health potion", amplitude=50)
+small_healing_potion = HealthPotion(
+    name="small health potion", amplitude=20, type="health potion"
+)
 
-giant_healing_potion = StatItem("giant health potion", amplitude=60)
+medium_healing_potion = HealthPotion(
+    name="medium health potion", amplitude=30, type="health potion"
+)
 
-small_strength_potion = StatItem("small strength potion", 2, duration=10)
+large_healing_potion = HealthPotion(
+    name="large health potion", amplitude=40, type="health potion"
+)
 
-medium_strength_potion = StatItem("medium strength potion", 4, duration=20)
+very_large_healing_potion = HealthPotion(
+    name="very large health potion", amplitude=50, type="health potion"
+)
 
-large_strength_potion = StatItem("large strength potion", 6, duration=30)
+giant_healing_potion = HealthPotion(
+    name="giant health potion", amplitude=60, type="health potion"
+)
 
-very_large_strength_potion = StatItem("very large strength potion", 10, duration=30)
+small_strength_potion = StatItem(
+    name="small strength potion", amplitude=2, duration=10, type="strength potion"
+)
 
-giant_strength_potion = StatItem("giant strength potion", 15, duration=30)
+medium_strength_potion = StatItem(
+    name="medium strength potion", amplitude=4, duration=20, type="strength potion"
+)
 
-small_dexterity_potion = StatItem("small dexterity potion", 2, duration=10)
+large_strength_potion = StatItem(
+    name="large strength potion", amplitude=6, duration=30, type="strength potion"
+)
 
-medium_dexterity_potion = StatItem("medium dexterity potion", 4, duration=20)
+very_large_strength_potion = StatItem(
+    name="very large strength potion", amplitude=10, duration=30, type="strength potion"
+)
 
-large_dexterity_potion = StatItem("large dexterity potion", 6, duration=30)
+giant_strength_potion = StatItem(
+    name="giant strength potion", amplitude=15, duration=30, type="strength potion"
+)
 
-very_large_dexterity_potion = StatItem("very large dexterity potion", 10, duration=30)
+small_dexterity_potion = StatItem(
+    name="small dexterity potion", amplitude=2, duration=10, type="dexterity potion"
+)
 
-giant_dexterity_potion = StatItem("giant dexterity potion", 15, duration=30)
+medium_dexterity_potion = StatItem(
+    name="medium dexterity potion", amplitude=4, duration=20, type="dexterity potion"
+)
 
-small_perception_potion = StatItem("small perception potion", 2, duration=3)
+large_dexterity_potion = StatItem(
+    name="large dexterity potion", amplitude=6, duration=30, type="dexterity potion"
+)
 
-medium_perception_potion = StatItem("medium perception potion", 4, duration=20)
+very_large_dexterity_potion = StatItem(
+    name="very large dexterity potion",
+    amplitude=10,
+    duration=30,
+    type="dexterity potion",
+)
 
-large_perception_potion = StatItem("large perception potion", 6, duration=30)
+giant_dexterity_potion = StatItem(
+    name="giant dexterity potion", amplitude=15, duration=30, type="dexterity potion"
+)
 
-very_large_perception_potion = StatItem("very large perception potion", 10, duration=30)
+small_perception_potion = StatItem(
+    name="small perception potion", amplitude=2, duration=3, type="perception potion"
+)
 
-giant_perception_potion = StatItem("giant perception potion", 15, duration=30)
+medium_perception_potion = StatItem(
+    name="medium perception potion", amplitude=4, duration=20, type="perception potion"
+)
+
+large_perception_potion = StatItem(
+    name="large perception potion", amplitude=6, duration=30, type="perception potion"
+)
+
+very_large_perception_potion = StatItem(
+    name="very large perception potion",
+    amplitude=10,
+    duration=30,
+    type="perception potion",
+)
+
+giant_perception_potion = StatItem(
+    name="giant perception potion", amplitude=15, duration=30, type="perception potion"
+)
 
 
 class Armor:
-    def __init__(self, type, defense):
-        self.type = type
+    def __init__(self, name, defense):
+        self.name = name
         self.defense = defense
 
     def use(self, engine, entity):
         entity.inventory.items.remove(self)
         entity.inventory.items.append(entity.armor)
         entity.armor = self
-        engine.message_log.add_message("You equipped the {}!".format(self.type))
+        engine.message_log.add_message("You equipped the {}!".format(self.name))
         return
 
 
