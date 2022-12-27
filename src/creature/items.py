@@ -44,6 +44,7 @@ class StatItem:
 
         engine.message_log.add_message("You used a {}!".format(self.type))
         self.activated_tick = engine.tick
+        entity.used_items.append(self)
         return
 
     def remove_effect(self, entity):
@@ -106,6 +107,13 @@ class Armor:
     def __init__(self, type, defense):
         self.type = type
         self.defense = defense
+
+    def use(self, engine, entity):
+        entity.inventory.items.remove(self)
+        entity.inventory.items.append(entity.armor)
+        entity.armor = self
+        engine.message_log.add_message("You equipped the {}!".format(self.type))
+        return
 
 
 leather_armor = Armor("leather armor", 5)

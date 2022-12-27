@@ -93,7 +93,6 @@ def inventory_state(engine, window):
                     and mouse_y <= inventory_box.y + inventory_box.height
                 ):
                     inventory_box.item.use(engine, engine.player)
-                    engine.player.used_items.append(inventory_box.item)
                     engine.inventory_open = False
                     return
 
