@@ -76,13 +76,26 @@ def inventory_state(engine, window):
 
         if event == "close":
             engine.inventory_open = False
-            break
+            return
         elif event == "next_page":
             if current_page < num_pages:
                 current_page += 1
         elif event == "previous_page":
             if current_page > 0:
                 current_page -= 1
+        elif isinstance(event, tuple):
+            mouse_x, mouse_y = event
+            for inventory_box in all_page_items[current_page]:
+                if (
+                    mouse_x >= inventory_box.x
+                    and mouse_x <= inventory_box.x + inventory_box.width
+                    and mouse_y >= inventory_box.y
+                    and mouse_y <= inventory_box.y + inventory_box.height
+                ):
+                    inventory_box.item.use(engine, engine.player)
+                    engine.player.used_items.append(inventory_box.item)
+                    engine.inventory_open = False
+                    return
 
 
 def main_menu(engine, window):
