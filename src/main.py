@@ -32,7 +32,7 @@ def main():
         perception=50,
     )
 
-    generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
+    generator = Generator(floor.max_rooms, window.width, window.height - 26, player)
     game_map = None
 
     engine = Engine(event_handler, game_map, player, floor, generator, window=window)

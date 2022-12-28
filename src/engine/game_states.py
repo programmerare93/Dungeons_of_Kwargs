@@ -9,6 +9,9 @@ class InventoryBox:
         self.width = width
         self.height = height
         self.item = item
+        self.item_path = "assets\\items\\{}.png".format(
+            self.item.name.replace(" ", "_") + "-removebg-preview"
+        )
 
     def render(self, window):
         window.console.print_box(
@@ -18,14 +21,26 @@ class InventoryBox:
             height=self.height,
             string=self.item.name,
         )
+        if self.item.name in (
+            "small health potion",
+            "medium health potion",
+            "large health potion",
+            "very large health potion",
+            "giant health potion",
+        ):
+            window.show_image(
+                self.item_path, self.x, self.y + 4, self.width, self.height
+            )
 
 
 def inventory_state(engine, window):
-    max_items_per_page = 18
     x_offset = 3
     y_offset = 4
-    box_width = 12
+    box_width = 13
     box_height = 20
+    max_items_per_page = (
+        window.width // (box_width + 1) * (window.height // (box_height + 1))
+    )
     player_items = engine.player.inventory.items
     if len(player_items) != 0:
         num_pages = len(player_items) // max_items_per_page
@@ -36,7 +51,7 @@ def inventory_state(engine, window):
                 i += 1
                 y_offset = 4
                 x_offset = 3
-            elif x_offset + 5 > window.width:
+            elif x_offset + 8 > window.width:
                 x_offset = 3
                 y_offset += box_height + 1
             new_box = InventoryBox(x_offset, y_offset, box_width, box_height, item)
