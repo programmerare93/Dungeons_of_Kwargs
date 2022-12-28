@@ -165,7 +165,7 @@ class Armor:
 leather_armor = Armor("leather armor", 5)
 iron_armor = Armor("iron armor", 10)
 diamond_armor = Armor("diamond armor", 20)
-netherite_armor = Armor("netherite armor", 30)
+obsidian_armor = Armor("obsidian armor", 30)
 obama_armor = Armor("obama armor", 50)
 
 
@@ -194,7 +194,7 @@ tier_3_items = [
 ]
 
 tier_4_items = [
-    netherite_armor,
+    obsidian_armor,
     very_large_dexterity_potion,
     very_large_healing_potion,
     very_large_perception_potion,

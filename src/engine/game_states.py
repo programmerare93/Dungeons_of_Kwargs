@@ -9,9 +9,7 @@ class InventoryBox:
         self.width = width
         self.height = height
         self.item = item
-        self.item_path = "assets\\items\\{}.png".format(
-            self.item.name.replace(" ", "_") + "-removebg-preview"
-        )
+        self.item_path = "assets\\items\\{}.png".format(self.item.name)
 
     def render(self, window):
         window.console.print_box(
@@ -21,16 +19,7 @@ class InventoryBox:
             height=self.height,
             string=self.item.name,
         )
-        if self.item.name in (
-            "small health potion",
-            "medium health potion",
-            "large health potion",
-            "very large health potion",
-            "giant health potion",
-        ):
-            window.show_image(
-                self.item_path, self.x, self.y + 4, self.width, self.height
-            )
+        window.show_image(self.item_path, self.x, self.y + 4, self.width, self.height)
 
 
 def inventory_state(engine, window):
