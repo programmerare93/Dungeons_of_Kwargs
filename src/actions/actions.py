@@ -39,23 +39,23 @@ class MovementAction(Action):
 
         if engine.player_activated_trap(dest_x, dest_y):
             difficulty = engine.game_map.tiles[dest_x, dest_y].difficulty
-            dexterity = engine.player.dexterity
+            agility = engine.player.agility
             if (
-                difficulty < dexterity
+                difficulty < agility
                 and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
             ):
                 engine.message_log.add_message(
                     "You stepped on a trap. You avoided it!", (0, 255, 0)
                 )
             elif (
-                difficulty > dexterity
+                difficulty > agility
                 and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
             ):
                 engine.message_log.add_message(
-                    f"You stepped on a trap. You took {difficulty - dexterity} damage!",
+                    f"You stepped on a trap. You took {difficulty - agility} damage!",
                     (255, 0, 0),
                 )
-                engine.player.hp -= difficulty - dexterity
+                engine.player.hp -= difficulty - agility
             else:
                 pass
             engine.game_map.tiles[dest_x, dest_y].hasBeenActivated = True
@@ -69,7 +69,7 @@ class MovementAction(Action):
                 return "tried to attack a monster"
             if entity.perception + random.randint(
                 1, 20
-            ) > target.dexterity + random.randint(1, 20):
+            ) > target.agility + random.randint(1, 20):
                 damage = (
                     entity.strength
                     + random.randint(-entity.strength // 4, entity.strength // 4)
@@ -113,7 +113,7 @@ class MovementAction(Action):
             target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
             if entity.perception + random.randint(
                 1, 20
-            ) > target.dexterity + random.randint(1, 20):
+            ) > target.agility + random.randint(1, 20):
                 damage = (
                     engine.player.strength
                     + random.randint(

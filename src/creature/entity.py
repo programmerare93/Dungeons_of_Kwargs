@@ -38,7 +38,7 @@ class Player(Entity):
         max_hp: int,
         strength: int,
         perception: int,
-        dexterity: int,
+        agility: int,
         intelligence: int,
         name: str = None,
     ):
@@ -47,7 +47,7 @@ class Player(Entity):
         self.max_hp = max_hp
         self.hp = max_hp
         self.strength = strength
-        self.dexterity = dexterity
+        self.agility = agility
         self.intelligence = intelligence
         self.perception = perception
         self.armor = obama_armor
@@ -87,7 +87,7 @@ class Monster(Entity):
         max_hp: int,
         strength: int,
         perception: int,
-        dexterity: int,
+        agility: int,
         intelligence: int,
         name: str,
     ):
@@ -96,14 +96,14 @@ class Monster(Entity):
         self.max_hp = max_hp * self.difficulty
         self.hp = self.max_hp * self.difficulty
         self.strength = strength * self.difficulty
-        self.dexterity = dexterity * self.difficulty
+        self.agility = agility * self.difficulty
         self.intelligence = intelligence * self.difficulty
         self.perception = perception * self.difficulty
         self.inventory = Inventory(
             self,
             items=[small_healing_potion, small_healing_potion, small_healing_potion],
         )
-        self.xp_value = self.max_hp + self.strength + self.dexterity + self.intelligence
+        self.xp_value = self.max_hp + self.strength + self.agility + self.intelligence
         self.armor = leather_armor
 
     def monster_pathfinding(self, player, game_map, engine):
@@ -180,7 +180,7 @@ def generate_monsters(room, game_map):
                 difficulty=game_map.difficulty,
                 max_hp=16,
                 strength=10,
-                dexterity=5,
+                agility=5,
                 perception=5,
                 intelligence=1,
             )
@@ -195,7 +195,7 @@ def generate_monsters(room, game_map):
                 max_hp=30,
                 strength=10,
                 perception=5,
-                dexterity=3,
+                agility=3,
                 intelligence=3,
             )
         game_map.entities.append(monster)

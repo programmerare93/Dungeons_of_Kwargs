@@ -27,7 +27,7 @@ def main():
         name="Player",
         max_hp=30,
         strength=50,
-        dexterity=8,
+        agility=8,
         intelligence=5,
         perception=50,
     )

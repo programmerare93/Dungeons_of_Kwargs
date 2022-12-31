@@ -22,7 +22,7 @@ class StatItem:
     def use(self, engine, entity):
         potion_dict = {
             "strength potion": entity.strength,
-            "dexterity potion": entity.dexterity,
+            "agility potion": entity.agility,
             "perception potion": entity.perception,
         }
         potion_dict[self.type] += self.amplitude
@@ -36,7 +36,7 @@ class StatItem:
     def remove_effect(self, entity):
         potion_dict = {
             "strength potion": entity.strength,
-            "dexterity potion": entity.dexterity,
+            "agility potion": entity.agility,
             "perception potion": entity.perception,
         }
         potion_dict[self.type] -= self.amplitude
@@ -102,27 +102,27 @@ giant_strength_potion = StatItem(
     name="giant strength potion", amplitude=15, duration=30, type="strength potion"
 )
 
-small_dexterity_potion = StatItem(
-    name="small dexterity potion", amplitude=2, duration=10, type="dexterity potion"
+small_agility_potion = StatItem(
+    name="small agility potion", amplitude=2, duration=10, type="agility potion"
 )
 
-medium_dexterity_potion = StatItem(
-    name="medium dexterity potion", amplitude=4, duration=20, type="dexterity potion"
+medium_agility_potion = StatItem(
+    name="medium agility potion", amplitude=4, duration=20, type="agility potion"
 )
 
-large_dexterity_potion = StatItem(
-    name="large dexterity potion", amplitude=6, duration=30, type="dexterity potion"
+large_agility_potion = StatItem(
+    name="large agility potion", amplitude=6, duration=30, type="agility potion"
 )
 
-very_large_dexterity_potion = StatItem(
-    name="very large dexterity potion",
+very_large_agility_potion = StatItem(
+    name="very large agility potion",
     amplitude=10,
     duration=30,
-    type="dexterity potion",
+    type="agility potion",
 )
 
-giant_dexterity_potion = StatItem(
-    name="giant dexterity potion", amplitude=15, duration=30, type="dexterity potion"
+giant_agility_potion = StatItem(
+    name="giant agility potion", amplitude=15, duration=30, type="agility potion"
 )
 
 small_perception_potion = StatItem(
@@ -171,7 +171,7 @@ obama_armor = Armor("obama armor", 50)
 
 tier_1_items = [
     leather_armor,
-    small_dexterity_potion,
+    small_agility_potion,
     small_healing_potion,
     small_perception_potion,
     small_strength_potion,
@@ -179,7 +179,7 @@ tier_1_items = [
 
 tier_2_items = [
     iron_armor,
-    medium_dexterity_potion,
+    medium_agility_potion,
     medium_healing_potion,
     medium_perception_potion,
     medium_strength_potion,
@@ -187,7 +187,7 @@ tier_2_items = [
 
 tier_3_items = [
     diamond_armor,
-    large_dexterity_potion,
+    large_agility_potion,
     large_healing_potion,
     large_perception_potion,
     large_strength_potion,
@@ -195,7 +195,7 @@ tier_3_items = [
 
 tier_4_items = [
     obsidian_armor,
-    very_large_dexterity_potion,
+    very_large_agility_potion,
     very_large_healing_potion,
     very_large_perception_potion,
     very_large_strength_potion,
@@ -203,7 +203,7 @@ tier_4_items = [
 
 tier_5_items = [
     obama_armor,
-    giant_dexterity_potion,
+    giant_agility_potion,
     giant_healing_potion,
     giant_perception_potion,
     giant_strength_potion,

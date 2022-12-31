@@ -115,7 +115,7 @@ class LevelUpHandler(tcod.event.EventDispatch[None]):
         elif key == tcod.event.K_4:
             return "intelligence"
         elif key == tcod.event.K_5:
-            return "dexterity"
+            return "agility"
         elif key == tcod.event.K_r:
             return "reset"
 

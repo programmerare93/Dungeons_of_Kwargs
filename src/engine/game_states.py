@@ -137,7 +137,7 @@ def level_up_state(engine, window):
         engine.player.max_hp,
         engine.player.strength,
         engine.player.perception,
-        engine.player.dexterity,
+        engine.player.agility,
         engine.player.intelligence,
     )
 
@@ -151,8 +151,8 @@ def level_up_state(engine, window):
                 engine.player.strength += 1
             elif stat == "perception":
                 engine.player.perception += 1
-            elif stat == "dexterity":
-                engine.player.dexterity += 1
+            elif stat == "agility":
+                engine.player.agility += 1
             elif stat == "intelligence":
                 engine.player.intelligence += 1
             available_points -= 1
@@ -160,7 +160,7 @@ def level_up_state(engine, window):
             engine.player.max_hp = temp_stats[0]
             engine.player.strength = temp_stats[1]
             engine.player.perception = temp_stats[2]
-            engine.player.dexterity = temp_stats[3]
+            engine.player.agility = temp_stats[3]
             engine.player.intelligence = temp_stats[4]
             available_points = engine.player.intelligence // 2 + 5
         window.console.clear(bg=(0, 0, 0))
@@ -199,7 +199,7 @@ def level_up_state(engine, window):
         window.console.print(
             window.width // 2 - 18,
             54,
-            f"Dexterity: {engine.player.dexterity} (5)",
+            f"Agility: {engine.player.agility} (5)",
             fg=(255, 255, 255),
         )
 
