@@ -33,8 +33,6 @@ class Entity:
 class Player(Entity):
     def __init__(
         self,
-        char: str,
-        color: Tuple[int, int, int],
         max_hp: int,
         strength: int,
         perception: int,
@@ -42,7 +40,7 @@ class Player(Entity):
         intelligence: int,
         name: str = None,
     ):
-        super().__init__(0, 0, '@', color, "Player")
+        super().__init__(0, 0, '@', (255, 255, 255), "Player")
         self.max_hp = max_hp
         self.hp = max_hp
         self.strength = strength
@@ -92,8 +90,8 @@ class Monster(Entity):
     ):
         super().__init__(x, y, char, color, name)
         self.difficulty = difficulty
-        self.max_hp = max_hp * self.difficulty
-        self.hp = self.max_hp * self.difficulty
+        self.max_hp = max_hp
+        self.hp = self.max_hp
         self.strength = strength * self.difficulty
         self.agility = agility * self.difficulty
         self.intelligence = intelligence * self.difficulty
@@ -213,10 +211,10 @@ def generate_boss(room, game_map):
         char="B",
         color=(255, 0, 0),
         difficulty=game_map.difficulty + 2,
-        max_hp=80,
-        strength=10,
+        max_hp=100,
+        strength=15,
         perception=4,
-        dexterity=2,
+        agility=2,
         intelligence=2
     )
     game_map.entities.append(boss)

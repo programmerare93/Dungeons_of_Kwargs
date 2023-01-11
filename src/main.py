@@ -11,7 +11,7 @@ from window import color
 
 
 tileset = tcod.tileset.load_tilesheet(
-    "./assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
+    "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )
 
 
@@ -22,7 +22,6 @@ def main():
     event_handler = EventHandler()
     floor = Floor()
     player = Player(
-        (255, 255, 255),  # Färg
         max_hp=30,
         strength=50,
         agility=8,
@@ -30,7 +29,7 @@ def main():
         perception=50,
     )
 
-    generator = Generator(floor.max_rooms, window.width, window.height - 26, player)
+    generator = Generator(window.width, window.height - 26, player, floor)
     game_map = None
 
     engine = Engine(event_handler, game_map, player, floor, generator, window=window)
@@ -50,8 +49,11 @@ def main():
 
         engine.handle_used_items()
 
-        if engine.check_entities() == "dead":
+        who_dead = engine.check_entities()
+        if who_dead == "player_kill":
             death_state(engine, window)
+        elif who_dead == "boss_kill":
+            victory_state(engine, window)
 
         if engine.check_xp() == "Level Up":
             level_up_state(engine, window)

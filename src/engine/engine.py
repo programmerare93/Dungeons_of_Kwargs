@@ -194,12 +194,14 @@ class Engine:
         for entity in self.game_map.entities:
             if entity.hp <= 0:
                 if entity.char == "@":
-                    return "dead"
+                    return "player_kill"
                 self.message_log.add_message(f"{entity.name} died!", color.death_text)
                 self.game_map.entities.remove(entity)
                 self.player.xp += entity.xp_value
                 self.render(console=self.window.console, context=self.window.context)
                 # self.sound_handler.monster_death()
+                if entity.char == "B":
+                    return "boss_kill"
                 break
 
         self.game_map.explored |= self.game_map.visible

@@ -28,7 +28,7 @@ def inventory_state(engine, window):
     box_width = 13
     box_height = 20
     max_items_per_page = (
-        window.width // (box_width + 1) * (window.height // (box_height + 1))
+            window.width // (box_width + 1) * (window.height // (box_height + 1))
     )
     player_items = engine.player.inventory.items
     if len(player_items) != 0:
@@ -92,10 +92,10 @@ def inventory_state(engine, window):
             mouse_x, mouse_y = event
             for inventory_box in all_page_items[current_page]:
                 if (
-                    mouse_x >= inventory_box.x
-                    and mouse_x <= inventory_box.x + inventory_box.width
-                    and mouse_y >= inventory_box.y
-                    and mouse_y <= inventory_box.y + inventory_box.height
+                        mouse_x >= inventory_box.x
+                        and mouse_x <= inventory_box.x + inventory_box.width
+                        and mouse_y >= inventory_box.y
+                        and mouse_y <= inventory_box.y + inventory_box.height
                 ):
                     inventory_box.item.use(engine, engine.player)
                     engine.inventory_open = False
@@ -246,6 +246,30 @@ def death_state(engine, window):
             100,
             200,
             "You died!",
+            fg=(255, 0, 0),
+        )
+        window.console.print_box(
+            window.width // 2 - 10,
+            window.height - 5,
+            20,
+            5,
+            "Press esc to to quit",
+            fg=(255, 255, 255),
+        )
+        window.context.present(window.console)
+
+
+def victory_state(engine, window):
+    window.console.clear(bg=(0, 0, 0))
+    while True:
+        events = tcod.event.wait()
+        engine.handle_death_events(events)
+        window.console.print_box(
+            window.width // 2 - 5,
+            window.height // 2,
+            100,
+            200,
+            "You won!",
             fg=(255, 0, 0),
         )
         window.console.print_box(
