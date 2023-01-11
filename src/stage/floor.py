@@ -7,12 +7,3 @@ class Floor:
         self.floor = 0
         self.max_rooms = 20
         self.max_monsters_per_room = 3
-
-    def new_floor(self):
-        self.floor += 1
-
-        if self.max_monsters_per_room <= 10:
-            self.max_monsters_per_room += 1
-
-        if self.max_rooms <= 40:
-            self.max_rooms += 2

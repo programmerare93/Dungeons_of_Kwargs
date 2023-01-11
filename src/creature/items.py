@@ -1,3 +1,4 @@
+import random
 from math import inf
 
 
@@ -42,6 +43,12 @@ class StatItem(Item):
             entity.perception += self.amplitude
             entity.inventory.items.remove(self)
 
+        elif self.type.endswith("artifact"):
+            entity.hp += self.amplitude
+            entity.perception += self.amplitude
+            entity.dexterity += self.amplitude
+            entity.intelligence += self.amplitude
+
         engine.message_log.add_message("You used a {}!".format(self.type))
         self.activated_tick = engine.tick
         return
@@ -85,6 +92,8 @@ medium_perception_potion = StatItem("medium perception potion", 4, duration=20)
 
 large_perception_potion = StatItem("large perception potion", 6, duration=30)
 
+artifact = StatItem("strange artifact", random.randint(1, 4), duration=inf)
+
 all_items = [
     small_healing_potion,
     medium_healing_potion,
@@ -98,4 +107,5 @@ all_items = [
     small_perception_potion,
     medium_perception_potion,
     large_perception_potion,
+    artifact
 ]

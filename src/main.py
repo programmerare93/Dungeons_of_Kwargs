@@ -23,9 +23,7 @@ def main():
     event_handler = EventHandler()
     floor = Floor()
     player = Player(
-        "@",
-        (255, 255, 255),
-        name="Player",
+        (255, 255, 255),  # Färg
         max_hp=30,
         strength=10,
         dexterity=8,
@@ -33,7 +31,7 @@ def main():
         perception=4,
     )
 
-    generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
+    generator = Generator(window.width, window.height - 20, player, floor)
     game_map = None
 
     engine = Engine(event_handler, game_map, player, floor, generator, window=window)

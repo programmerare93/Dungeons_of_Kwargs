@@ -11,7 +11,7 @@ class Entity:
     """Generisk klass för att representera en 'entitet', något som en fiende eller spelare"""
 
     def __init__(
-        self, x: int, y: int, char: str, color: Tuple[int, int, int], name: str = None
+            self, x: int, y: int, char: str, color: Tuple[int, int, int], name: str = None
     ):
         self.name = name
         self.x = x
@@ -31,76 +31,25 @@ class Entity:
 
 class Player(Entity):
     def __init__(
-        self,
-        char: str,
-        color: Tuple[int, int, int],
-        max_hp: int,
-        strength: int,
-        perception: int,
-        dexterity: int,
-        intelligence: int,
-        name: str = None,
+            self,
+            color: Tuple[int, int, int],
+            max_hp: int,
+            strength: int,
+            perception: int,
+            dexterity: int,
+            intelligence: int,
     ):
-        super().__init__(0, 0, char, color, name)
-        self.name = name
+        super().__init__(0, 0, '@', color, "Player")
         self.max_hp = max_hp
         self.hp = max_hp
         self.strength = strength
         self.dexterity = dexterity
         self.intelligence = intelligence
         self.perception = perception
-        self.inventory = Inventory(
-            self,
-            items=[small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   ],
-        )
         self.xp = 0
         self.xp_to_next_level = 100
         self.level = 1
-        self.inventory = Inventory(self, items=[small_perception_potion])
+        self.inventory = Inventory(self, items=[artifact])
         self.used_items = []
 
     def heal(self, amount: int) -> int:
@@ -124,18 +73,18 @@ class Player(Entity):
 
 class Monster(Entity):
     def __init__(
-        self,
-        x: int,
-        y: int,
-        char: str,
-        color: Tuple[int, int, int],
-        difficulty: int,
-        max_hp: int,
-        strength: int,
-        perception: int,
-        dexterity: int,
-        intelligence: int,
-        name: str,
+            self,
+            x: int,
+            y: int,
+            char: str,
+            color: Tuple[int, int, int],
+            difficulty: int,
+            max_hp: int,
+            strength: int,
+            perception: int,
+            dexterity: int,
+            intelligence: int,
+            name: str,
     ):
         super().__init__(x, y, char, color, name)
         self.difficulty = difficulty
@@ -155,7 +104,7 @@ class Monster(Entity):
         """Monster pathfinding"""
         if game_map.pathfinding(self.x, self.y, player.x, player.y) == []:
             return
-            
+
         tile_x, tile_y = (
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][0],
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][1],
@@ -240,3 +189,23 @@ def generate_monsters(room, game_map):
         room.type = "monster"
     else:  # Om det redan finns en entity på den platsen, kör funktionen igen
         generate_monsters(room, game_map)
+
+
+def generate_boss(room, game_map):
+    x, y = room.center
+
+    boss = Monster(
+        name="Ancient Titan",
+        x=x,
+        y=y,
+        char="B",
+        color=(255, 0, 0),
+        difficulty=game_map.difficulty + 2,
+        max_hp=80,
+        strength=10,
+        perception=4,
+        dexterity=2,
+        intelligence=2
+    )
+    game_map.entities.append(boss)
+    room.type = "monster"

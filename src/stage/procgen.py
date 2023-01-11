@@ -6,7 +6,7 @@ import numpy as np
 import tcod
 
 import stage.tile_types as tile_types
-from creature.entity import Entity, generate_monsters, Chest
+from creature.entity import Entity, generate_monsters, generate_boss, Chest
 from stage.game_map import GameMap
 from stage.rooms import Room
 from stage.floor import Floor
@@ -17,18 +17,19 @@ from stage.floor import Floor
 class Generator:
     def __init__(
         self,
-        max_rooms: int,
         map_width: int,
         map_height: int,
         player: Entity,
+        floor: Floor,
         min_width=4,
         min_height=4,
-    ):
+    ) -> None:
         self.player = player
+        self.floor = floor
         self.difficulty = 1
         self.dungeon = GameMap(map_width, map_height, entities=[player])
         self.room_list = []
-        self.max_rooms = max_rooms
+        self.max_rooms = self.floor.max_rooms
         self.map_width = map_width
         self.map_height = map_height
         self.max_monsters_per_room = 2 * self.difficulty
@@ -60,7 +61,7 @@ class Generator:
         for (x, y) in tcod.los.bresenham((corner_x, corner_y), (x2, y2)).tolist():
             self.dungeon.tiles[x, y] = tile_types.floor
 
-    def generate_dungeon(self):
+    def generate_dungeon(self) -> None:
         """
         Metod för att skapa själva kartan
         Tar inte in något
@@ -79,66 +80,82 @@ class Generator:
 
         self.room_list.clear()
 
-        for _ in range(self.max_rooms):
-            width = random.randint(self.min_width, self.max_width)
-            height = random.randint(self.min_height, self.max_height)
+        if self.floor.floor < 5:
+            # ett understreck i en for loop innebär att vi "kastar iväg"/struntar
+            # i värdet som range() kommer att återge
+            for _ in range(self.max_rooms):
+                width = random.randint(self.min_width, self.max_width)
+                height = random.randint(self.min_height, self.max_height)
 
-            x = random.randint(1, self.map_width - width - 1)
-            y = random.randint(1, self.map_height - height - 1)
+                x = random.randint(1, self.map_width - width - 1)
+                y = random.randint(1, self.map_height - height - 1)
 
-            new_room = Room(x, y, width, height)
+                new_room = Room(x, y, width, height)
 
-            # Kommer att gå igenom alla rum i room_list
-            # och kollar ifall någon överlappar med det nya rummet
-            if any(new_room.intersects(other_room) for other_room in self.room_list):
-                continue  # Starta om ifall det överlappade
+                # Kommer att gå igenom alla rum i room_list
+                # och kollar ifall någon överlappar med det nya rummet
+                if any(new_room.intersects(other_room) for other_room in self.room_list):
+                    continue  # Starta om ifall det överlappade
 
-            self.dungeon.tiles[new_room.inner] = tile_types.floor
+                self.dungeon.tiles[new_room.inner] = tile_types.floor
 
-            if len(self.room_list) == 0:
-                self.player.x, self.player.y = new_room.center
-            else:
-                self.create_tunnel(self.room_list[-1].center, new_room.center)
+                if len(self.room_list) == 0:  # Första rummet
+                    self.player.x, self.player.y = new_room.center
+                else:
+                    self.create_tunnel(self.room_list[-1].center, new_room.center)
 
-            self.room_list.append(new_room)
+                self.room_list.append(new_room)
 
-        # Tar bort första rummet som alternativ
-        available_stair_rooms = self.room_list
-        available_stair_rooms.pop(0)
-        # Gör om ett slumpmässigt rum till rummet med trappan i
-        stair_room = random.choice(available_stair_rooms)
-        self.dungeon.tiles[stair_room.center] = tile_types.stair_case
+            # Tar bort första rummet som alternativ
+            available_stair_rooms = self.room_list
+            available_stair_rooms.pop(0)
+            # Gör om ett slumpmässigt rum till rummet med trappan i
+            stair_room = random.choice(available_stair_rooms)
+            self.dungeon.tiles[stair_room.center] = tile_types.stair_case
 
-        for (x, row) in enumerate(self.dungeon.tiles):
-            for (y, value) in enumerate(row):
-                if self.dungeon.tiles[x, y] == tile_types.floor:
-                    if random.randint(0, 50) == 25:
-                        self.dungeon.tiles[x, y] = tile_types.Trap(
-                            tile_types.trap_color
-                        )
+            # Genererar fällor
+            for (x, row) in enumerate(self.dungeon.tiles):
+                for (y, value) in enumerate(row):
+                    if self.dungeon.tiles[x, y] == tile_types.floor:
+                        if random.randint(0, 50) == 25:
+                            self.dungeon.tiles[x, y] = tile_types.Trap(
+                                tile_types.trap_color
+                            )
 
-        for room in self.room_list:
-            for _ in range(random.randint(1, self.max_monsters_per_room)):
-                generate_monsters(room, self.dungeon)
+            # Generar monster
+            for room in self.room_list:
+                for _ in range(random.randint(1, self.max_monsters_per_room)):
+                    generate_monsters(room, self.dungeon)
 
-        for room in self.room_list:
-            a, b = room.center
-            if random.randint(1, 4) == 4 and not isinstance(
-                self.dungeon.get_tile(a, b), tile_types.StairCase
-            ):
-                new_chest = Chest(
-                    a,
-                    b,
-                    inventory=Inventory(
-                        items=[
-                            random.choice(all_items)
-                            for _ in range(random.randint(1, 3))
-                        ]
-                    ),
-                )
-                self.dungeon.entities.append(new_chest)
+            for room in self.room_list:
+                a, b = room.center
+                if random.randint(1, 4) == 4 and not isinstance(
+                    self.dungeon.get_tile(a, b), tile_types.StairCase
+                ):
+                    new_chest = Chest(
+                        a,
+                        b,
+                        inventory=Inventory(
+                            items=[
+                                random.choice(all_items)
+                                for _ in range(random.randint(1, 3))
+                            ]
+                        ),
+                    )
+                    self.dungeon.entities.append(new_chest)
+        else:  # Sista våningen är speciell
+            width = 14
+            height = 14
+            boss_room = Room(self.map_width // 2, self.map_height // 2, width, height)
+            self.room_list.append(boss_room)
+            self.dungeon.tiles[boss_room.inner] = tile_types.floor
+
+            self.player.x = self.map_width // 2 + width - 1
+            self.player.y = self.map_height // 2 + height // 2
+
+            generate_boss(boss_room, self.dungeon)
 
         self.dungeon.generate_pathfinding_map()
 
-    def get_dungeon(self):
+    def get_dungeon(self) -> GameMap:
         return self.dungeon
