@@ -9,7 +9,7 @@ from stage.game_map import GameMap
 class Room:
     """Klass för att representera ett rektangulärt rum"""
 
-    def __init__(self, x: int, y: int, width: int, height: int):
+    def __init__(self, x: int, y: int, width: int, height: int) -> None:
         self.x1 = x
         self.y1 = y
         self.x2 = x + width
