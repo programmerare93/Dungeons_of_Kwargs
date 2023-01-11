@@ -39,23 +39,23 @@ class MovementAction(Action):
 
         if engine.player_activated_trap(dest_x, dest_y):
             difficulty = engine.game_map.tiles[dest_x, dest_y].difficulty
-            dexterity = engine.player.dexterity
+            agility = engine.player.agility
             if (
-                difficulty < dexterity
+                difficulty < agility
                 and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
             ):
                 engine.message_log.add_message(
                     "You stepped on a trap. You avoided it!", (0, 255, 0)
                 )
             elif (
-                difficulty > dexterity
+                difficulty > agility
                 and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
             ):
                 engine.message_log.add_message(
-                    f"You stepped on a trap. You took {difficulty - dexterity} damage!",
+                    f"You stepped on a trap. You took {difficulty - agility} damage!",
                     (255, 0, 0),
                 )
-                engine.player.hp -= difficulty - dexterity
+                engine.player.hp -= difficulty - agility
             else:
                 pass
             engine.game_map.tiles[dest_x, dest_y].hasBeenActivated = True
@@ -68,18 +68,27 @@ class MovementAction(Action):
             if target.char != "@":
                 return "tried to attack a monster"
             if entity.perception + random.randint(
-                    1, 20
-            ) > target.dexterity + random.randint(1, 20):
-                damage = entity.strength + random.randint(
-                    -entity.strength // 4, entity.strength // 4
+                1, 20
+            ) > target.agility + random.randint(1, 20):
+                damage = (
+                    entity.strength
+                    + random.randint(-entity.strength // 4, entity.strength // 4)
+                    - target.armor.defense
                 )
-                target.hp -= damage
-                engine.message_log.add_message(
-                    f"{target.name} took {damage} damage!", target.color
-                )
-                engine.render(
-                    console=engine.window.console, context=engine.window.context
-                )
+                if damage <= 0:
+                    engine.message_log.add_message(
+                        f"{entity.name}'s attack couldn't pierce {target.name}'s armor!",
+                        target.color,
+                    )
+                    return "armor blocked"
+                else:
+                    target.hp -= damage
+                    engine.message_log.add_message(
+                        f"{target.name} took {damage} damage!", target.color
+                    )
+                    engine.render(
+                        console=engine.window.console, context=engine.window.context
+                    )
                 # sound_handler.player_hit()
                 return "player_hit"
             else:
@@ -93,29 +102,42 @@ class MovementAction(Action):
                 return "miss"
 
         elif (
-                engine.game_map.entity_at_location(dest_x, dest_y)
-                and list(engine.game_map.entity_at_location(dest_x, dest_y))[0].char == "C"
+            engine.game_map.entity_at_location(dest_x, dest_y)
+            and list(engine.game_map.entity_at_location(dest_x, dest_y))[0].char == "C"
         ):
             return None
         elif (
-                engine.game_map.entity_at_location(dest_x, dest_y)
-                and engine.player_can_attack == True
+            engine.game_map.entity_at_location(dest_x, dest_y)
+            and engine.player_can_attack == True
         ):
             target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
             if entity.perception + random.randint(
-                    1, 20
-            ) > target.dexterity + random.randint(1, 20):
-                damage = engine.player.strength + random.randint(
-                    -engine.player.strength // 4, engine.player.strength // 4
+                1, 20
+            ) > target.agility + random.randint(1, 20):
+                damage = (
+                    engine.player.strength
+                    + random.randint(
+                        -engine.player.strength // 4, engine.player.strength // 4
+                    )
+                    - target.armor.defense
                 )
-                target.hp -= damage
-                engine.message_log.add_message(f"{target.name} took {damage} damage!")
-                engine.render(
-                    console=engine.window.console, context=engine.window.context
-                )
-                # sound_handler.sword_sound()
-                engine.player_can_attack = False
-                return "hit"
+                if damage <= 0:
+                    engine.message_log.add_message(
+                        f"{entity.name}'s attack couldn't pierce {target.name}'s armor!",
+                        target.color,
+                    )
+                    return "armor blocked"
+                else:
+                    target.hp -= damage
+                    engine.message_log.add_message(
+                        f"{target.name} took {damage} damage!"
+                    )
+                    engine.render(
+                        console=engine.window.console, context=engine.window.context
+                    )
+                    # sound_handler.sword_sound()
+                    engine.player_can_attack = False
+                    return "hit"
             else:
                 engine.message_log.add_message(f"{target.name} dodged your attack!")
                 engine.render(
@@ -170,17 +192,17 @@ class OpenChest(Action):
     def perform(self, engine: Engine, entity: Entity) -> None:
         for monster in engine.game_map.entities:
             if (
-                    monster.char == "C"
-                    and engine.game_map.calculate_distance(
-                entity.x, entity.y, monster.x, monster.y
-            )
-                    == 1
+                monster.char == "C"
+                and engine.game_map.calculate_distance(
+                    entity.x, entity.y, monster.x, monster.y
+                )
+                == 1
             ):
                 chest = monster
                 engine.message_log.add_message("You opened a chest!")
                 engine.player.inventory.items.extend(chest.inventory.items)
                 engine.message_log.add_message(
-                    f"You Received {tuple([item.type for item in chest.inventory.items])}"
+                    f"You Received {tuple([item.name for item in chest.inventory.items])}"
                 )
                 engine.game_map.entities.remove(chest)
                 engine.render(

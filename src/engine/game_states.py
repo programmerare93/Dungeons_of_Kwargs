@@ -2,7 +2,51 @@ import tcod.event
 import tcod.sdl.render
 
 
+class InventoryBox:
+    def __init__(self, x, y, width, height, item=None):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.item = item
+        self.item_path = "assets\\items\\{}.png".format(self.item.name)
+
+    def render(self, window):
+        window.console.print_box(
+            x=self.x,
+            y=self.y,
+            width=self.width,
+            height=self.height,
+            string=self.item.name,
+        )
+        window.show_image(self.item_path, self.x, self.y + 4, self.width, self.height)
+
+
 def inventory_state(engine, window):
+    x_offset = 3
+    y_offset = 4
+    box_width = 13
+    box_height = 20
+    max_items_per_page = (
+        window.width // (box_width + 1) * (window.height // (box_height + 1))
+    )
+    player_items = engine.player.inventory.items
+    if len(player_items) != 0:
+        num_pages = len(player_items) // max_items_per_page
+        all_page_items = [[] for _ in range(num_pages + 1)]
+        i = 0
+        for item in player_items:
+            if len(all_page_items[i]) == max_items_per_page:
+                i += 1
+                y_offset = 4
+                x_offset = 3
+            elif x_offset + 8 > window.width:
+                x_offset = 3
+                y_offset += box_height + 1
+            new_box = InventoryBox(x_offset, y_offset, box_width, box_height, item)
+            all_page_items[i].append(new_box)
+            x_offset += box_width + 1
+        current_page = 0
     while True:
         window.console.clear()
 
@@ -17,9 +61,7 @@ def inventory_state(engine, window):
             clear=True,
         )
 
-        x = 1
-        y = 1
-        if len(engine.player.inventory.items) == 0:
+        if len(player_items) == 0:
             window.console.print(
                 window.width // 2,
                 window.height // 2,
@@ -28,30 +70,8 @@ def inventory_state(engine, window):
                 alignment=tcod.CENTER,
             )
         else:
-            for (place_in_inventory, item) in enumerate(engine.player.inventory.items):
-                if place_in_inventory == 0:
-                    # På första enumerationen ändra inte x och y värdet
-                    pass
-                elif y >= window.height - 4:
-                    x += 25
-                    y = 1
-                else:
-                    y += 2
-
-                window.console.print(
-                    x,
-                    y,
-                    string=f"{item.type}({place_in_inventory + 1})",
-                    fg=(255, 255, 255),
-                    bg=(0, 0, 0),
-                    alignment=tcod.LEFT
-                )
-
-        window.console.print(
-            window.width // 2,
-            window.height,
-            "Press the number next to the item to use it"
-        )
+            for inventory_box in all_page_items[current_page]:
+                inventory_box.render(window)
 
         window.context.present(window.console)
 
@@ -61,7 +81,25 @@ def inventory_state(engine, window):
 
         if event == "close":
             engine.inventory_open = False
-            break
+            return
+        elif event == "next_page":
+            if current_page < num_pages:
+                current_page += 1
+        elif event == "previous_page":
+            if current_page > 0:
+                current_page -= 1
+        elif isinstance(event, tuple):
+            mouse_x, mouse_y = event
+            for inventory_box in all_page_items[current_page]:
+                if (
+                    mouse_x >= inventory_box.x
+                    and mouse_x <= inventory_box.x + inventory_box.width
+                    and mouse_y >= inventory_box.y
+                    and mouse_y <= inventory_box.y + inventory_box.height
+                ):
+                    inventory_box.item.use(engine, engine.player)
+                    engine.inventory_open = False
+                    return
 
 
 def main_menu(engine, window):
@@ -99,7 +137,7 @@ def level_up_state(engine, window):
         engine.player.max_hp,
         engine.player.strength,
         engine.player.perception,
-        engine.player.dexterity,
+        engine.player.agility,
         engine.player.intelligence,
     )
 
@@ -113,8 +151,8 @@ def level_up_state(engine, window):
                 engine.player.strength += 1
             elif stat == "perception":
                 engine.player.perception += 1
-            elif stat == "dexterity":
-                engine.player.dexterity += 1
+            elif stat == "agility":
+                engine.player.agility += 1
             elif stat == "intelligence":
                 engine.player.intelligence += 1
             available_points -= 1
@@ -122,7 +160,7 @@ def level_up_state(engine, window):
             engine.player.max_hp = temp_stats[0]
             engine.player.strength = temp_stats[1]
             engine.player.perception = temp_stats[2]
-            engine.player.dexterity = temp_stats[3]
+            engine.player.agility = temp_stats[3]
             engine.player.intelligence = temp_stats[4]
             available_points = engine.player.intelligence // 2 + 5
         window.console.clear(bg=(0, 0, 0))
@@ -161,7 +199,7 @@ def level_up_state(engine, window):
         window.console.print(
             window.width // 2 - 18,
             54,
-            f"Dexterity: {engine.player.dexterity} (5)",
+            f"Agility: {engine.player.agility} (5)",
             fg=(255, 255, 255),
         )
 

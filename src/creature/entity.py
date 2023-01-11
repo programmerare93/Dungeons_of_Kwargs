@@ -1,5 +1,6 @@
 from typing import Tuple
 from tcod import Console
+from itertools import chain
 import random
 
 from stage.floor import Floor
@@ -31,25 +32,28 @@ class Entity:
 
 class Player(Entity):
     def __init__(
-            self,
-            color: Tuple[int, int, int],
-            max_hp: int,
-            strength: int,
-            perception: int,
-            dexterity: int,
-            intelligence: int,
+        self,
+        char: str,
+        color: Tuple[int, int, int],
+        max_hp: int,
+        strength: int,
+        perception: int,
+        agility: int,
+        intelligence: int,
+        name: str = None,
     ):
         super().__init__(0, 0, '@', color, "Player")
         self.max_hp = max_hp
         self.hp = max_hp
         self.strength = strength
-        self.dexterity = dexterity
+        self.agility = agility
         self.intelligence = intelligence
         self.perception = perception
+        self.armor = obama_armor
         self.xp = 0
         self.xp_to_next_level = 100
         self.level = 1
-        self.inventory = Inventory(self, items=[artifact])
+        self.inventory = Inventory(self, items=list(chain(*all_items)))
         self.used_items = []
 
     def heal(self, amount: int) -> int:
@@ -73,32 +77,33 @@ class Player(Entity):
 
 class Monster(Entity):
     def __init__(
-            self,
-            x: int,
-            y: int,
-            char: str,
-            color: Tuple[int, int, int],
-            difficulty: int,
-            max_hp: int,
-            strength: int,
-            perception: int,
-            dexterity: int,
-            intelligence: int,
-            name: str,
+        self,
+        x: int,
+        y: int,
+        char: str,
+        color: Tuple[int, int, int],
+        difficulty: int,
+        max_hp: int,
+        strength: int,
+        perception: int,
+        agility: int,
+        intelligence: int,
+        name: str,
     ):
         super().__init__(x, y, char, color, name)
         self.difficulty = difficulty
         self.max_hp = max_hp * self.difficulty
         self.hp = self.max_hp * self.difficulty
         self.strength = strength * self.difficulty
-        self.dexterity = dexterity * self.difficulty
+        self.agility = agility * self.difficulty
         self.intelligence = intelligence * self.difficulty
         self.perception = perception * self.difficulty
         self.inventory = Inventory(
             self,
             items=[small_healing_potion, small_healing_potion, small_healing_potion],
         )
-        self.xp_value = self.max_hp + self.strength + self.dexterity + self.intelligence
+        self.xp_value = self.max_hp + self.strength + self.agility + self.intelligence
+        self.armor = leather_armor
 
     def monster_pathfinding(self, player, game_map, engine):
         """Monster pathfinding"""
@@ -133,24 +138,31 @@ class Monster(Entity):
 
 
 class Chest(Entity):
-    def __init__(self, x: int, y: int, inventory: Inventory, name: str = "Chest"):
+    def __init__(self, x: int, y: int, name: str = "Chest", tier: int = 1):
         self.name = name
         self.hp = inf
         self.x = x
         self.y = y
         self.char = "C"
         self.color = (0, 255, 255)
-        self.inventory = inventory
         self.closed = True
+        self.tier = tier
+        self.inventory = Inventory(
+            self,
+            items=[
+                random.choice(all_items[self.tier - 1])
+                for _ in range(random.randint(1, 3))
+            ],
+        )
 
     def generate_items(self):
         """Genererar ett antal items i en kista"""
         for _ in range(random.randint(1, 3)):
-            self.inventory.items.append(random.choice(all_items))
+            self.inventory.items.append(random.choice(all_items[self.tier - 1]))
 
 
 def generate_monsters(room, game_map):
-    """Genererar en entity i ett given rum"""
+    """Genererar en entity i ett givet rum"""
 
     x = random.randint(room.x1 + 1, room.x2 - 1)
 
@@ -166,8 +178,8 @@ def generate_monsters(room, game_map):
                 color=(0, 255, 120),
                 difficulty=game_map.difficulty,
                 max_hp=16,
-                strength=5,
-                dexterity=5,
+                strength=10,
+                agility=5,
                 perception=5,
                 intelligence=1,
             )
@@ -180,9 +192,9 @@ def generate_monsters(room, game_map):
                 color=(0, 0, 255),
                 difficulty=game_map.difficulty,
                 max_hp=30,
-                strength=8,
+                strength=10,
                 perception=5,
-                dexterity=3,
+                agility=3,
                 intelligence=3,
             )
         game_map.entities.append(monster)

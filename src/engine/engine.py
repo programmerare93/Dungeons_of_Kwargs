@@ -25,15 +25,15 @@ class Engine:
     """Klassen för spel motorn, samlar all funktionalitet i metoder"""
 
     def __init__(
-            self,
-            event_handler: EventHandler,
-            game_map: GameMap,
-            player: Entity,
-            floor: Floor,
-            generator: Generator,
-            player_can_attack: bool = True,
-            player_attack_cool_down: int = 0,
-            window: Window = None,
+        self,
+        event_handler: EventHandler,
+        game_map: GameMap,
+        player: Entity,
+        floor: Floor,
+        generator: Generator,
+        player_can_attack: bool = True,
+        player_attack_cool_down: int = 0,
+        window: Window = None,
     ):
         self.window = window
         self.event_handler = EventHandler()
@@ -95,6 +95,10 @@ class Engine:
 
     def handle_inventory_events(self, events: Iterable[Any]) -> None:
         for event in events:
+            if isinstance(event, tcod.event.MouseButtonDown):
+                self.window.context.convert_event(event)
+                return tuple(event.tile)
+
             action = self.inventory_handler.dispatch(event)
 
             if action is None:
@@ -102,9 +106,15 @@ class Engine:
             if action == "close":
                 return "close"
             elif action in [f"N{x}" for x in range(1, 10)]:
-                self.player.used_items.append(self.player.inventory.items[int(action[1]) - 1])
+                self.player.used_items.append(
+                    self.player.inventory.items[int(action[1]) - 1]
+                )
                 self.player.inventory.items[int(action[1]) - 1].use(self, self.player)
                 return "close"
+            elif action == "next_page":
+                return "next_page"
+            elif action == "previous_page":
+                return "previous_page"
 
     def handle_main_menu_events(self, events: Iterable[Any]) -> None:
         for event in events:
@@ -137,11 +147,11 @@ class Engine:
             for monster in self.game_map.entities:
                 if monster.char not in ("@", "C"):
                     if (
-                            monster.hp > 0
-                            and self.game_map.calculate_distance(
-                        monster.x, monster.y, self.player.x, self.player.y
-                    )
-                            <= monster.perception
+                        monster.hp > 0
+                        and self.game_map.calculate_distance(
+                            monster.x, monster.y, self.player.x, self.player.y
+                        )
+                        <= monster.perception
                     ):
                         monster.monster_pathfinding(self.player, self.game_map, self)
             self.monster_tick = self.tick
@@ -159,7 +169,6 @@ class Engine:
             for item in self.player.used_items:
                 if self.tick - item.activated_tick >= item.duration:
                     item.remove_effect(self.player)
-                    self.player.used_items.remove(item)
                     self.message_log.add_message(
                         f"{item.type} has worn off!", color.white
                     )

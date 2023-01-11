@@ -1,4 +1,3 @@
-import tcod
 import tcod.sdl.render
 
 
@@ -25,8 +24,15 @@ class Window:
         self.height = height
         self.width = width
 
+    def show_image(self, image_path, x, y, width=None, height=None):
+        image = tcod.image_load(image_path)
+        if width is None and height is None:
+            width, height = image._get_size()
+        image.blit_2x(self.console, x, y)
+        tcod.console_blit(self.console, 0, 0, width, height, 0, 0, 0)
+
     def render_log(self, player, engine):
-        self.console.draw_frame(0, 51, self.width, self.height - 51, "Log", clear=False)
+        self.console.draw_frame(0, 45, self.width, self.height - 45, "Log", clear=False)
         self.console.print(
             55,
             52,
@@ -50,7 +56,8 @@ class Window:
             55,
             "Player XP: {}".format(engine.player.xp),
         )
-        
+        self.show_image("assets\\main_character.png", 3, 48)
+
     def print(self, x: int, y: int, string: str):
         self.console.print(x, y, string)
 

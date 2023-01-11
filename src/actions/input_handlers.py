@@ -46,8 +46,6 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             action = OpenChest()
         elif key == tcod.event.K_o:
             return "Level Up"
-        elif key == tcod.event.K_1:
-            action = UseItem()
         return action
 
 
@@ -66,6 +64,10 @@ class InventoryHandler(tcod.event.EventDispatch[Action]):
             action = "close"
         elif key.name in [f"N{x}" for x in range(1, 10)]:
             action = key.name
+        elif key == tcod.event.K_RIGHT:
+            action = "next_page"
+        elif key == tcod.event.K_LEFT:
+            action = "previous_page"
         return action
 
 
@@ -113,7 +115,7 @@ class LevelUpHandler(tcod.event.EventDispatch[None]):
         elif key == tcod.event.K_4:
             return "intelligence"
         elif key == tcod.event.K_5:
-            return "dexterity"
+            return "agility"
         elif key == tcod.event.K_r:
             return "reset"
 
