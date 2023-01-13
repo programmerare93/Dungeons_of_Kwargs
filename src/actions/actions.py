@@ -30,6 +30,9 @@ class MovementAction(Action):
         self.dy = dy
 
     def perform(self, engine: Engine, entity: Entity) -> None:
+        if not engine.player_can_move:
+            return None
+
         dest_x = entity.x + self.dx
         dest_y = entity.y + self.dy
 

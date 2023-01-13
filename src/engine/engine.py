@@ -32,6 +32,7 @@ class Engine:
         floor: Floor,
         generator: Generator,
         player_can_attack: bool = True,
+        player_can_move: bool = False,
         player_attack_cool_down: int = 0,
         window: Window = None,
     ):
@@ -39,6 +40,7 @@ class Engine:
         self.event_handler = EventHandler()
         self.game_map = game_map
         self.inventory_open = False
+        self.player_can_move = player_can_move
         self.message_log = MessageLog()
         self.player = player
         self.floor = floor
@@ -49,10 +51,6 @@ class Engine:
         self.player_attack_cool_down = player_attack_cool_down
         self.update_game_map()
         self.update_fov()
-        self.inventory_handler = InventoryHandler()
-        self.main_menu_handler = MainMenuHandler()
-        self.death_handler = DeathHandler()
-        self.level_up_handler = LevelUpHandler()
         self.sound_handler = SoundHandler()
         self.window = window
 
@@ -75,93 +73,46 @@ class Engine:
 
     def handle_events(self, events: Iterable[Any]) -> None:
         for event in events:
+            if isinstance(event, tcod.event.MouseButtonDown):
+                self.window.context.convert_event(event)
+                return tuple(event.tile)
             action = self.event_handler.dispatch(event)
 
-            if action is None:
-                continue
-
-            elif action == "inventory":
-                # Sätter inventory_open attributet till motsatsen sv sig själv
-                self.inventory_open = not self.inventory_open
-                continue
-
-            elif action == "Level Up":
-                self.player.xp += 100
-                continue
+            match action:
+                case None:
+                    continue
+                case "inventory":
+                    self.inventory_open = not self.inventory_open
+                    return "inventory"
+                case "Level Up":
+                    self.player.xp += 100
+                case "close":
+                    return "close"
+                case "next_page":
+                    return "next_page"
+                case "previous_page":
+                    return "previous_page"
+                case "New Game":
+                    return "new_game"
+                case "Reset":
+                    return "reset"
 
             if action.perform(self, self.player) is not None:
                 self.tick += 1
                 self.update_fov()
 
-    def handle_inventory_events(self, events: Iterable[Any]) -> None:
-        for event in events:
-            if isinstance(event, tcod.event.MouseButtonDown):
-                self.window.context.convert_event(event)
-                return tuple(event.tile)
-
-            action = self.inventory_handler.dispatch(event)
-
-            if action is None:
-                continue
-            if action == "close":
-                return "close"
-            elif action in [f"N{x}" for x in range(1, 10)]:
-                self.player.used_items.append(
-                    self.player.inventory.items[int(action[1]) - 1]
-                )
-                self.player.inventory.items[int(action[1]) - 1].use(self, self.player)
-                return "close"
-            elif action == "next_page":
-                return "next_page"
-            elif action == "previous_page":
-                return "previous_page"
-
-    def handle_main_menu_events(self, events: Iterable[Any]) -> None:
-        for event in events:
-            if isinstance(event, tcod.event.MouseButtonDown):
-                self.window.context.convert_event(event)
-                return tuple(event.tile)
-            action = self.main_menu_handler.dispatch(event)
-
-            if action is None:
-                continue
-
-            if action == "New Game":
-                return "new_game"
-            elif action == "Reset":
-                return "reset"
-
-    def handle_death_events(self, events: Iterable[Any]) -> None:
-        for event in events:
-            action = self.death_handler.dispatch(event)
-
-            if action is None:
-                continue
-
-    def handle_level_up_events(self, events: Iterable[Any]) -> None:
-        for event in events:
-            if isinstance(event, tcod.event.MouseButtonDown):
-                self.window.context.convert_event(event)
-                return tuple(event.tile)
-            action = self.level_up_handler.dispatch(event)
-
-            if action is None:
-                continue
-
-            return action
-
     def handle_enemy_AI(self):
         if self.monster_tick != self.tick:
             for monster in self.game_map.entities:
-                if monster.char not in ("@", "C"):
-                    if (
-                        monster.hp > 0
-                        and self.game_map.calculate_distance(
-                            monster.x, monster.y, self.player.x, self.player.y
-                        )
-                        <= monster.perception
-                    ):
-                        monster.monster_pathfinding(self.player, self.game_map, self)
+                if (
+                    monster.char not in ("@", "C")
+                    and monster.hp > 0
+                    and self.game_map.calculate_distance(
+                        monster.x, monster.y, self.player.x, self.player.y
+                    )
+                    <= monster.perception
+                ):
+                    monster.monster_pathfinding(self.player, self.game_map, self)
             self.monster_tick = self.tick
 
     def can_player_attack(self):
@@ -214,7 +165,6 @@ class Engine:
 
     def check_xp(self):
         if self.player.xp >= self.player.xp_to_next_level:
-            # self.level_up()
             self.player.level += 1
             self.message_log.add_message(
                 f"You are now level {self.player.level}!", (0, 0, 255)

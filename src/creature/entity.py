@@ -118,24 +118,6 @@ class Monster(Entity):
         action = MovementAction(tile_x - self.x, tile_y - self.y)
         action.perform(engine, self)
 
-    def heal(self, amount: int) -> int:
-        if self.hp == self.max_hp:
-            return
-
-        new_hp = self.hp + amount
-
-        if new_hp > self.max_hp:
-            self.hp = self.max_hp
-        else:
-            self.hp = new_hp
-
-        amount_recovered = new_hp - self.hp
-
-        return amount_recovered
-
-    def take_damage(self, amount: int):
-        self.hp -= amount
-
 
 class Chest(Entity):
     def __init__(self, x: int, y: int, name: str = "Chest", tier: int = 1):

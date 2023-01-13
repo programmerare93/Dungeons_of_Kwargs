@@ -86,15 +86,15 @@ def inventory_state(engine, window):
 
         events = tcod.event.wait()
 
-        event = engine.handle_inventory_events(events)
+        event = engine.handle_events(events)
 
-        if event == "close":
-            engine.inventory_open = False
+        if event == "inventory":
             return
         elif event == "next_page":
             if current_page < num_pages:
                 current_page += 1
         elif event == "previous_page":
+            print("this is working")
             if current_page > 0:
                 current_page -= 1
         elif isinstance(event, tuple):
@@ -171,7 +171,7 @@ def main_menu(engine, window):
 
     while True:
         events = tcod.event.wait()
-        if engine.handle_main_menu_events(events) == "new_game":
+        if engine.handle_events(events) == "new_game":
             return "playing"
         window.console.clear(bg=(0, 0, 0))
 
@@ -220,7 +220,7 @@ def stats_screen(engine, window):
     available_points = original_points
     while available_points > 0:
         events = tcod.event.wait()
-        event = engine.handle_main_menu_events(events)
+        event = engine.handle_events(events)
         if isinstance(event, tuple):
             mouse_x, mouse_y = event
             hit_stat = is_in_box(all_boxes, mouse_x, mouse_y)
@@ -296,7 +296,7 @@ def death_state(engine, window):
     window.console.clear(bg=(0, 0, 0))
     while True:
         events = tcod.event.wait()
-        engine.handle_death_events(events)
+        engine.handle_events(events)
         window.console.print_box(
             window.width // 2 - 5,
             window.height // 2,

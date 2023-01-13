@@ -42,6 +42,7 @@ def main():
     main_menu(engine, window=window)
     player.stats = stats_screen(engine, window=window)
     player.update_stats()
+    engine.player_can_move = True
 
     while True:
 
@@ -56,6 +57,7 @@ def main():
         engine.handle_used_items()
 
         if engine.check_entities() == "dead":
+            engine.player_can_move = False
             death_state(engine, window)
 
         if engine.check_xp() == "Level Up":
