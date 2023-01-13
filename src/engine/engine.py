@@ -140,6 +140,9 @@ class Engine:
 
     def handle_level_up_events(self, events: Iterable[Any]) -> None:
         for event in events:
+            if isinstance(event, tcod.event.MouseButtonDown):
+                self.window.context.convert_event(event)
+                return tuple(event.tile)
             action = self.level_up_handler.dispatch(event)
 
             if action is None:

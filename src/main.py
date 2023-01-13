@@ -40,7 +40,7 @@ def main():
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
     engine.game_map.generate_pathfinding_map()
     main_menu(engine, window=window)
-    player.stats = list(stats_screen(engine, window=window))
+    player.stats = stats_screen(engine, window=window)
     player.update_stats()
 
     while True:
@@ -59,7 +59,8 @@ def main():
             death_state(engine, window)
 
         if engine.check_xp() == "Level Up":
-            level_up_state(engine, window)
+            player.stats = level_up_state(engine, window)
+            player.update_stats()
 
         if engine.check_inventory() == "open":
             inventory_state(engine, window)
