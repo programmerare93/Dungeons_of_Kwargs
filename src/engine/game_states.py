@@ -195,102 +195,6 @@ def stats_screen(engine, window):
     box_width = 26
     box_height = 20
     all_boxes = []
-
-    for i, stat in enumerate(all_stat_names):
-        if y_offset + box_height >= window.height:
-            y_offset = 3
-            x_offset += box_width + 1
-        new_box = StatBox(
-            x_offset,
-            y_offset,
-            box_width,
-            box_height,
-            stat,
-        )
-        all_boxes.append(new_box)
-        y_offset += box_height + 1
-    available_points = 5
-    while available_points > 0:
-        events = tcod.event.wait()
-        event = engine.handle_main_menu_events(events)
-        if isinstance(event, tuple):
-            mouse_x, mouse_y = event
-            hit_stat = is_in_box(all_boxes, mouse_x, mouse_y)
-            if hit_stat != None:
-                hit_stat.stat_value += 1
-                all_stats[hit_stat.stat_name] += 1
-                available_points -= 1
-        elif event == "reset":
-            for stat_box in all_boxes:
-                stat_box.stat_value = 10
-                all_stats[stat_box.stat_name] = 10
-            available_points = 5
-        window.console.clear(bg=(0, 0, 0))
-
-        for box in all_boxes:
-            box.render(window)
-
-        window.console.draw_frame(
-            0,
-            0,
-            window.width,
-            window.height,
-            title="Player Sheet",
-            fg=(255, 255, 255),
-            bg=(0, 0, 0),
-            clear=False,
-        )
-
-        window.console.print(
-            x=window.width // 2 + 5,
-            y=window.height - 14,
-            string=f"(Available points: {available_points})",
-            fg=(255, 0, 255),
-            bg=(0, 0, 0),
-            alignment=tcod.CENTER,
-        )
-
-        window.console.print_box(
-            x=window.width - 21,
-            y=5,
-            width=21,
-            height=window.height - 5,
-            string="Controls: \n\n\nMove: Arrow keys / WASD \n\n\nGo up stairs: < \n\n\nInventory: i \n\n\n Open Chest: e \n\n\nExit: Escape \n\n\nTo attack an enemy simply walk into them!",
-        )
-
-        window.console.print(
-            x=window.width // 2 - 8,
-            y=window.height // 2 + 15,
-            string="Choose your stats wisely!",
-            fg=(255, 255, 0),
-        )
-
-        window.show_image("assets\\main_character.png", window.width - 20, 48)
-
-        window.console.print(
-            x=window.width - 20, y=window.height // 2 + 10, string="Your character:"
-        )
-
-        window.console.print(
-            x=window.width // 2 + 5,
-            y=window.height - 10,
-            string="Press r to reset",
-            fg=(255, 0, 0),
-            bg=(0, 0, 0),
-            alignment=tcod.CENTER,
-        )
-        window.context.present(window.console)
-    return list(all_stats.values())
-
-
-def level_up_state(engine, window):
-    available_points = engine.player.intelligence // 2 + 5
-    box_width = 26
-    x_offset = 5
-    y_offset = 3
-    box_width = 26
-    box_height = 20
-    all_boxes = []
     temp_stats = {
         "Max_HP": engine.player.max_hp,
         "Strength": engine.player.strength,
@@ -312,6 +216,8 @@ def level_up_state(engine, window):
         )
         all_boxes.append(new_box)
         y_offset += box_height + 1
+    original_points = engine.player.intelligence // 2 + 5
+    available_points = original_points
     while available_points > 0:
         events = tcod.event.wait()
         event = engine.handle_main_menu_events(events)
@@ -326,7 +232,8 @@ def level_up_state(engine, window):
             for stat_box in all_boxes:
                 stat_box.stat_value = temp_stats[stat_box.stat_name]
                 all_stats[stat_box.stat_name] = stat_box.stat_value
-            available_points = engine.player.intelligence // 2 + 5
+            available_points = original_points
+            available_points = original_points
         window.console.clear(bg=(0, 0, 0))
 
         for box in all_boxes:

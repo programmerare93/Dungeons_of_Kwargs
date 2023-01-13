@@ -59,7 +59,7 @@ def main():
             death_state(engine, window)
 
         if engine.check_xp() == "Level Up":
-            player.stats = level_up_state(engine, window)
+            player.stats = stats_screen(engine, window=window)
             player.update_stats()
 
         if engine.check_inventory() == "open":
