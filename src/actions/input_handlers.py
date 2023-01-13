@@ -84,6 +84,8 @@ class MainMenuHandler(tcod.event.EventDispatch[Action]):
             raise SystemExit()
         elif key == tcod.event.K_RETURN:
             action = "New Game"
+        elif key == tcod.event.K_r:
+            action = "Reset"
         return action
 
 

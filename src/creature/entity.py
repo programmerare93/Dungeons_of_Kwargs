@@ -40,12 +40,7 @@ class Player(Entity):
     ):
         super().__init__(0, 0, "@", color, "Player")
         self.stats = stats
-        self.max_hp = stats[0]
-        self.hp = self.max_hp
-        self.strength = stats[1]
-        self.perception = stats[2]
-        self.agility = stats[3]
-        self.intelligence = stats[4]
+        self.update_stats()
         self.armor = obama_armor
         self.xp = 0
         self.xp_to_next_level = 100

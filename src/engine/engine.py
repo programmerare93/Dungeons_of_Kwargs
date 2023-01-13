@@ -128,6 +128,8 @@ class Engine:
 
             if action == "New Game":
                 return "new_game"
+            elif action == "Reset":
+                return "reset"
 
     def handle_death_events(self, events: Iterable[Any]) -> None:
         for event in events:
@@ -185,7 +187,7 @@ class Engine:
         self.game_map.visible[:] = compute_fov(
             transparency=self.game_map.transparent_tiles,
             pov=(self.player.x, self.player.y),
-            radius=self.player.perception,
+            radius=self.player.perception // 2,
             algorithm=tcod.FOV_SYMMETRIC_SHADOWCAST,
         )
 

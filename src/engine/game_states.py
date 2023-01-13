@@ -110,13 +110,20 @@ stat_description = {
     "Intelligence": "The amount of skill points your character has to spend each level",
 }
 
-all_stat_names = ["Max HP", "Strength", "Perception", "Agility", "Intelligence"]
+all_stat_names = ["Max_HP", "Strength", "Perception", "Agility", "Intelligence"]
 all_stats = {
-    "Max_HP": 0,
-    "Strength": 0,
-    "Perception": 0,
-    "Agility": 0,
-    "Intelligence": 0,
+    "Max_HP": 10,
+    "Strength": 10,
+    "Perception": 10,
+    "Agility": 10,
+    "Intelligence": 10,
+}
+all_stat_colors = {
+    "Max_HP": (255, 0, 0),
+    "Strength": (0, 0, 255),
+    "Perception": (255, 128, 0),
+    "Agility": (0, 255, 255),
+    "Intelligence": (255, 0, 255),
 }
 
 
@@ -129,6 +136,7 @@ class StatBox:
         self.stat_name = stat_name
         self.stat_value = all_stats[stat_name]
         self.stat_description = stat_description[stat_name]
+        self.stat_color = all_stat_colors[stat_name]
 
     def render(self, window):
         window.console.draw_frame(
@@ -137,6 +145,8 @@ class StatBox:
             width=self.width,
             height=self.height,
             title=self.stat_name,
+            fg=self.stat_color,
+            bg=(0, 0, 0),
         )
         window.console.print_box(
             x=self.x + 3,
@@ -148,7 +158,7 @@ class StatBox:
         window.console.print(
             x=self.x + self.width // 2,
             y=self.y + self.width // 2,
-            string=str(self.stat_value),
+            string=str(all_stats[self.stat_name]),
             fg=(0, 255, 0),
         )
 
@@ -180,14 +190,6 @@ def stats_screen(engine, window):
     y_offset = 3
     box_width = 26
     box_height = 20
-    all_stat_names = ["Max_HP", "Strength", "Perception", "Agility", "Intelligence"]
-    all_stats = {
-        "Max_HP": 10,
-        "Strength": 10,
-        "Perception": 5,
-        "Agility": 5,
-        "Intelligence": 5,
-    }
     all_boxes = []
 
     for i, stat in enumerate(all_stat_names):
@@ -203,13 +205,11 @@ def stats_screen(engine, window):
         )
         all_boxes.append(new_box)
         y_offset += box_height + 1
-    available_points = 5
+    available_points = 30
     while available_points > 0:
         events = tcod.event.wait()
         event = engine.handle_main_menu_events(events)
-        if event == "new_game":
-            return "playing"
-        elif isinstance(event, tuple):
+        if isinstance(event, tuple):
             mouse_x, mouse_y = event
             for stat_box in all_boxes:
                 if (
@@ -221,6 +221,11 @@ def stats_screen(engine, window):
                     stat_box.stat_value += 1
                     all_stats[stat_box.stat_name] += 1
                     available_points -= 1
+        elif event == "reset":
+            for stat_box in all_boxes:
+                stat_box.stat_value = 10
+                all_stats[stat_box.stat_name] = 10
+            available_points = 30
         window.console.clear(bg=(0, 0, 0))
 
         for box in all_boxes:
@@ -238,14 +243,43 @@ def stats_screen(engine, window):
         )
 
         window.console.print(
-            x=window.width // 2,
-            y=window.height - 2,
-            string=f"Available points: {available_points}",
+            x=window.width // 2 + 5,
+            y=window.height - 14,
+            string=f"(Available points: {available_points})",
             fg=(255, 0, 255),
             bg=(0, 0, 0),
             alignment=tcod.CENTER,
         )
 
+        window.console.print_box(
+            x=window.width - 21,
+            y=5,
+            width=21,
+            height=window.height - 5,
+            string="Controls: \n\n\nMove: Arrow keys / WASD \n\n\nGo up stairs: < \n\n\nInventory: i \n\n\n Open Chest: e \n\n\nExit: Escape \n\n\nTo attack an enemy simply walk into them!",
+        )
+
+        window.console.print(
+            x=window.width // 2 - 8,
+            y=window.height // 2 + 15,
+            string="Choose your stats wisely!",
+            fg=(255, 255, 0),
+        )
+
+        window.show_image("assets\\main_character.png", window.width - 20, 48)
+
+        window.console.print(
+            x=window.width - 20, y=window.height // 2 + 10, string="Your character:"
+        )
+
+        window.console.print(
+            x=window.width // 2 + 5,
+            y=window.height - 10,
+            string="Press r to reset",
+            fg=(255, 0, 0),
+            bg=(0, 0, 0),
+            alignment=tcod.CENTER,
+        )
         window.context.present(window.console)
     return all_stats.values()
 
@@ -264,16 +298,17 @@ def level_up_state(engine, window):
         events = tcod.event.wait()
         stat = engine.handle_level_up_events(events)
         if stat is not None and stat != "reset":
-            if stat == "max_hp":
-                engine.player.max_hp += 1
-            elif stat == "strength":
-                engine.player.strength += 1
-            elif stat == "perception":
-                engine.player.perception += 1
-            elif stat == "agility":
-                engine.player.agility += 1
-            elif stat == "intelligence":
-                engine.player.intelligence += 1
+            match stat:
+                case "max_hp":
+                    engine.player.max_hp += 1
+                case "strength":
+                    engine.player.strength += 1
+                case "perception":
+                    engine.player.perception += 1
+                case "agility":
+                    engine.player.agility += 1
+                case "intelligence":
+                    engine.player.intelligence += 1
             available_points -= 1
         elif stat == "reset":
             engine.player.max_hp = temp_stats[0]
