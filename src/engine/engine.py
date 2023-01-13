@@ -117,6 +117,9 @@ class Engine:
 
     def handle_main_menu_events(self, events: Iterable[Any]) -> None:
         for event in events:
+            if isinstance(event, tcod.event.MouseButtonDown):
+                self.window.context.convert_event(event)
+                return tuple(event.tile)
             action = self.main_menu_handler.dispatch(event)
 
             if action is None:

@@ -39,6 +39,7 @@ def main():
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
     engine.game_map.generate_pathfinding_map()
     main_menu(engine, window=window)
+    player_stats = stats_screen(engine, window=window)
 
     while True:
 

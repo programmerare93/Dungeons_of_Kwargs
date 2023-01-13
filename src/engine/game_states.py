@@ -102,7 +102,59 @@ def inventory_state(engine, window):
                     return
 
 
+stat_description = {
+    "Max_HP": "The maximum amount of health your character can have",
+    "Strength": "How much damage your character can do",
+    "Perception": "Your character's ability to hit enemies as well as how far your character can see",
+    "Agility": "Your character's ability to dodge attacks as well as traps",
+    "Intelligence": "The amount of skill points your character has to spend each level",
+}
+
+all_stat_names = ["Max HP", "Strength", "Perception", "Agility", "Intelligence"]
+all_stats = {
+    "Max_HP": 0,
+    "Strength": 0,
+    "Perception": 0,
+    "Agility": 0,
+    "Intelligence": 0,
+}
+
+
+class StatBox:
+    def __init__(self, x, y, width, height, stat_name):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.stat_name = stat_name
+        self.stat_value = all_stats[stat_name]
+        self.stat_description = stat_description[stat_name]
+
+    def render(self, window):
+        window.console.draw_frame(
+            x=self.x,
+            y=self.y,
+            width=self.width,
+            height=self.height,
+            title=self.stat_name,
+        )
+        window.console.print_box(
+            x=self.x + 3,
+            y=self.y + 3,
+            width=self.width - 5,
+            height=self.height + self.y,
+            string=self.stat_description,
+        )
+        window.console.print(
+            x=self.x + self.width // 2,
+            y=self.y + self.width // 2,
+            string=str(self.stat_value),
+            fg=(0, 255, 0),
+        )
+
+
 def main_menu(engine, window):
+
     while True:
         events = tcod.event.wait()
         if engine.handle_main_menu_events(events) == "new_game":
@@ -117,18 +169,85 @@ def main_menu(engine, window):
             title="Main menu",
             fg=(255, 255, 255),
             bg=(0, 0, 0),
-            clear=True,
+            clear=False,
+        )
+
+        window.context.present(window.console)
+
+
+def stats_screen(engine, window):
+    x_offset = 5
+    y_offset = 3
+    box_width = 26
+    box_height = 20
+    all_stat_names = ["Max_HP", "Strength", "Perception", "Agility", "Intelligence"]
+    all_stats = {
+        "Max_HP": 0,
+        "Strength": 0,
+        "Perception": 0,
+        "Agility": 0,
+        "Intelligence": 0,
+    }
+    all_boxes = []
+
+    for i, stat in enumerate(all_stat_names):
+        if y_offset + box_height >= window.height:
+            y_offset = 3
+            x_offset += box_width + 1
+        new_box = StatBox(
+            x_offset,
+            y_offset,
+            box_width,
+            box_height,
+            stat,
+        )
+        all_boxes.append(new_box)
+        y_offset += box_height + 1
+    available_points = 30
+    while available_points > 0:
+        events = tcod.event.wait()
+        event = engine.handle_main_menu_events(events)
+        if event == "new_game":
+            return "playing"
+        elif isinstance(event, tuple):
+            mouse_x, mouse_y = event
+            for stat_box in all_boxes:
+                if (
+                    mouse_x >= stat_box.x
+                    and mouse_x <= stat_box.x + stat_box.width
+                    and mouse_y >= stat_box.y
+                    and mouse_y <= stat_box.y + stat_box.height
+                ):
+                    stat_box.stat_value += 1
+                    all_stats[stat_box.stat_name] += 1
+                    available_points -= 1
+        window.console.clear(bg=(0, 0, 0))
+
+        for box in all_boxes:
+            box.render(window)
+
+        window.console.draw_frame(
+            0,
+            0,
+            window.width,
+            window.height,
+            title="Player Sheet",
+            fg=(255, 255, 255),
+            bg=(0, 0, 0),
+            clear=False,
         )
 
         window.console.print(
             x=window.width // 2,
-            y=window.height // 2 - 4,
-            string="Press enter to start",
-            fg=(255, 255, 255),
+            y=window.height - 2,
+            string=f"Available points: {available_points}",
+            fg=(255, 0, 255),
+            bg=(0, 0, 0),
             alignment=tcod.CENTER,
         )
 
         window.context.present(window.console)
+    return all_stats.values()
 
 
 def level_up_state(engine, window):
