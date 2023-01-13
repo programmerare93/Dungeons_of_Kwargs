@@ -12,7 +12,7 @@ class Entity:
     """Generisk klass för att representera en 'entitet', något som en fiende eller spelare"""
 
     def __init__(
-            self, x: int, y: int, char: str, color: Tuple[int, int, int], name: str = None
+        self, x: int, y: int, char: str, color: Tuple[int, int, int], name: str = None
     ):
         self.name = name
         self.x = x
@@ -35,26 +35,31 @@ class Player(Entity):
         self,
         char: str,
         color: Tuple[int, int, int],
-        max_hp: int,
-        strength: int,
-        perception: int,
-        agility: int,
-        intelligence: int,
+        stats=[100, 10, 10, 10, 10],
         name: str = None,
     ):
-        super().__init__(0, 0, '@', color, "Player")
-        self.max_hp = max_hp
-        self.hp = max_hp
-        self.strength = strength
-        self.agility = agility
-        self.intelligence = intelligence
-        self.perception = perception
+        super().__init__(0, 0, "@", color, "Player")
+        self.stats = stats
+        self.max_hp = stats[0]
+        self.hp = self.max_hp
+        self.strength = stats[1]
+        self.perception = stats[2]
+        self.agility = stats[3]
+        self.intelligence = stats[4]
         self.armor = obama_armor
         self.xp = 0
         self.xp_to_next_level = 100
         self.level = 1
         self.inventory = Inventory(self, items=list(chain(*all_items)))
         self.used_items = []
+
+    def update_stats(self):
+        self.max_hp = self.stats[0]
+        self.hp = self.max_hp
+        self.strength = self.stats[1]
+        self.perception = self.stats[2]
+        self.agility = self.stats[3]
+        self.intelligence = self.stats[4]
 
     def heal(self, amount: int) -> int:
         if self.hp == self.max_hp:
@@ -217,7 +222,7 @@ def generate_boss(room, game_map):
         strength=10,
         perception=4,
         dexterity=2,
-        intelligence=2
+        intelligence=2,
     )
     game_map.entities.append(boss)
     room.type = "monster"

@@ -22,22 +22,26 @@ def main():
     event_handler = EventHandler()
     floor = Floor()
     player = Player(
-        (255, 255, 255),  # Färg
-        max_hp=30,
-        strength=50,
-        agility=8,
-        intelligence=5,
-        perception=50,
+        color=(255, 255, 255),  # Färg
+        char="@",  # Tecken
     )
 
-    generator = Generator(floor.max_rooms, window.width, window.height - 26, player)
     game_map = None
 
-    engine = Engine(event_handler, game_map, player, floor, generator, window=window)
+    generator = Generator(window.width, window.height - 26, player, floor=floor)
+    engine = Engine(
+        event_handler,
+        game_map,
+        player=player,
+        floor=floor,
+        generator=generator,
+        window=window,
+    )
     engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
     engine.game_map.generate_pathfinding_map()
     main_menu(engine, window=window)
-    player_stats = stats_screen(engine, window=window)
+    player.stats = list(stats_screen(engine, window=window))
+    player.update_stats()
 
     while True:
 

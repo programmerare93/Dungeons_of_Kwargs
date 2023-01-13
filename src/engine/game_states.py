@@ -182,11 +182,11 @@ def stats_screen(engine, window):
     box_height = 20
     all_stat_names = ["Max_HP", "Strength", "Perception", "Agility", "Intelligence"]
     all_stats = {
-        "Max_HP": 0,
-        "Strength": 0,
-        "Perception": 0,
-        "Agility": 0,
-        "Intelligence": 0,
+        "Max_HP": 10,
+        "Strength": 10,
+        "Perception": 5,
+        "Agility": 5,
+        "Intelligence": 5,
     }
     all_boxes = []
 
@@ -203,7 +203,7 @@ def stats_screen(engine, window):
         )
         all_boxes.append(new_box)
         y_offset += box_height + 1
-    available_points = 30
+    available_points = 5
     while available_points > 0:
         events = tcod.event.wait()
         event = engine.handle_main_menu_events(events)

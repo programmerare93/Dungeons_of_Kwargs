@@ -94,7 +94,9 @@ class Generator:
 
                 # Kommer att gå igenom alla rum i room_list
                 # och kollar ifall någon överlappar med det nya rummet
-                if any(new_room.intersects(other_room) for other_room in self.room_list):
+                if any(
+                    new_room.intersects(other_room) for other_room in self.room_list
+                ):
                     continue  # Starta om ifall det överlappade
 
                 self.dungeon.tiles[new_room.inner] = tile_types.floor
@@ -135,12 +137,6 @@ class Generator:
                     new_chest = Chest(
                         a,
                         b,
-                        inventory=Inventory(
-                            items=[
-                                random.choice(all_items)
-                                for _ in range(random.randint(1, 3))
-                            ]
-                        ),
                     )
                     self.dungeon.entities.append(new_chest)
         else:  # Sista våningen är speciell
