@@ -22,9 +22,7 @@ def main():
     event_handler = EventHandler()
     floor = Floor()
     player = Player(
-        "@",
-        (255, 255, 255),
-        name="Player",
+        (255, 255, 255),  # Färg
         max_hp=30,
         strength=50,
         agility=8,

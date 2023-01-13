@@ -65,6 +65,7 @@ class Engine:
         self.generator.difficulty += 1
         self.game_map.difficulty += 1
         self.generator.max_monsters_per_room = self.generator.difficulty * 2
+        self.floor.floor += 1
 
     def player_activated_trap(self, x: int, y: int) -> bool:
         if isinstance(self.game_map.tiles[x, y], tile_types.Trap):

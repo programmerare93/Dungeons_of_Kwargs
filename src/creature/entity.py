@@ -12,7 +12,7 @@ class Entity:
     """Generisk klass för att representera en 'entitet', något som en fiende eller spelare"""
 
     def __init__(
-        self, x: int, y: int, char: str, color: Tuple[int, int, int], name: str = None
+            self, x: int, y: int, char: str, color: Tuple[int, int, int], name: str = None
     ):
         self.name = name
         self.x = x
@@ -42,8 +42,7 @@ class Player(Entity):
         intelligence: int,
         name: str = None,
     ):
-        super().__init__(0, 0, char, color, name)
-        self.name = name
+        super().__init__(0, 0, '@', color, "Player")
         self.max_hp = max_hp
         self.hp = max_hp
         self.strength = strength
@@ -202,3 +201,23 @@ def generate_monsters(room, game_map):
         room.type = "monster"
     else:  # Om det redan finns en entity på den platsen, kör funktionen igen
         generate_monsters(room, game_map)
+
+
+def generate_boss(room, game_map):
+    x, y = room.center
+
+    boss = Monster(
+        name="Ancient Titan",
+        x=x,
+        y=y,
+        char="B",
+        color=(255, 0, 0),
+        difficulty=game_map.difficulty + 2,
+        max_hp=80,
+        strength=10,
+        perception=4,
+        dexterity=2,
+        intelligence=2
+    )
+    game_map.entities.append(boss)
+    room.type = "monster"
