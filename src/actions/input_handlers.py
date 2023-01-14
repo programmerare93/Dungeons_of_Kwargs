@@ -8,7 +8,6 @@ from actions.actions import (
     GoDown,
     HealingAction,
     OpenChest,
-    UseItem,
 )
 from actions.actions import *
 

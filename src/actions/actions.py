@@ -47,9 +47,12 @@ class MovementAction(Action):
                 difficulty < agility
                 and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
             ):
+                exp_gain = difficulty * 2
                 engine.message_log.add_message(
-                    "You stepped on a trap. You avoided it!", (0, 255, 0)
+                    f"You stepped on a trap. You avoided it! You gain {exp_gain} xp!",
+                    (0, 255, 0),
                 )
+                engine.player.xp += exp_gain
             elif (
                 difficulty > agility
                 and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
@@ -174,18 +177,6 @@ class HealingAction(Action):
             return "healed"
         else:
             engine.message_log.add_message(f"{entity.name} is at full health!")
-
-
-class UseItem(Action):
-    def __init__(self) -> None:
-        super().__init__()
-        self.item = None
-
-    def perform(self, engine: Engine, entity: Entity) -> None:
-        self.item = entity.inventory.items[0]
-
-        self.item.use(engine, entity)
-        entity.used_items.append(self.item)
 
 
 class OpenChest(Action):

@@ -32,6 +32,7 @@ class InventoryBox:
 
 
 def inventory_state(engine, window):
+    engine.player_can_move = False
     x_offset = 3
     y_offset = 4
     box_width = 13
@@ -81,6 +82,16 @@ def inventory_state(engine, window):
         else:
             for inventory_box in all_page_items[current_page]:
                 inventory_box.render(window)
+            window.console.print_box(
+                x=window.width - 11,
+                y=1,
+                width=10,
+                height=20,
+                string="Page {}/{}: Arrow keys to switch page".format(
+                    current_page + 1, num_pages + 1
+                ),
+                fg=(255, 255, 0),
+            )
 
         window.context.present(window.console)
 
@@ -89,12 +100,13 @@ def inventory_state(engine, window):
         event = engine.handle_events(events)
 
         if event == "inventory":
+            engine.inventory_open = False
+            engine.player_can_move = True
             return
         elif event == "next_page":
             if current_page < num_pages:
                 current_page += 1
         elif event == "previous_page":
-            print("this is working")
             if current_page > 0:
                 current_page -= 1
         elif isinstance(event, tuple):
@@ -103,6 +115,7 @@ def inventory_state(engine, window):
             if hit_box != None:
                 hit_box.item.use(engine, engine.player)
                 engine.inventory_open = False
+                engine.player_can_move = True
                 return
 
 
@@ -178,21 +191,19 @@ def main_menu(engine, window):
             return "playing"
         window.console.clear(bg=(0, 0, 0))
 
-        window.console.draw_frame(
-            0,
-            0,
-            window.width,
-            window.height,
-            title="Main menu",
+        window.show_image("assets\\main_menu.png", 0, 0)
+        window.console.print(
+            x=window.width // 2 - 10,
+            y=window.height // 2,
+            string="Press Enter to start",
             fg=(255, 255, 255),
-            bg=(0, 0, 0),
-            clear=False,
         )
 
         window.context.present(window.console)
 
 
 def stats_screen(engine, window):
+    engine.player_can_move = False
     x_offset = 5
     y_offset = 3
     box_width = 26
@@ -267,7 +278,7 @@ def stats_screen(engine, window):
             y=5,
             width=21,
             height=window.height - 5,
-            string="Controls: \n\n\nMove: Arrow keys / WASD \n\n\nGo up stairs: < \n\n\nInventory: i \n\n\n Open Chest: e \n\n\nExit: Escape \n\n\nTo attack an enemy simply walk into them!",
+            string="Controls: \n\n\nMove: WASD \n\n\nGo down stairs: < \n\n\nInventory: i \n\n\n Open Chest: e \n\n\nExit: Escape \n\n\nTo attack an enemy simply walk into them!",
         )
 
         window.console.print(
@@ -292,10 +303,12 @@ def stats_screen(engine, window):
             alignment=tcod.CENTER,
         )
         window.context.present(window.console)
+    engine.player_can_move = True
     return list(all_stats.values())
 
 
 def death_state(engine, window):
+    engine.player_can_move = False
     window.console.clear(bg=(0, 0, 0))
     while True:
         events = tcod.event.wait()

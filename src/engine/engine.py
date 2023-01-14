@@ -54,6 +54,7 @@ class Engine:
         self.sound_handler = SoundHandler()
         self.window = window
         self.creatures = [x for x in self.game_map.entities if x.char != "C"]
+        self.game_has_started = False
 
     def update_game_map(self):
         self.generator.generate_dungeon()
@@ -66,12 +67,8 @@ class Engine:
         self.generator.max_monsters_per_room = self.generator.difficulty * 2
         self.floor.floor += 1
 
-    # TODO Simplifiera
     def player_activated_trap(self, x: int, y: int) -> bool:
-        if isinstance(self.game_map.tiles[x, y], tile_types.Trap):
-            return True
-        else:
-            return False
+        return isinstance(self.game_map.tiles[x, y], tile_types.Trap)
 
     def handle_events(self, events: Iterable[Any]) -> None:
         for event in events:
@@ -84,10 +81,14 @@ class Engine:
                 case None:
                     continue
                 case "inventory":
-                    self.inventory_open = not self.inventory_open
-                    return "inventory"
+                    if self.game_has_started:
+                        self.inventory_open = not self.inventory_open
+                        return "inventory"
+                    else:
+                        continue
                 case "Level Up":
                     self.player.xp += 100
+                    continue
                 case "close":
                     return "close"
                 case "next_page":
@@ -170,6 +171,7 @@ class Engine:
                     return "dead"
                 self.message_log.add_message(f"{entity.name} died!", color.death_text)
                 self.game_map.entities.remove(entity)
+                self.creatures.remove(entity)
                 self.player.xp += entity.xp_value
                 self.render(console=self.window.console, context=self.window.context)
                 # self.sound_handler.monster_death()
