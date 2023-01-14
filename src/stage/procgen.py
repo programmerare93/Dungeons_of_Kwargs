@@ -10,7 +10,7 @@ from creature.entity import Entity, generate_monsters, generate_boss, Chest
 from stage.game_map import GameMap
 from stage.rooms import Room
 from stage.floor import Floor
-from creature.items import Inventory, all_items
+from creature.items import all_items
 from stage.floor import Floor
 
 

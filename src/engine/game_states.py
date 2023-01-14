@@ -47,7 +47,7 @@ def inventory_state(engine, window):
     max_items_per_page = (  # Räknar ut hur många items som kan visas på en sida
         window.width // (box_width + 1) * (window.height // (box_height + 1))
     )
-    player_items = engine.player.inventory.items
+    player_items = engine.player.items
     if len(player_items) != 0:
         num_pages = (
             len(player_items) // max_items_per_page
@@ -156,7 +156,7 @@ all_stat_names = ["Max_HP", "Strength", "Perception", "Agility", "Intelligence"]
 # Ursprungsvärden för spelarens statistik
 all_stats = {
     "Max_HP": 10,
-    "Strength": 5000,
+    "Strength": 1000,
     "Perception": 10,
     "Agility": 10,
     "Intelligence": 2,
@@ -288,7 +288,6 @@ def stats_screen(engine, window):
                 stat_box.stat_value = temp_stats[stat_box.stat_name]
                 all_stats[stat_box.stat_name] = stat_box.stat_value
             available_points = original_points
-            available_points = original_points
         window.clear()
 
         for box in all_boxes:
@@ -353,7 +352,7 @@ def stats_screen(engine, window):
 def death_state(engine, window):
     """Game state för när spelaren dör"""
     engine.player_can_move = False
-    window.clear(bg=black)
+    window.clear()
     while True:
         events = tcod.event.wait()
         engine.handle_events(events)

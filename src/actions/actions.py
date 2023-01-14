@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import random
+import asyncio
 
 from typing import TYPE_CHECKING
 
 import stage.tile_types as tile_types
-from actions.soundhandler import SoundHandler
+from actions.soundhandler import SoundPlayer
 from window.color import *
 
 # Falskt på 'runtime'
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
     from engine.engine import Engine
     from creature.entity import Entity, Chest
 
-sound_handler = SoundHandler()
+player = SoundPlayer()
 
 
 class Action:
@@ -164,11 +165,11 @@ class OpenChest:
             ):  # Om spelaren är 1 tile från en kista
                 chest = monster
                 engine.message_log.add_message("You opened a chest!")
-                engine.player.inventory.items.extend(
-                    chest.inventory.items
+                engine.player.items.extend(
+                    chest.items
                 )  # Överför alla items från kistan till spelarens inventory
                 engine.message_log.add_message(
-                    f"You Received {tuple([item.name for item in chest.inventory.items])}",
+                    f"You Received {tuple([item.name for item in chest.items])}",
                     light_blue,
                 )
                 engine.game_map.entities.remove(chest)  # Tar bort kistan från kartan

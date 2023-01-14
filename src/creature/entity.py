@@ -38,7 +38,7 @@ class Player(Entity):
         self,
         char: str,
         color: Tuple[int, int, int],
-        stats=[10, 10, 10, 10, 10],
+        stats=[10, 10, 10, 10, 2],
         name: str = "Player",
     ):
         super().__init__(0, 0, "@", color, name)
@@ -48,7 +48,7 @@ class Player(Entity):
         self.xp = 0
         self.xp_to_next_level = 100
         self.level = 1
-        self.inventory = Inventory(items=list(chain(*all_items)))
+        self.items = list(chain(*all_items))
         self.used_items = []
 
     def update_stats(self):
@@ -90,12 +90,10 @@ class Monster(Entity):
         self.move_chance = (
             move_chance  # Hur stor chans det är för att monstret ska röra sig
         )
-        self.inventory = Inventory(  # Genererar ett inventory med items
-            items=[
-                random.choice(all_potions[self.difficulty - 1])
-                for _ in range(random.randint(1, 3))
-            ],
-        )
+        self.items = [  # Lista med items som monstret har i sitt inventory
+            random.choice(all_potions[self.difficulty - 1])
+            for _ in range(random.randint(1, 3))
+        ]
         self.xp_value = (
             self.max_hp + self.strength + self.agility + self.intelligence
         )  # Hur mycket xp spelaren får när den dödar monstret
@@ -123,7 +121,7 @@ class Monster(Entity):
 
     def choose_item(self):
         """Väljer ett item från inventoryt"""
-        return random.choice(self.inventory.items)
+        return random.choice(self.items)
 
 
 class Chest(Entity):
@@ -138,14 +136,12 @@ class Chest(Entity):
         self.color = light_blue
         self.closed = True
         self.tier = tier
-        self.inventory = Inventory(
-            items=[
-                random.choice(
-                    all_items[self.tier - 1]
-                )  # Genererar ett inventory med items beror på vilken tier kistan är vilket beror på våningen
-                for _ in range(random.randint(1, 3))
-            ],
-        )
+        self.items = [
+            random.choice(
+                all_items[self.tier - 1]
+            )  # Genererar ett inventory med items beror på vilken tier kistan är vilket beror på våningen
+            for _ in range(random.randint(1, 3))
+        ]
 
 
 def generate_monsters(room, game_map):

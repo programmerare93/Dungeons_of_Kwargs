@@ -21,7 +21,7 @@ window = Window("Dungeons of Kwargs", 80, 70, tileset)
 def main():
     floor = Floor()
     player = Player(
-        color=dark_purple,
+        color=light_purple,
         char="@",
     )
 

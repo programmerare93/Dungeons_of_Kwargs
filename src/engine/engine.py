@@ -10,7 +10,6 @@ from tcod.map import compute_fov
 import stage.tile_types as tile_types
 
 from actions.input_handlers import *
-from actions.soundhandler import SoundHandler
 from creature.entity import Entity, Player, Monster
 from stage.game_map import GameMap
 from stage.procgen import Generator
@@ -51,7 +50,6 @@ class Engine:
         self.player_attack_cool_down = player_attack_cool_down
         self.update_game_map()
         self.update_fov()
-        self.sound_handler = SoundHandler()
         self.window = window
         self.creatures = [x for x in self.game_map.entities if x.char != "C"]
 
@@ -75,9 +73,8 @@ class Engine:
     def handle_events(self, events: Iterable[Any]) -> None:
         """Tar hand om alla event som sker i spelet."""
         for event in events:
-            if isinstance(
-                event, tcod.event.MouseButtonDown
-            ):  # Mus knapp tryck är specialfall och måste konverteras till en tile
+            if isinstance(event, tcod.event.MouseButtonDown):
+                # Mus knapp tryck är specialfall och måste konverteras till en tile
                 self.window.context.convert_event(event)
                 return tuple(event.tile)
             action = self.event_handler.dispatch(
@@ -130,7 +127,7 @@ class Engine:
                         monster.hp
                         < monster.max_hp
                         // 2  # Ifall monstret är skadat så kan den använda en brygd
-                        and monster.inventory.items
+                        and monster.items
                         and not monster.used_items
                         and random.randint(0, 100) > 50
                     ):
@@ -164,7 +161,7 @@ class Engine:
                         item.remove_effect(entity)
                         self.message_log.add_message(
                             f"The {entity.name}'s {item.type} has worn off!",
-                            color.white,
+                            yellow,
                         )
 
     def update_fov(self) -> None:

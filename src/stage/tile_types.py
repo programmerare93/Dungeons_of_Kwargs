@@ -100,7 +100,7 @@ types_of_tiles = {
 # Olika färger för olika tiles
 seen_color = dark_gray
 floor_color = sky_blue
-wall_color = black
+wall_color = white
 trap_color = baby_blue
 
 floor = Floor(floor_color)

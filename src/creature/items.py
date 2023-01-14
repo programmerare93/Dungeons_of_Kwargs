@@ -3,13 +3,6 @@ from math import inf
 from window.color import *
 
 
-class Inventory:
-    """En klass som kommer att vara kopplad till en entity och kommer att hålla reda på alla items som entityn har"""
-
-    def __init__(self, items=[]):
-        self.items = items
-
-
 class StatItem:
     """En klass som kommer att representera ett föremål som kommer att ge en entity en stat boost"""
 
@@ -33,7 +26,7 @@ class StatItem:
         }
         potion_dict[self.type] += self.amplitude
 
-        entity.inventory.items.remove(self)
+        entity.items.remove(self)
         engine.message_log.add_message(
             "{} used a {}!".format(entity.name, self.name), all_stat_colors[self.type]
         )
@@ -70,11 +63,16 @@ class HealthPotion:
         hp_diff = entity.max_hp - entity.hp
         if hp_diff < self.amplitude:
             entity.hp = entity.max_hp
+            entity.items.remove(self)
+            engine.message_log.add_message(
+                f"{entity.name} used a {self.name} and is now at full health!", red
+            )
         else:
             entity.hp += self.amplitude
             engine.message_log.add_message(
                 "{} used a {}!".format(entity.name, self.name), red
             )
+            entity.items.remove(self)
         return
 
 
@@ -175,10 +173,10 @@ class Armor:
         self.defense = defense
 
     def use(self, engine, entity):
-        entity.inventory.items.remove(
+        entity.items.remove(
             self
         )  # se till att föremålet tas bort från inventory så att det inte dupliceras
-        entity.inventory.items.append(entity.armor)
+        entity.items.append(entity.armor)
         entity.armor = self
         engine.message_log.add_message("You equipped the {}!".format(self.name), pink)
         return
