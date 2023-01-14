@@ -89,6 +89,7 @@ class Monster(Entity):
         agility: int,
         intelligence: int,
         name: str,
+        move_chance: int = 100,
     ):
         super().__init__(x, y, char, color, name)
         self.difficulty = difficulty
@@ -98,12 +99,17 @@ class Monster(Entity):
         self.agility = agility * self.difficulty
         self.intelligence = intelligence * self.difficulty
         self.perception = perception * self.difficulty
+        self.move_chance = move_chance
         self.inventory = Inventory(
             self,
-            items=[small_healing_potion, small_healing_potion, small_healing_potion],
+            items=[
+                random.choice(all_potions[self.difficulty - 1])
+                for _ in range(random.randint(1, 3))
+            ],
         )
         self.xp_value = self.max_hp + self.strength + self.agility + self.intelligence
-        self.armor = leather_armor
+        self.armor = all_armor[self.difficulty - 1]
+        self.used_items = []
 
     def monster_pathfinding(self, player, game_map, engine):
         """Monster pathfinding"""
@@ -117,6 +123,10 @@ class Monster(Entity):
 
         action = MovementAction(tile_x - self.x, tile_y - self.y)
         action.perform(engine, self)
+
+    def choose_item(self):
+        """Väljer ett item från inventoryt"""
+        return random.choice(self.inventory.items)
 
 
 class Chest(Entity):
@@ -164,6 +174,7 @@ def generate_monsters(room, game_map):
                 agility=5,
                 perception=5,
                 intelligence=1,
+                move_chance=40,
             )
         else:
             monster = Monster(
@@ -178,6 +189,7 @@ def generate_monsters(room, game_map):
                 perception=5,
                 agility=3,
                 intelligence=3,
+                move_chance=60,
             )
         game_map.entities.append(monster)
         room.type = "monster"
