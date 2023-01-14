@@ -13,7 +13,7 @@ class Window:
     def __init__(self, title: str, width: int, height: int, tileset):
         self.console = tcod.Console(width, height, "F")
 
-        self.context = tcod.context.new(
+        self.context = tcod.context.new(  # Skapar ett nytt fönster
             width=width,
             height=height,
             title=title,
@@ -26,6 +26,7 @@ class Window:
         self.width = width
 
     def show_image(self, image_path, x, y, width=None, height=None):
+        """Metod för att visa bilder"""
         image = tcod.image_load(image_path)
         if width is None and height is None:
             width, height = image._get_size()
@@ -33,6 +34,7 @@ class Window:
         tcod.console_blit(self.console, 0, 0, width, height, 0, 0, 0)
 
     def render_log(self, player, engine):
+        """Metod för att visa loggen"""
         self.console.draw_frame(0, 45, self.width, self.height - 45, "Log", clear=False)
         x_offset = 5
         y_offset = 46
@@ -50,7 +52,7 @@ class Window:
             "Agility.png": (0, 255, 255),
             "Intelligence.png": (255, 0, 255),
         }
-        for i, stat in enumerate(player.stats):
+        for i, stat in enumerate(player.stats):  # Visar alla stats
             if i == 3:
                 x_offset = 9
                 y_offset += 10
@@ -65,10 +67,12 @@ class Window:
             )
             x_offset += 8
 
-        self.show_image("assets\\main_character.png", 3, 46)
+        self.show_image("assets\\main_character.png", 3, 46)  # Visar spelarens bild
 
-    def print(self, x: int, y: int, string: str):
-        self.console.print(x, y, string)
+    def print(
+        self, x: int, y: int, string: str, fg=(255, 255, 255), bg=None, alignment=0
+    ):
+        self.console.print(x, y, string, fg, bg=bg, alignment=alignment)
 
     def clear(self):
         self.console.clear()
@@ -76,6 +80,3 @@ class Window:
     def present(self):
         """Metod för att visa konsolen(fönstret)"""
         self.context.present(self.console)
-
-    def get_events(self):
-        return tcod.event.wait()

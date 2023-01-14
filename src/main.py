@@ -7,7 +7,7 @@ from engine.game_states import *
 from stage.floor import Floor
 from stage.procgen import Generator
 from window.window import Window
-from window import color
+from window.color import *
 
 
 tileset = tcod.tileset.load_tilesheet(
@@ -19,10 +19,9 @@ window = Window("Dungeons of Kwargs", 80, 70, tileset)
 
 
 def main():
-    event_handler = EventHandler()
     floor = Floor()
     player = Player(
-        color=(255, 0, 255),
+        color=dark_purple,
         char="@",
     )
 
@@ -30,14 +29,13 @@ def main():
 
     generator = Generator(window.width, window.height - 26, player, floor=floor)
     engine = Engine(
-        event_handler,
-        game_map,
+        game_map=game_map,
         player=player,
         floor=floor,
         generator=generator,
         window=window,
     )
-    engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
+    engine.message_log.add_message("Welcome to Dungeons of Kwargs!", welcome_color)
     engine.game_map.generate_pathfinding_map()
     main_menu(engine, window=window)
     player.stats = stats_screen(engine, window=window)

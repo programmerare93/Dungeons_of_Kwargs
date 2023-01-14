@@ -15,6 +15,7 @@ from stage.floor import Floor
 
 
 class Generator:
+    """Klass för att generera en spelvärld"""
     def __init__(
         self,
         map_width: int,
@@ -129,6 +130,7 @@ class Generator:
                 for _ in range(random.randint(1, self.max_monsters_per_room)):
                     generate_monsters(room, self.dungeon)
 
+            # Genererar kistor
             for room in self.room_list:
                 a, b = room.center
                 if random.randint(1, 4) == 4 and not isinstance(
@@ -139,7 +141,7 @@ class Generator:
                         b,
                     )
                     self.dungeon.entities.append(new_chest)
-        else:  # Sista våningen är speciell
+        else:  # Sista våningen är speciell och ska ha en boss
             width = 14
             height = 14
             boss_room = Room(self.map_width // 2, self.map_height // 2, width, height)

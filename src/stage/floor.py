@@ -1,4 +1,5 @@
 class Floor:
+    """Floor class som innehåller information om vilken våning spelaren befinner sig på och hur många rum som kan finnas på den våningen"""
     floor: int
     max_rooms: int
     max_monsters_per_room: int
