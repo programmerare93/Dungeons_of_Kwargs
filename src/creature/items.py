@@ -29,7 +29,7 @@ class StatItem:
         potion_dict[self.type] += self.amplitude
 
         entity.inventory.items.remove(self)
-        engine.message_log.add_message("You used a {}!".format(self.name))
+        engine.message_log.add_message("{} used a {}!".format(entity.name, self.name))
         self.activated_tick = engine.tick
         entity.used_items.append(self)
         return
@@ -127,7 +127,7 @@ giant_agility_potion = StatItem(
 )
 
 small_perception_potion = StatItem(
-    name="small perception potion", amplitude=2, duration=3, type="perception potion"
+    name="small perception potion", amplitude=2, duration=10, type="perception potion"
 )
 
 medium_perception_potion = StatItem(
@@ -217,3 +217,19 @@ all_items = [
     tier_4_items,
     tier_5_items,
 ]
+
+tier_1_potions = [item for item in tier_1_items if "potion" in item.name]
+tier_2_potions = [item for item in tier_2_items if "potion" in item.name]
+tier_3_potions = [item for item in tier_3_items if "potion" in item.name]
+tier_4_potions = [item for item in tier_4_items if "potion" in item.name]
+tier_5_potions = [item for item in tier_5_items if "potion" in item.name]
+
+all_potions = [
+    tier_1_potions,
+    tier_2_potions,
+    tier_3_potions,
+    tier_4_potions,
+    tier_5_potions,
+]
+
+all_armor = [leather_armor, iron_armor, diamond_armor, obsidian_armor, obama_armor]

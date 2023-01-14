@@ -53,6 +53,7 @@ class Engine:
         self.update_fov()
         self.sound_handler = SoundHandler()
         self.window = window
+        self.creatures = [x for x in self.game_map.entities if x.char != "C"]
 
     def update_game_map(self):
         self.generator.generate_dungeon()
@@ -65,6 +66,7 @@ class Engine:
         self.generator.max_monsters_per_room = self.generator.difficulty * 2
         self.floor.floor += 1
 
+    # TODO Simplifiera
     def player_activated_trap(self, x: int, y: int) -> bool:
         if isinstance(self.game_map.tiles[x, y], tile_types.Trap):
             return True
@@ -106,13 +108,23 @@ class Engine:
             for monster in self.game_map.entities:
                 if (
                     monster.char not in ("@", "C")
+                    and random.randint(0, 100) > monster.move_chance
                     and monster.hp > 0
                     and self.game_map.calculate_distance(
                         monster.x, monster.y, self.player.x, self.player.y
                     )
                     <= monster.perception
                 ):
-                    monster.monster_pathfinding(self.player, self.game_map, self)
+                    if (
+                        monster.hp < monster.max_hp // 2
+                        and monster.inventory.items
+                        and not monster.used_items
+                        # and random.randint(0, 100) > 50
+                    ):
+                        item = monster.choose_item()
+                        item.use(engine=self, entity=monster)
+                    else:
+                        monster.monster_pathfinding(self.player, self.game_map, self)
             self.monster_tick = self.tick
 
     def can_player_attack(self):
@@ -124,13 +136,15 @@ class Engine:
             self.player_can_attack = True
 
     def handle_used_items(self):
-        if self.player.used_items != []:
-            for item in self.player.used_items:
-                if self.tick - item.activated_tick >= item.duration:
-                    item.remove_effect(self.player)
-                    self.message_log.add_message(
-                        f"{item.type} has worn off!", color.white
-                    )
+        for entity in self.creatures:
+            if entity.used_items != []:
+                for item in entity.used_items:
+                    if self.tick - item.activated_tick >= item.duration:
+                        item.remove_effect(entity)
+                        self.message_log.add_message(
+                            f"The {entity.name}'s {item.type} has worn off!",
+                            color.white,
+                        )
 
     def update_fov(self) -> None:
         for (x, row) in enumerate(self.game_map.tiles):

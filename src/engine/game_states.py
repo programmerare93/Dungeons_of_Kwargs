@@ -141,6 +141,7 @@ class StatBox:
         self.stat_value = all_stats[stat_name]
         self.stat_description = stat_description[stat_name]
         self.stat_color = all_stat_colors[stat_name]
+        self.stat_path = "assets\\attributes\\{}.png".format(self.stat_name)
 
     def render(self, window):
         window.console.draw_frame(
@@ -165,6 +166,8 @@ class StatBox:
             string=str(all_stats[self.stat_name]),
             fg=(0, 255, 0),
         )
+
+        window.show_image(self.stat_path, self.x + 1, self.y + 10)
 
 
 def main_menu(engine, window):
