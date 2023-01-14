@@ -26,10 +26,17 @@ class StatItem:
             "agility potion": entity.agility,
             "perception potion": entity.perception,
         }
+        all_stat_colors = {
+            "strength potion": (0, 0, 255),
+            "agility potion": (0, 255, 255),
+            "perception potion": (255, 128, 0),
+        }
         potion_dict[self.type] += self.amplitude
 
         entity.inventory.items.remove(self)
-        engine.message_log.add_message("{} used a {}!".format(entity.name, self.name))
+        engine.message_log.add_message(
+            "{} used a {}!".format(entity.name, self.name), all_stat_colors[self.type]
+        )
         self.activated_tick = engine.tick
         entity.used_items.append(self)
         return
@@ -60,6 +67,9 @@ class HealthPotion:
             entity.hp = entity.max_hp
         else:
             entity.hp += self.amplitude
+            engine.message_log.add_message(
+                "{} used a {}!".format(entity.name, self.name), (255, 0, 0)
+            )
         return
 
 

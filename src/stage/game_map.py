@@ -63,11 +63,7 @@ class GameMap:
                 entity.render(console, entity.x, entity.y)
 
     def entity_at_location(self, x: int, y: int) -> List[Entity]:
-        return [
-            entity
-            for entity in self.entities
-            if entity.x == x and entity.y == y and entity.char != "C"
-        ]
+        return [entity for entity in self.entities if entity.x == x and entity.y == y]
 
     def monster_or_chest_at_location(self, x: int, y: int) -> List[Entity]:
         return [

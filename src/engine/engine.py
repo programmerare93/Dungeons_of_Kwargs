@@ -175,6 +175,7 @@ class Engine:
                 self.creatures.remove(entity)
                 self.player.xp += entity.xp_value
                 self.render(console=self.window.console, context=self.window.context)
+                self.player_can_attack = True
                 # self.sound_handler.monster_death()
                 break
 

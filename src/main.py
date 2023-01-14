@@ -22,7 +22,7 @@ def main():
     event_handler = EventHandler()
     floor = Floor()
     player = Player(
-        color=(255, 255, 255),
+        color=(255, 0, 255),
         char="@",
     )
 
