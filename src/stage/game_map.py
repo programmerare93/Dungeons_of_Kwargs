@@ -1,4 +1,4 @@
-from typing import Iterable, Set
+from typing import Iterable, Set, List
 
 import numpy as np
 from tcod.console import Console
@@ -62,8 +62,19 @@ class GameMap:
             ):
                 entity.render(console, entity.x, entity.y)
 
-    def entity_at_location(self, x: int, y: int) -> Set[Entity]:
-        return {entity for entity in self.entities if entity.x == x and entity.y == y}
+    def entity_at_location(self, x: int, y: int) -> List[Entity]:
+        return [
+            entity
+            for entity in self.entities
+            if entity.x == x and entity.y == y and entity.char != "C"
+        ]
+
+    def monster_or_chest_at_location(self, x: int, y: int) -> List[Entity]:
+        return [
+            entity
+            for entity in self.entities
+            if entity.x == x and entity.y == y and entity.char != "@"
+        ]
 
     def get_tile(self, x, y):
         return self.tiles[x, y]
@@ -78,7 +89,7 @@ class GameMap:
                 if tile.type in (
                     tile_types.types_of_tiles["floor"],
                     tile_types.types_of_tiles["trap"],
-                ):
+                ) and not self.monster_or_chest_at_location(x, y):
                     self.pathfinding_map[x, y] = 1
 
     def pathfinding(self, x1, y1, x2, y2):

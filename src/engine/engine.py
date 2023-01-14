@@ -106,6 +106,7 @@ class Engine:
 
     def handle_enemy_AI(self):
         if self.monster_tick != self.tick:
+            self.game_map.generate_pathfinding_map()
             for monster in self.game_map.entities:
                 if (
                     monster.char not in ("@", "C")

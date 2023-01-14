@@ -35,9 +35,17 @@ class MovementAction(Action):
 
         dest_x = entity.x + self.dx
         dest_y = entity.y + self.dy
+        target = (
+            engine.game_map.entity_at_location(dest_x, dest_y)[0]
+            if engine.game_map.entity_at_location(dest_x, dest_y)
+            else None
+        )
 
         if not engine.game_map.in_bounds(dest_x, dest_y):
             # Koordinaten är utanför kartan
+            return None
+
+        if not engine.game_map.get_tile(dest_x, dest_y).walkable:
             return None
 
         if engine.player_activated_trap(dest_x, dest_y):
@@ -66,11 +74,7 @@ class MovementAction(Action):
                 pass
             engine.game_map.tiles[dest_x, dest_y].hasBeenActivated = True
 
-        if not engine.game_map.get_tile(dest_x, dest_y).walkable:
-            return None
-
-        if entity.char != "@" and engine.game_map.entity_at_location(dest_x, dest_y):
-            target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
+        if entity.char != "@" and target:
             if target.char != "@":
                 return "tried to attack a monster"
             if entity.perception + random.randint(
@@ -107,16 +111,12 @@ class MovementAction(Action):
                 # sound_handler.attack_dodged()
                 return "miss"
 
-        elif (
-            engine.game_map.entity_at_location(dest_x, dest_y)
-            and list(engine.game_map.entity_at_location(dest_x, dest_y))[0].char == "C"
-        ):
+        elif engine.game_map.entity_at_location(dest_x, dest_y) and target.char == "C":
             return None
         elif (
             engine.game_map.entity_at_location(dest_x, dest_y)
             and engine.player_can_attack == True
         ):
-            target = list(engine.game_map.entity_at_location(dest_x, dest_y))[0]
             if entity.perception + random.randint(
                 1, 20
             ) > target.agility + random.randint(1, 20):
