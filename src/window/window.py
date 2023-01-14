@@ -1,4 +1,5 @@
 import tcod.sdl.render
+import os
 
 
 class Window:
@@ -33,30 +34,38 @@ class Window:
 
     def render_log(self, player, engine):
         self.console.draw_frame(0, 45, self.width, self.height - 45, "Log", clear=False)
-        self.console.print(
-            55,
-            52,
-            "Player position: {}, {}".format(player.x, player.y),
-        )
+        x_offset = 5
+        y_offset = 46
+        all_images = [
+            "Max_HP.png",
+            "Strength.png",
+            "Perception.png",
+            "Agility.png",
+            "Intelligence.png",
+        ]
+        all_stat_colors = {
+            "Max_HP.png": (255, 0, 0),
+            "Strength.png": (0, 0, 255),
+            "Perception.png": (255, 128, 0),
+            "Agility.png": (0, 255, 255),
+            "Intelligence.png": (255, 0, 255),
+        }
+        for i, stat in enumerate(player.stats):
+            if i == 3:
+                x_offset = 9
+                y_offset += 10
+            self.show_image(
+                f"assets\\attributes\\{all_images[i]}", 50 + x_offset, y_offset
+            )
+            self.console.print(
+                50 + x_offset,
+                y_offset + 9,
+                f"{stat}",
+                fg=all_stat_colors[all_images[i]],
+            )
+            x_offset += 8
 
-        self.console.print(
-            55,
-            53,
-            "Current Tick: {}".format(engine.tick),
-        )
-
-        self.console.print(
-            55,
-            54,
-            "Current Monster Tick: {}".format(engine.monster_tick),
-        )
-
-        self.console.print(
-            55,
-            55,
-            "Player XP: {}".format(engine.player.xp),
-        )
-        self.show_image("assets\\main_character.png", 3, 48)
+        self.show_image("assets\\main_character.png", 3, 46)
 
     def print(self, x: int, y: int, string: str):
         self.console.print(x, y, string)

@@ -66,6 +66,7 @@ class Engine:
         self.game_map.difficulty += 1
         self.generator.max_monsters_per_room = self.generator.difficulty * 2
         self.floor.floor += 1
+        self.creatures = [x for x in self.game_map.entities if x.char != "C"]
 
     def player_activated_trap(self, x: int, y: int) -> bool:
         return isinstance(self.game_map.tiles[x, y], tile_types.Trap)
@@ -193,10 +194,23 @@ class Engine:
     def render(self, console: Console, context: Context) -> None:
         self.game_map.render(console)
         render_bar(
+            x=2,
+            y=65,
             console=console,
             current_value=self.player.hp,
             maximum_value=self.player.max_hp,
             total_width=20,
+        )
+        render_bar(
+            x=2,
+            y=68,
+            console=console,
+            current_value=self.player.xp,
+            maximum_value=self.player.xp_to_next_level,
+            total_width=20,
+            color1=(255, 255, 255),
+            color2=(0, 0, 255),
+            stat="XP",
         )
         self.message_log.render(console=console, x=23, y=62, width=40, height=6)
         self.window.render_log(

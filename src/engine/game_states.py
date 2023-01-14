@@ -130,10 +130,10 @@ stat_description = {
 all_stat_names = ["Max_HP", "Strength", "Perception", "Agility", "Intelligence"]
 all_stats = {
     "Max_HP": 10,
-    "Strength": 10,
+    "Strength": 5000,
     "Perception": 10,
     "Agility": 10,
-    "Intelligence": 10,
+    "Intelligence": 2,
 }
 all_stat_colors = {
     "Max_HP": (255, 0, 0),
@@ -230,7 +230,7 @@ def stats_screen(engine, window):
         )
         all_boxes.append(new_box)
         y_offset += box_height + 1
-    original_points = engine.player.intelligence // 2 + 5
+    original_points = engine.player.intelligence // 2  # + 5
     available_points = original_points
     while available_points > 0:
         events = tcod.event.wait()
