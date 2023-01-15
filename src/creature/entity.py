@@ -38,7 +38,7 @@ class Player(Entity):
         self,
         char: str,
         color: Tuple[int, int, int],
-        stats=[10, 10, 10, 10, 2],
+        stats=[10, 1000, 10, 10, 2],  # Utgångspunkten för spelarens stats
         name: str = "Player",
     ):
         super().__init__(0, 0, "@", color, name)
@@ -201,7 +201,7 @@ def generate_boss(room, game_map):  # Special funktion för att generera bossen
         max_hp=80,
         strength=10,
         perception=4,
-        dexterity=2,
+        agility=2,
         intelligence=2,
     )
     game_map.entities.append(boss)

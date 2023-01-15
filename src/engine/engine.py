@@ -81,6 +81,8 @@ class Engine:
                 event
             )  # Dispatch metoden ärvs av EventHandler klassen från tcod.event klassen, så vi vet inte hur den fungerar, fast den kommer att kalla på andra funktioner i event_handler
 
+            if action in [str(x) for x in range(6)]:
+                return action
             match action:  # Tittar på vad som händer i action variabeln och gör något beroende på vad det är
                 case None:  # Ifall det inte är något så gör vi inget
                     continue
@@ -232,7 +234,7 @@ class Engine:
             stat="XP",
         )
         self.message_log.render_messages(
-            console=console, x=23, y=62, width=30, height=6
+            console=console, x=23, y=62, width=38, height=6
         )  # Visar meddelanden
         self.window.render_log(  # Visar loggen
             player=self.player,

@@ -153,14 +153,6 @@ stat_description = {
 
 all_stat_names = ["Max_HP", "Strength", "Perception", "Agility", "Intelligence"]
 
-# Ursprungsvärden för spelarens statistik
-all_stats = {
-    "Max_HP": 10,
-    "Strength": 1000,
-    "Perception": 10,
-    "Agility": 10,
-    "Intelligence": 2,
-}
 
 # Varje attribut har sin egen färg
 all_stat_colors = {
@@ -175,16 +167,17 @@ all_stat_colors = {
 class StatBox:
     """Liknande till inventory box klassen fast för statistik"""
 
-    def __init__(self, x, y, width, height, stat_name):
+    def __init__(self, x, y, width, height, stat_name, stats, index):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.stat_name = stat_name
-        self.stat_value = all_stats[stat_name]
-        self.stat_description = stat_description[stat_name]
-        self.stat_color = all_stat_colors[stat_name]
+        self.stat_value = stats[self.stat_name]
+        self.stat_description = stat_description[self.stat_name]
+        self.stat_color = all_stat_colors[self.stat_name]
         self.stat_path = "assets\\attributes\\{}.png".format(self.stat_name)
+        self.index = index
 
     def render(self, window):
         """Renderar en attribut samt en bild av den"""
@@ -204,12 +197,14 @@ class StatBox:
             height=self.height + self.y,
             string=self.stat_description,
         )
-        window.console.print(
+        window.print(
             x=self.x + self.width // 2,
             y=self.y + self.width // 2,
-            string=str(all_stats[self.stat_name]),
+            string=f"{self.stat_value}",
             fg=green,
         )
+
+        window.print(x=self.x + 1, y=self.y + 1, string=f"({self.index})")
 
         window.show_image(self.stat_path, self.x + 1, self.y + 10)
 
@@ -255,11 +250,7 @@ def stats_screen(engine, window):
             y_offset = 3
             x_offset += box_width + 1
         new_box = StatBox(
-            x_offset,
-            y_offset,
-            box_width,
-            box_height,
-            stat,
+            x_offset, y_offset, box_width, box_height, stat, temp_stats, i + 1
         )
         all_boxes.append(new_box)
         y_offset += box_height + 1
@@ -279,15 +270,16 @@ def stats_screen(engine, window):
             hit_stat = is_in_box(all_boxes, mouse_x, mouse_y)
             if hit_stat != None:
                 hit_stat.stat_value += 1
-                all_stats[hit_stat.stat_name] += 1
                 available_points -= 1
         elif (
             event == "reset"
         ):  # Om spelaren klickar på reset så återställs alla stats till de värden de var innan
             for stat_box in all_boxes:
                 stat_box.stat_value = temp_stats[stat_box.stat_name]
-                all_stats[stat_box.stat_name] = stat_box.stat_value
             available_points = original_points
+        elif event in [str(i) for i in range(6)]:
+            all_boxes[int(event) - 1].stat_value += 1
+            available_points -= 1
         window.clear()
 
         for box in all_boxes:
@@ -328,10 +320,17 @@ def stats_screen(engine, window):
             fg=yellow,
         )
 
-        window.show_image("assets\\main_character.png", window.width - 20, 48)
+        window.print(
+            x=window.width // 2 - 8,
+            y=window.height // 2 + 17,
+            string="Click on the boxes to increase your stats \nor press the number of \nthe stat you want to increase",
+            fg=light_purple,
+        )
+
+        window.show_image("assets\\main_character.png", window.width - 18, 48)
 
         window.print(
-            x=window.width - 20, y=window.height // 2 + 10, string="Your character:"
+            x=window.width - 18, y=window.height // 2 + 10, string="Your character:"
         )
 
         window.print(
@@ -344,9 +343,8 @@ def stats_screen(engine, window):
         )
         window.present()
     engine.player_can_move = True
-    return list(
-        all_stats.values()
-    )  # Ger tillbaka en lista med alla stats så att de kan användas för att uppdatera spelarens stats
+    new_stats = [x.stat_value for x in all_boxes]
+    return new_stats  # Ger tillbaka en lista med alla stats så att de kan användas för att uppdatera spelarens stats
 
 
 def death_state(engine, window):

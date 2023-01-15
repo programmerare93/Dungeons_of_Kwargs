@@ -64,9 +64,7 @@ class HealthPotion:
         if hp_diff < self.amplitude:
             entity.hp = entity.max_hp
             entity.items.remove(self)
-            engine.message_log.add_message(
-                f"{entity.name} used a {self.name} and is now at full health!", red
-            )
+            engine.message_log.add_message(f"{entity.name} used a {self.name}!", red)
         else:
             entity.hp += self.amplitude
             engine.message_log.add_message(
@@ -239,6 +237,7 @@ all_items = [
     tier_3_items,
     tier_4_items,
     tier_5_items,
+    tier_5_items,
 ]
 
 # Fiender kommer bara kunna ha potions i sitt inventory så vi skapar listor med potions för varje våning
@@ -254,6 +253,7 @@ all_potions = [
     tier_2_potions,
     tier_3_potions,
     tier_4_potions,
+    tier_5_potions,
     tier_5_potions,
 ]
 

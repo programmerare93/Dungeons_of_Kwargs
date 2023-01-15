@@ -11,9 +11,9 @@ from actions.actions import (
 from actions.actions import *
 
 
-
 class EventHandler(tcod.event.EventDispatch[Action]):
     """En klass som hanterar alla inputs som sker i spelet, ärver från en av tcods event klasser"""
+
     inventory_is_open: bool
     inventory_is_open = False
 
@@ -59,5 +59,7 @@ class EventHandler(tcod.event.EventDispatch[Action]):
                 action = "New Game"
             case tcod.event.K_r:  # För att göra om sin level up
                 action = "Reset"
+        if key.label in [f"{i}" for i in range(6)]:
+            return key.label
 
         return action
