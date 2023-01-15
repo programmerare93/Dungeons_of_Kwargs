@@ -152,20 +152,76 @@ def generate_monsters(room, game_map):
     y = random.randint(room.y1 + 1, room.y2 - 1)
 
     if not game_map.entity_at_location(x, y):
-        if random.random() < 0.8:
+        number = random.randint(0, 100)
+        if number < 10:
+            monster = Monster(
+                name="Wario",
+                x=x,
+                y=y,
+                char="W",
+                color=(255, 255, 0),
+                difficulty=game_map.difficulty,
+                max_hp=40,
+                strength=15,
+                agility=3,
+                perception=4,
+                intelligence=20
+            )
+        elif 10 <= number < 40:
             monster = Monster(
                 name="Orc",
                 x=x,
                 y=y,
                 char="O",
-                color=light_green,
+                color=(0, 255, 120),
                 difficulty=game_map.difficulty,
                 max_hp=16,
                 strength=10,
                 agility=5,
                 perception=5,
                 intelligence=1,
-                move_chance=40,
+            )
+        elif 40 <= number < 60:
+            monster = Monster(
+                name="Skeleton",
+                x=x,
+                y=y,
+                char="S",
+                color=(255, 255, 255),
+                difficulty=game_map.difficulty,
+                max_hp=10,
+                strength=8,
+                perception=6,
+                agility=10,
+                intelligence=6,
+            )
+        elif 60 <= number < 80:
+            monster = Monster(
+                name="Moomin Troll",
+                x=x,
+                y=y,
+                char="M",
+                color=(0, 0, 0),
+                difficulty=game_map.difficulty,
+                max_hp=14,
+                strength=10,
+                perception=14,
+                agility=8,
+                intelligence=4
+            )
+        elif 80 <= number < 90:
+            monster = Monster(
+                name="Vampire",
+                x=x,
+                y=y,
+                char="V",
+                color=(255, 0, 0),
+                difficulty=game_map.difficulty,
+                max_hp=18,
+                strength=8,
+                perception=20,
+                agility=14,
+                intelligence=20
             )
         else:
             monster = Monster(
@@ -173,14 +229,13 @@ def generate_monsters(room, game_map):
                 x=x,
                 y=y,
                 char="T",
-                color=blue,
+                color=(0, 0, 255),
                 difficulty=game_map.difficulty,
                 max_hp=30,
                 strength=10,
                 perception=5,
                 agility=3,
                 intelligence=3,
-                move_chance=60,
             )
         game_map.entities.append(monster)
         room.type = "monster"
