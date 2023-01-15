@@ -9,7 +9,7 @@ from stage.game_map import GameMap
 class Room:
     """Klass för att representera ett rektangulärt rum"""
 
-    def __init__(self, x: int, y: int, width: int, height: int):
+    def __init__(self, x: int, y: int, width: int, height: int) -> None:
         self.x1 = x
         self.y1 = y
         self.x2 = x + width
@@ -21,6 +21,7 @@ class Room:
     # t.ex kan vi skriva mitt_rum.center istället för mitt_rum.center()
     @property
     def center(self) -> Tuple[int, int]:
+        """Återvänder koordinaterna till centrum av rummet"""	
         center_x = int((self.x1 + self.x2) / 2)
         center_y = int((self.y1 + self.y2) / 2)
         return center_x, center_y

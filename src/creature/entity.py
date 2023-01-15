@@ -1,10 +1,12 @@
 from typing import Tuple
 from tcod import Console
+from itertools import chain
 import random
 
 from stage.floor import Floor
 from actions.actions import MovementAction
 from creature.items import *
+from window.color import *
 
 
 class Entity:
@@ -30,99 +32,38 @@ class Entity:
 
 
 class Player(Entity):
+    """Klass för att representera spelaren"""
+
     def __init__(
         self,
         char: str,
         color: Tuple[int, int, int],
-        max_hp: int,
-        strength: int,
-        perception: int,
-        dexterity: int,
-        intelligence: int,
-        name: str = None,
+        stats=[10, 1000, 10, 10, 2],  # Utgångspunkten för spelarens stats
+        name: str = "Player",
     ):
-        super().__init__(0, 0, char, color, name)
-        self.name = name
-        self.max_hp = max_hp
-        self.hp = max_hp
-        self.strength = strength
-        self.dexterity = dexterity
-        self.intelligence = intelligence
-        self.perception = perception
-        self.inventory = Inventory(
-            self,
-            items=[small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   small_healing_potion,
-                   ],
-        )
+        super().__init__(0, 0, "@", color, name)
+        self.stats = stats
+        self.update_stats()
+        self.armor = obama_armor
         self.xp = 0
         self.xp_to_next_level = 100
         self.level = 1
-        self.inventory = Inventory(self, items=[small_perception_potion])
+        self.items = list(chain(*all_items))
         self.used_items = []
 
-    def heal(self, amount: int) -> int:
-        if self.hp == self.max_hp:
-            # Detta är till för att när vi i en annan del av spelet
-            # kollar ifall self.heal(amount_of_healing) < entity.max_hp
-            # så kommer det inte leda till ett error
-            return self.max_hp + 1
-
-        new_hp = self.hp + amount
-
-        if new_hp > self.max_hp:
-            self.hp = self.max_hp
-        else:
-            self.hp = new_hp
-
-        amount_recovered = new_hp - self.hp
-
-        return amount_recovered
+    def update_stats(self):
+        """Används för att uppdatera statsen när de ändras"""
+        self.max_hp = self.stats[0]
+        self.hp = self.max_hp
+        self.strength = self.stats[1]
+        self.perception = self.stats[2]
+        self.agility = self.stats[3]
+        self.intelligence = self.stats[4]
 
 
 class Monster(Entity):
+    """Klass för att representera en fiende"""
+
     def __init__(
         self,
         x: int,
@@ -133,75 +74,78 @@ class Monster(Entity):
         max_hp: int,
         strength: int,
         perception: int,
-        dexterity: int,
+        agility: int,
         intelligence: int,
         name: str,
+        move_chance: int = 100,
     ):
         super().__init__(x, y, char, color, name)
-        self.difficulty = difficulty
+        self.difficulty = difficulty  # Monstrets statistik kommer att bero på hur svårt den nuvarande nivån är
         self.max_hp = max_hp * self.difficulty
         self.hp = self.max_hp * self.difficulty
         self.strength = strength * self.difficulty
-        self.dexterity = dexterity * self.difficulty
+        self.agility = agility * self.difficulty
         self.intelligence = intelligence * self.difficulty
         self.perception = perception * self.difficulty
-        self.inventory = Inventory(
-            self,
-            items=[small_healing_potion, small_healing_potion, small_healing_potion],
+        self.move_chance = (
+            move_chance  # Hur stor chans det är för att monstret ska röra sig
         )
-        self.xp_value = self.max_hp + self.strength + self.dexterity + self.intelligence
+        self.items = [  # Lista med items som monstret har i sitt inventory
+            random.choice(all_potions[self.difficulty - 1])
+            for _ in range(random.randint(1, 3))
+        ]
+        self.xp_value = (
+            self.max_hp + self.strength + self.agility + self.intelligence
+        )  # Hur mycket xp spelaren får när den dödar monstret
+        self.armor = all_armor[self.difficulty - 1]
+        self.used_items = (
+            []
+        )  # Lista med items som monstret använt och som fortfarande är aktiva
 
     def monster_pathfinding(self, player, game_map, engine):
         """Monster pathfinding"""
         if game_map.pathfinding(self.x, self.y, player.x, player.y) == []:
             return
-            
+
         tile_x, tile_y = (
-            game_map.pathfinding(self.x, self.y, player.x, player.y)[0][0],
+            game_map.pathfinding(self.x, self.y, player.x, player.y)[0][
+                0
+            ],  # Hittar närmaste tile till spelaren
             game_map.pathfinding(self.x, self.y, player.x, player.y)[0][1],
         )
 
-        action = MovementAction(tile_x - self.x, tile_y - self.y)
+        action = MovementAction(
+            tile_x - self.x, tile_y - self.y
+        )  # Räknar ut vilken riktning monstret ska röra sig
         action.perform(engine, self)
 
-    def heal(self, amount: int) -> int:
-        if self.hp == self.max_hp:
-            return
-
-        new_hp = self.hp + amount
-
-        if new_hp > self.max_hp:
-            self.hp = self.max_hp
-        else:
-            self.hp = new_hp
-
-        amount_recovered = new_hp - self.hp
-
-        return amount_recovered
-
-    def take_damage(self, amount: int):
-        self.hp -= amount
+    def choose_item(self):
+        """Väljer ett item från inventoryt"""
+        return random.choice(self.items)
 
 
 class Chest(Entity):
-    def __init__(self, x: int, y: int, inventory: Inventory, name: str = "Chest"):
+    """Klass för att representera en kista, kommer att fungera som en container för items och ärver från entiteten så att vi enkelt kan ta bort den när den öppnas"""
+
+    def __init__(self, x: int, y: int, name: str = "Chest", tier: int = 1):
         self.name = name
         self.hp = inf
         self.x = x
         self.y = y
         self.char = "C"
-        self.color = (0, 255, 255)
-        self.inventory = inventory
+        self.color = light_blue
         self.closed = True
-
-    def generate_items(self):
-        """Genererar ett antal items i en kista"""
-        for _ in range(random.randint(1, 3)):
-            self.inventory.items.append(random.choice(all_items))
+        self.tier = tier
+        self.items = [
+            random.choice(
+                all_items[self.tier - 1]
+            )  # Genererar ett inventory med items beror på vilken tier kistan är vilket beror på våningen
+            for _ in range(random.randint(1, 3))
+        ]
 
 
 def generate_monsters(room, game_map):
-    """Genererar en entity i ett given rum"""
+    """Genererar en entity i ett givet rum"""
 
     x = random.randint(room.x1 + 1, room.x2 - 1)
 
@@ -214,13 +158,14 @@ def generate_monsters(room, game_map):
                 x=x,
                 y=y,
                 char="O",
-                color=(0, 255, 120),
+                color=light_green,
                 difficulty=game_map.difficulty,
                 max_hp=16,
-                strength=5,
-                dexterity=5,
+                strength=10,
+                agility=5,
                 perception=5,
                 intelligence=1,
+                move_chance=40,
             )
         else:
             monster = Monster(
@@ -228,15 +173,36 @@ def generate_monsters(room, game_map):
                 x=x,
                 y=y,
                 char="T",
-                color=(0, 0, 255),
+                color=blue,
                 difficulty=game_map.difficulty,
                 max_hp=30,
-                strength=8,
+                strength=10,
                 perception=5,
-                dexterity=3,
+                agility=3,
                 intelligence=3,
+                move_chance=60,
             )
         game_map.entities.append(monster)
         room.type = "monster"
     else:  # Om det redan finns en entity på den platsen, kör funktionen igen
         generate_monsters(room, game_map)
+
+
+def generate_boss(room, game_map):  # Special funktion för att generera bossen
+    x, y = room.center
+
+    boss = Monster(
+        name="Ancient Titan",
+        x=x,
+        y=y,
+        char="B",
+        color=red,
+        difficulty=game_map.difficulty + 2,
+        max_hp=80,
+        strength=10,
+        perception=4,
+        agility=2,
+        intelligence=2,
+    )
+    game_map.entities.append(boss)
+    room.type = "monster"

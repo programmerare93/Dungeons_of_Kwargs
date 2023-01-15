@@ -1,4 +1,5 @@
 class Floor:
+    """Floor class som innehåller information om vilken våning spelaren befinner sig på och hur många rum som kan finnas på den våningen"""
     floor: int
     max_rooms: int
     max_monsters_per_room: int
@@ -7,12 +8,3 @@ class Floor:
         self.floor = 0
         self.max_rooms = 20
         self.max_monsters_per_room = 3
-
-    def new_floor(self):
-        self.floor += 1
-
-        if self.max_monsters_per_room <= 10:
-            self.max_monsters_per_room += 1
-
-        if self.max_rooms <= 40:
-            self.max_rooms += 2

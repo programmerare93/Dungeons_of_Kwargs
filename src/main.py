@@ -7,12 +7,11 @@ from engine.game_states import *
 from stage.floor import Floor
 from stage.procgen import Generator
 from window.window import Window
-from window import color
-from engine.game_states import main_menu, level_up_state, death_state
+from window.color import *
 
 
 tileset = tcod.tileset.load_tilesheet(
-    "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
+    "./assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )
 
 
@@ -20,26 +19,29 @@ window = Window("Dungeons of Kwargs", 80, 70, tileset)
 
 
 def main():
-    event_handler = EventHandler()
     floor = Floor()
     player = Player(
-        "@",
-        (255, 255, 255),
-        name="Player",
-        max_hp=30,
-        strength=10,
-        dexterity=8,
-        intelligence=5,
-        perception=4,
+        color=light_purple,
+        char="@",
     )
 
-    generator = Generator(floor.max_rooms, window.width, window.height - 20, player)
     game_map = None
 
-    engine = Engine(event_handler, game_map, player, floor, generator, window=window)
-    engine.message_log.add_message("Welcome to Dungeons of Kwargs!", color.welcome_text)
+    generator = Generator(window.width, window.height - 26, player, floor=floor)
+    engine = Engine(
+        game_map=game_map,
+        player=player,
+        floor=floor,
+        generator=generator,
+        window=window,
+    )
+    engine.message_log.add_message("Welcome to Dungeons of Kwargs!", welcome_color)
     engine.game_map.generate_pathfinding_map()
     main_menu(engine, window=window)
+    player.stats = stats_screen(engine, window=window)
+    player.update_stats()
+    engine.player_can_move = True
+    engine.game_has_started = True
 
     while True:
 
@@ -57,7 +59,8 @@ def main():
             death_state(engine, window)
 
         if engine.check_xp() == "Level Up":
-            level_up_state(engine, window)
+            player.stats = stats_screen(engine, window=window)
+            player.update_stats()
 
         if engine.check_inventory() == "open":
             inventory_state(engine, window)

@@ -1,2 +1,5 @@
 numpy
 tcod
+soundfile
+wave
+asyncio
