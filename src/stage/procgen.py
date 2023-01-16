@@ -16,6 +16,7 @@ from stage.floor import Floor
 
 class Generator:
     """Klass för att generera en spelvärld"""
+
     def __init__(
         self,
         map_width: int,

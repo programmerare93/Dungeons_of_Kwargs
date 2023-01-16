@@ -121,6 +121,8 @@ def inventory_state(engine, window):
         if event == "inventory":  # Ifall spelaren trycker på i så stängs inventoryt
             engine.inventory_open = False
             engine.player_can_move = True
+            window.clear()
+            window.present()
             return
         elif event == "next_page":  # Ändrar sida
             if current_page < num_pages:
@@ -215,6 +217,8 @@ def main_menu(engine, window):
     while True:
         events = tcod.event.wait()
         if engine.handle_events(events) == "new_game":
+            window.clear()
+            window.present()
             return "playing"
         window.clear()
 
@@ -344,6 +348,8 @@ def stats_screen(engine, window):
         window.present()
     engine.player_can_move = True
     new_stats = [x.stat_value for x in all_boxes]
+    window.clear()
+    window.present()
     return new_stats  # Ger tillbaka en lista med alla stats så att de kan användas för att uppdatera spelarens stats
 
 

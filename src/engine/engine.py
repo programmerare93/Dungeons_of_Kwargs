@@ -55,6 +55,8 @@ class Engine:
 
     def update_game_map(self):
         """Uppdaterar spel kartan när spelaren hamnar på en ny våning."""
+        if self.game_map:
+            self.game_map.entities = [self.player]
         self.generator.generate_dungeon()
         self.game_map = self.generator.get_dungeon()
         self.update_fov()
