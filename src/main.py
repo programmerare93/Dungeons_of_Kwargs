@@ -12,14 +12,16 @@ from window.color import *
 
 tileset = tcod.tileset.load_tilesheet(
     "./assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
-)
+)  # Definierar en tileset för att använda i spelet, den här är en 16x16 tileset som använder CP437 som charmap och representerar varje tecken som vi använder i spelet
 
 
-window = Window("Dungeons of Kwargs", 80, 70, tileset)
+window = Window(
+    "Dungeons of Kwargs", 80, 70, tileset
+)  # Definierar en window med namnet Dungeons of Kwargs, 80x70 storlek och använder tileset som tileset
 
 
-def main():
-    floor = Floor()
+def main():  # Huvudfunktionen som körs när spelet startas
+    floor = Floor()  # Definierar en floor som används i spelet
     player = Player(
         color=light_purple,
         char="@",
@@ -27,46 +29,58 @@ def main():
 
     game_map = None
 
-    generator = Generator(window.width, window.height - 26, player, floor=floor)
-    engine = Engine(
-        game_map=game_map,
-        player=player,
-        floor=floor,
-        generator=generator,
-        window=window,
+    generator = Generator(
+        window.width, window.height - 26, player, floor=floor
+    )  # Skapar en generator som används för att generera spelplanen
+    engine = (
+        Engine(  # Skapar en engine som används för att hantera allt som händer i spelet
+            game_map=game_map,
+            player=player,
+            floor=floor,
+            generator=generator,
+            window=window,
+        )
     )
-    engine.message_log.add_message("Welcome to Dungeons of Kwargs!", welcome_color)
-    engine.game_map.generate_pathfinding_map()
-    main_menu(engine, window=window)
-    player.stats = stats_screen(engine, window=window)
-    player.update_stats()
+    engine.message_log.add_message(
+        "Welcome to Dungeons of Kwargs!", welcome_color
+    )  # Skriver ut ett meddelande när spelet startas
+    engine.game_map.generate_pathfinding_map()  # Genererar en pathfinding map som används för att beräkna vägen till spelaren
+    main_menu(engine, window=window)  # Visar huvudmenyn
+    player.stats = stats_screen(engine, window=window)  # Visar statsmenyn
+    player.update_stats()  # Uppdaterar statsen utifrån spelarens val
     engine.player_can_move = True
     engine.game_has_started = True
 
-    while True:
+    while True:  # Spel loopen
 
-        events = tcod.event.wait()
+        events = (
+            tcod.event.wait()
+        )  # Samlar in alla events som sker i spelet, exempelvis knapptryckningar
 
-        engine.handle_events(events)
+        engine.handle_events(events)  # Tar hand om alla events som sker i spelet
 
-        engine.handle_enemy_AI()
+        engine.handle_enemy_AI()  # Tar hand om fiendernas AI
 
-        engine.can_player_attack()
+        engine.can_player_attack()  # Tittar ifall spelarens attack cooldown är klar
 
-        engine.handle_used_items()
+        engine.handle_used_items()  # Tar hand om använda items
 
-        if engine.check_entities() == "dead":
-            death_state(engine, window)
+        if engine.check_entities() == "dead":  # Ifall spelaren dör
+            death_state(engine, window)  # Visar döds skärmen
 
-        if engine.check_xp() == "Level Up":
-            player.stats = stats_screen(engine, window=window)
+        if engine.check_xp() == "Level Up":  # Ifall spelaren har levlat upp
+            player.stats = stats_screen(
+                engine, window=window
+            )  # Visar statsmenyn, som i början av spelet
             player.update_stats()
 
-        if engine.check_inventory() == "open":
-            inventory_state(engine, window)
+        if engine.check_inventory() == "open":  # Ifall spelaren öppnar sin inventory
+            inventory_state(engine, window)  # Visar inventory skärmen
 
-        engine.render(window.console, window.context)
+        engine.render(
+            window.console, window.context
+        )  # Renderar allt som händer i spelet
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__":  # Sant ifall filen körs som huvud fil
+    main()  # Kör huvud funktionen
