@@ -12,9 +12,25 @@ from window.color import *
 # Falskt på 'runtime'
 if TYPE_CHECKING:
     from engine.engine import Engine
-    from creature.entity import Entity, Chest
+    from creature.entity import Entity
 
 player = SoundPlayer()
+# all_monster_chars = (
+#     "O",
+#     "G",
+#     "T",
+#     "S",
+#     "B",
+#     "R",
+#     "W",
+#     "A",
+#     "H",
+#     "M",
+#     "V",
+#     "Z",
+#     "K",
+#     "L",
+# )
 
 
 class Action:
@@ -97,6 +113,8 @@ class MovementAction:
                 entity.char == "@"
             ):  # Ifall det är spelaren som attackerar så sätts engine.player_can_attack till False, så att spelaren inte kan attackera igen på en sekund
                 engine.player_can_attack = False
+            if entity.char != "@" and target.char != "@":
+                return None
             if entity.perception + random.randint(
                 1, 20
             ) > target.agility + random.randint(

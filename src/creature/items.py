@@ -238,6 +238,16 @@ all_items = [
     tier_4_items,
     tier_5_items,
     tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
 ]
 
 # Fiender kommer bara kunna ha potions i sitt inventory så vi skapar listor med potions för varje våning
@@ -255,6 +265,34 @@ all_potions = [
     tier_4_potions,
     tier_5_potions,
     tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
 ]
 
-all_armor = [leather_armor, iron_armor, diamond_armor, obsidian_armor, obama_armor]
+all_armor = [
+    leather_armor,
+    iron_armor,
+    diamond_armor,
+    obsidian_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+]

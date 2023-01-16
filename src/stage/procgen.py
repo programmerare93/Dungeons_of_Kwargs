@@ -140,6 +140,7 @@ class Generator:
                     new_chest = Chest(
                         a,
                         b,
+                        tier=self.difficulty,
                     )
                     self.dungeon.entities.append(new_chest)
         else:  # Sista våningen är speciell och ska ha en boss

@@ -151,7 +151,7 @@ class Chest(Entity):
 orc = Monster(
     name="Orc",
     char="O",
-    color=green,
+    color=(0, 255, 0),
     stats=[10, 10, 10, 10, 10],
 )
 
@@ -174,21 +174,21 @@ goblin = Monster(
 skeleton = Monster(
     name="Skeleton",
     char="S",
-    color=white,
+    color=(237, 236, 230),
     stats=[10, 20, 20, 20, 1],
 )
 
 rock_elemental = Monster(
     name="Rock Elemental",
     char="R",
-    color=brown,
+    color=(121, 92, 74),
     stats=[100, 15, 10, 15, 50],
 )
 
 basilisk = Monster(
     name="Basilisk",
     char="B",
-    color=green,
+    color=dark_green,
     stats=[25, 20, 20, 20, 20],
 )
 
@@ -197,21 +197,21 @@ basilisk = Monster(
 werewolf = Monster(
     name="Werewolf",
     char="W",
-    color=light_gray,
+    color=(128, 128, 128),
     stats=[50, 20, 25, 15, 50],
 )
 
 arachnid = Monster(
     name="Arachnid",
     char="A",
-    color=dark_gray,
+    color=(72, 75, 98),
     stats=[30, 25, 30, 20, 50],
 )
 
 harpy = Monster(
     name="Harpy",
     char="H",
-    color=dark_gray,
+    color=(252, 233, 3),
     stats=[40, 30, 40, 20, 50],
 )
 
@@ -220,7 +220,7 @@ harpy = Monster(
 mummy = Monster(
     name="Mummy",
     char="M",
-    color=white,
+    color=(237, 236, 231),
     stats=[50, 15, 5, 3, 10],
 )
 
@@ -234,7 +234,7 @@ vampire = Monster(
 zombie = Monster(
     name="Zombie",
     char="Z",
-    color=dark_green,
+    color=(0, 82, 33),
     stats=[60, 20, 5, 3, 20],
 )
 
@@ -243,24 +243,12 @@ zombie = Monster(
 death_knight = Monster(
     name="Death Knight",
     char="K",
-    color=dark_green,
+    color=(99, 181, 33),
     stats=[150, 50, 20, 20, 20],
 )
 
-demon = Monster(
-    name="Demon",
-    char="D",
-    color=red,
-    stats=[100, 150, 50, 50, 50],
-)
 
-hell_hound = Monster(
-    name="Hell Hound",
-    char="H",
-    color=red,
-    stats=[50, 50, 50, 50, 50],
-)
-
+lich = Monster(name="Lich", char="L", color=(227, 98, 47), stats=[200, 100, 50, 50, 50])
 
 level_1_monsters = [orc, goblin, troll]
 
@@ -270,7 +258,7 @@ level_3_monsters = [werewolf, arachnid, harpy]
 
 level_4_monsters = [vampire, mummy, zombie]
 
-level_5_monsters = [death_knight, demon, hell_hound]
+level_5_monsters = [death_knight, lich]
 
 all_monsters = [
     level_1_monsters,
@@ -279,6 +267,8 @@ all_monsters = [
     level_4_monsters,
     level_5_monsters,
 ]
+
+all_monster_chars = [monster.char for monster in list(chain(*all_monsters))]
 
 
 def generate_monsters(room, game_map):
@@ -315,11 +305,7 @@ def generate_boss(room, game_map):  # Special funktion för att generera bossen
         char="B",
         color=red,
         difficulty=game_map.difficulty + 2,
-        max_hp=80,
-        strength=10,
-        perception=4,
-        agility=2,
-        intelligence=2,
+        stats=[100, 100, 100, 100, 100],
     )
     game_map.entities.append(boss)
     room.type = "monster"
