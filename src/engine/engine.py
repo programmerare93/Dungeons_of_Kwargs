@@ -118,7 +118,7 @@ class Engine:
             for monster in self.game_map.entities:
                 if (
                     monster.char not in ("@", "C")
-                    and random.randint(0, 100) > monster.move_chance
+                    and random.randint(0, 100) < monster.move_chance
                     and monster.hp > 0
                     and self.game_map.calculate_distance(
                         monster.x, monster.y, self.player.x, self.player.y

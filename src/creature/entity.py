@@ -159,13 +159,13 @@ def generate_monsters(room, game_map):
                 x=x,
                 y=y,
                 char="W",
-                color=(255, 255, 0),
+                color=yellow,
                 difficulty=game_map.difficulty,
                 max_hp=40,
                 strength=15,
                 agility=3,
                 perception=4,
-                intelligence=20
+                intelligence=20,
             )
         elif 10 <= number < 40:
             monster = Monster(
@@ -173,7 +173,7 @@ def generate_monsters(room, game_map):
                 x=x,
                 y=y,
                 char="O",
-                color=(0, 255, 120),
+                color=light_green,
                 difficulty=game_map.difficulty,
                 max_hp=16,
                 strength=10,
@@ -187,7 +187,7 @@ def generate_monsters(room, game_map):
                 x=x,
                 y=y,
                 char="S",
-                color=(255, 255, 255),
+                color=white,
                 difficulty=game_map.difficulty,
                 max_hp=10,
                 strength=8,
@@ -201,13 +201,13 @@ def generate_monsters(room, game_map):
                 x=x,
                 y=y,
                 char="M",
-                color=(0, 0, 0),
+                color=white,
                 difficulty=game_map.difficulty,
                 max_hp=14,
                 strength=10,
                 perception=14,
                 agility=8,
-                intelligence=4
+                intelligence=4,
             )
         elif 80 <= number < 90:
             monster = Monster(
@@ -215,13 +215,13 @@ def generate_monsters(room, game_map):
                 x=x,
                 y=y,
                 char="V",
-                color=(255, 0, 0),
+                color=red,
                 difficulty=game_map.difficulty,
                 max_hp=18,
                 strength=8,
                 perception=20,
                 agility=14,
-                intelligence=20
+                intelligence=20,
             )
         else:
             monster = Monster(
@@ -229,7 +229,7 @@ def generate_monsters(room, game_map):
                 x=x,
                 y=y,
                 char="T",
-                color=(0, 0, 255),
+                color=blue,
                 difficulty=game_map.difficulty,
                 max_hp=30,
                 strength=10,
