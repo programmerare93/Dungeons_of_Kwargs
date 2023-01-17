@@ -57,10 +57,10 @@ class MessageLog:
         for message in reversed(
             self.messages
         ):  # Reversed gör så att äldsta meddelandet visas först
-            wrap_text = textwrap.wrap(message.full_text, width)[
-                0
-            ]  # Wrap ger tillbaka en lista med texten som är wrapped till bredden
-            console.print(x=x, y=y + y_offset, string=wrap_text, fg=message.fg)
-            y_offset -= 1
-            if y_offset < 0:
-                return  # Inga fler meddelanden får plats på skärmen
+            for line in reversed(
+                textwrap.wrap(message.full_text, width)
+            ):  # Wrap ger tillbaka en lista med texten som är wrapped till bredden
+                console.print(x=x, y=y + y_offset, string=line, fg=message.fg)
+                y_offset -= 1
+                if y_offset < 0:
+                    return  # Inga fler meddelanden får plats på skärmen
