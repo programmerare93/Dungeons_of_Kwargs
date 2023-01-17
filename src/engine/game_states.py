@@ -223,6 +223,13 @@ def main_menu(engine, window):
         window.clear()
 
         window.show_image("assets\\main_menu.png", 0, 0)
+
+        window.print(
+            x=window.width // 2 - 10,
+            y=window.height // 2 - 10,
+            string="DUNGEONS OF KWARGS",
+            fg=(0, 255, 255),
+        )
         window.print(
             x=window.width // 2 - 10,
             y=window.height // 2,
