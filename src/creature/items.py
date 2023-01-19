@@ -13,7 +13,7 @@ class StatItem:
         self.duration = duration  # Hur länge föremålet kommer att boosta staten
         self.activated_tick = 0  # Vid vilken tick föremålet blev använd så att spelmotorn kan jämföra senare
 
-    def use(self, engine, entity):
+    def use(self, engine, entity) -> None:
         potion_dict = {
             "strength potion": entity.strength,
             "agility potion": entity.agility,
@@ -36,7 +36,7 @@ class StatItem:
         )  # Lägger till föremålet i en lista som entityn har så att spelmotorn kan hålla reda på vilka föremål som är aktiva
         return
 
-    def remove_effect(self, entity):
+    def remove_effect(self, entity) -> None:
         """Tar bort effekten av föremålet"""
         potion_dict = {
             "strength potion": entity.strength,
@@ -56,7 +56,7 @@ class HealthPotion:
         self.amplitude = amplitude
         self.type = type
 
-    def use(self, engine, entity):
+    def use(self, engine, entity) -> None:
         if entity.hp == entity.max_hp:
             engine.message_log.add_message("You are already at full health!")
             return
@@ -170,7 +170,7 @@ class Armor:
         self.name = name
         self.defense = defense
 
-    def use(self, engine, entity):
+    def use(self, engine, entity) -> None:
         entity.items.remove(
             self
         )  # se till att föremålet tas bort från inventory så att det inte dupliceras
@@ -238,6 +238,16 @@ all_items = [
     tier_4_items,
     tier_5_items,
     tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
+    tier_5_items,
 ]
 
 # Fiender kommer bara kunna ha potions i sitt inventory så vi skapar listor med potions för varje våning
@@ -255,6 +265,34 @@ all_potions = [
     tier_4_potions,
     tier_5_potions,
     tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
+    tier_5_potions,
 ]
 
-all_armor = [leather_armor, iron_armor, diamond_armor, obsidian_armor, obama_armor]
+all_armor = [
+    leather_armor,
+    iron_armor,
+    diamond_armor,
+    obsidian_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+    obama_armor,
+]

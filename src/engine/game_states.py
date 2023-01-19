@@ -1,26 +1,64 @@
 import tcod.event
 import tcod.sdl.render
 from window.color import *
+from typing import List
 
 
-def is_in_box(all_boxes, x, y):
-    """Kollar ifall en låda har blivit klickad på"""
-    for box in all_boxes:
-        if x in range(box.x, box.x + box.width) and y in range(
-            box.y, box.y + box.height
-        ):
-            return box
-    return None
-
-
-class InventoryBox:
-    """En låda som innehåller ett föremål och allt som krävs för att rendera den"""
-
-    def __init__(self, x, y, width, height, item=None):
+class Box:
+    def __init__(self, x, y, width, height) -> None:
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+
+
+class StatBox(Box):
+    """Liknande till inventory box klassen fast för statistik"""
+
+    def __init__(self, x, y, width, height, stat_name, stats, index):
+        super().__init__(x, y, width, height)
+        self.stat_name = stat_name
+        self.stat_value = stats[self.stat_name]
+        self.stat_description = stat_description[self.stat_name]
+        self.stat_color = all_stat_colors[self.stat_name]
+        self.stat_path = "assets\\attributes\\{}.png".format(self.stat_name)
+        self.index = index
+
+    def render(self, window):
+        """Renderar en attribut samt en bild av den"""
+        window.console.draw_frame(
+            x=self.x,
+            y=self.y,
+            width=self.width,
+            height=self.height,
+            title=self.stat_name,
+            fg=self.stat_color,
+            bg=(0, 0, 0),
+        )
+        window.console.print_box(
+            x=self.x + 3,
+            y=self.y + 3,
+            width=self.width - 5,
+            height=self.height + self.y,
+            string=self.stat_description,
+        )
+        window.print(
+            x=self.x + self.width // 2,
+            y=self.y + self.width // 2,
+            string=f"{self.stat_value}",
+            fg=green,
+        )
+
+        window.print(x=self.x + 1, y=self.y + 1, string=f"({self.index})")
+
+        window.show_image(self.stat_path, self.x + 1, self.y + 10)
+
+
+class InventoryBox(Box):
+    """En låda som innehåller ett föremål och allt som krävs för att rendera den"""
+
+    def __init__(self, x, y, width, height, item=None):
+        super().__init__(x, y, width, height)
         self.item = item
         self.item_path = "assets\\items\\{}.png".format(self.item.name)
 
@@ -37,7 +75,17 @@ class InventoryBox:
         )  # Visar föremålets bild
 
 
-def inventory_state(engine, window):
+def is_in_box(all_boxes, x, y) -> StatBox:
+    """Kollar ifall en låda har blivit klickad på"""
+    for box in all_boxes:
+        if x in range(box.x, box.x + box.width) and y in range(
+            box.y, box.y + box.height
+        ):
+            return box
+    return None
+
+
+def inventory_state(engine, window) -> None:
     """Game state för inventory"""
     engine.player_can_move = False
     x_offset = 3
@@ -114,13 +162,13 @@ def inventory_state(engine, window):
 
         window.present()
 
-        events = tcod.event.wait()
-
-        event = engine.handle_events(events)
+        event = engine.handle_events()
 
         if event == "inventory":  # Ifall spelaren trycker på i så stängs inventoryt
             engine.inventory_open = False
             engine.player_can_move = True
+            window.clear()
+            window.present()
             return
         elif event == "next_page":  # Ändrar sida
             if current_page < num_pages:
@@ -164,61 +212,24 @@ all_stat_colors = {
 }
 
 
-class StatBox:
-    """Liknande till inventory box klassen fast för statistik"""
-
-    def __init__(self, x, y, width, height, stat_name, stats, index):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.stat_name = stat_name
-        self.stat_value = stats[self.stat_name]
-        self.stat_description = stat_description[self.stat_name]
-        self.stat_color = all_stat_colors[self.stat_name]
-        self.stat_path = "assets\\attributes\\{}.png".format(self.stat_name)
-        self.index = index
-
-    def render(self, window):
-        """Renderar en attribut samt en bild av den"""
-        window.console.draw_frame(
-            x=self.x,
-            y=self.y,
-            width=self.width,
-            height=self.height,
-            title=self.stat_name,
-            fg=self.stat_color,
-            bg=(0, 0, 0),
-        )
-        window.console.print_box(
-            x=self.x + 3,
-            y=self.y + 3,
-            width=self.width - 5,
-            height=self.height + self.y,
-            string=self.stat_description,
-        )
-        window.print(
-            x=self.x + self.width // 2,
-            y=self.y + self.width // 2,
-            string=f"{self.stat_value}",
-            fg=green,
-        )
-
-        window.print(x=self.x + 1, y=self.y + 1, string=f"({self.index})")
-
-        window.show_image(self.stat_path, self.x + 1, self.y + 10)
-
-
-def main_menu(engine, window):
+def main_menu(engine, window) -> str:
     """Game state för huvudmenyn"""
 
     while True:
-        events = tcod.event.wait()
-        if engine.handle_events(events) == "new_game":
+        if engine.handle_events() == "new_game":
+            window.clear()
+            window.present()
             return "playing"
         window.clear()
 
         window.show_image("assets\\main_menu.png", 0, 0)
+
+        window.print(
+            x=window.width // 2 - 10,
+            y=window.height // 2 - 10,
+            string="DUNGEONS OF KWARGS",
+            fg=(0, 255, 255),
+        )
         window.print(
             x=window.width // 2 - 10,
             y=window.height // 2,
@@ -229,7 +240,7 @@ def main_menu(engine, window):
         window.present()
 
 
-def stats_screen(engine, window):
+def stats_screen(engine, window) -> List:
     """Game state för player sheet samt för level up"""
     engine.player_can_move = False
     x_offset = 5
@@ -261,8 +272,7 @@ def stats_screen(engine, window):
     while (
         available_points > 0
     ):  # Så länge spelaren har skill points så kan de öka sina stats
-        events = tcod.event.wait()
-        event = engine.handle_events(events)
+        event = engine.handle_events()
         if isinstance(
             event, tuple
         ):  # Ifall spelaren klickar på en attribut så ökar den med 1
@@ -344,16 +354,17 @@ def stats_screen(engine, window):
         window.present()
     engine.player_can_move = True
     new_stats = [x.stat_value for x in all_boxes]
+    window.clear()
+    window.present()
     return new_stats  # Ger tillbaka en lista med alla stats så att de kan användas för att uppdatera spelarens stats
 
 
-def death_state(engine, window):
+def death_state(engine, window) -> None:
     """Game state för när spelaren dör"""
     engine.player_can_move = False
     window.clear()
     while True:
-        events = tcod.event.wait()
-        engine.handle_events(events)
+        engine.handle_events()
         window.console.print_box(
             window.width // 2 - 5,
             window.height // 2,

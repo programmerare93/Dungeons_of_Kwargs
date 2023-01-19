@@ -1,20 +1,16 @@
 from __future__ import annotations
 
 import random
-import asyncio
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import stage.tile_types as tile_types
-from actions.soundhandler import SoundPlayer
 from window.color import *
 
 # Falskt på 'runtime'
 if TYPE_CHECKING:
     from engine.engine import Engine
-    from creature.entity import Entity, Chest
-
-player = SoundPlayer()
+    from creature.entity import Entity
 
 
 class Action:
@@ -31,7 +27,7 @@ class MovementAction:
         self.dx = dx
         self.dy = dy
 
-    def perform(self, engine: Engine, entity: Entity) -> None:
+    def perform(self, engine: Engine, entity: Entity) -> Optional[str]:
         # Först tittar vi om spelaren kan flytta eller inte
         if not engine.player_can_move:
             return None
@@ -97,6 +93,8 @@ class MovementAction:
                 entity.char == "@"
             ):  # Ifall det är spelaren som attackerar så sätts engine.player_can_attack till False, så att spelaren inte kan attackera igen på en sekund
                 engine.player_can_attack = False
+            if entity.char != "@" and target.char != "@":
+                return None
             if entity.perception + random.randint(
                 1, 20
             ) > target.agility + random.randint(
@@ -154,7 +152,7 @@ class OpenChest:
     def __init__(self) -> None:
         super().__init__()
 
-    def perform(self, engine: Engine, entity: Entity) -> None:
+    def perform(self, engine: Engine, entity: Entity) -> Optional[str]:
         for monster in engine.game_map.entities:
             if (
                 monster.char == "C"

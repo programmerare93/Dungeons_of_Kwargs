@@ -14,6 +14,11 @@ yellow = (0xFF, 0xFF, 0x0)
 dark_gray = (0x40, 0x40, 0x40)
 sky_blue = (0x80, 0xFF, 0xFF)
 baby_blue = (0x80, 0xC0, 0xFF)
+dark_green = (0x0, 0x80, 0x0)
+light_gray = (0xC0, 0xC0, 0xC0)
+dark_gray = (0x40, 0x40, 0x40)
+brown = (0x80, 0x40, 0x0)
+dark_pink = (0xFF, 0x0, 0x80)
 
 player_atk = (0xE0, 0xE0, 0xE0)
 enemy_atk = (0xFF, 0xC0, 0xC0)
@@ -28,3 +33,50 @@ bar_filled = (0x0, 0x60, 0x0)
 bar_empty = (0x40, 0x10, 0x10)
 
 death_text = (0xFF, 0x0, 0x0)
+
+wall_1_color = white
+wall_2_color = (142, 119, 66)
+wall_3_color = (73, 182, 117)
+wall_4_color = (253, 227, 141)
+wall_5_color = (153, 0, 51)
+wall_6_color = pink
+
+floor_1_color = sky_blue
+floor_2_color = (0x60, 0x60, 0x60)
+floor_3_color = (0x40, 0x40, 0x40)
+floor_4_color = (0x20, 0x20, 0x20)
+floor_5_color = (0x0, 0x0, 0x0)
+floor_6_color = (0x0, 0x0, 0x0)
+
+seen_1_color = dark_gray
+seen_2_color = (42, 19, 0)
+seen_3_color = (0, 82, 17)
+seen_4_color = (153, 127, 41)
+seen_5_color = (53, 0, 0)
+seen_6_color = dark_pink
+
+all_wall_colors = [
+    wall_1_color,
+    wall_2_color,
+    wall_3_color,
+    wall_4_color,
+    wall_5_color,
+    wall_6_color,
+]
+all_floor_colors = [
+    floor_1_color,
+    floor_2_color,
+    floor_3_color,
+    floor_4_color,
+    floor_5_color,
+    floor_6_color,
+]
+
+all_seen_colors = [
+    seen_1_color,
+    seen_2_color,
+    seen_3_color,
+    seen_4_color,
+    seen_5_color,
+    seen_6_color,
+]

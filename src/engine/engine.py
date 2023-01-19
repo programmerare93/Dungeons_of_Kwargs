@@ -53,8 +53,10 @@ class Engine:
         self.window = window
         self.creatures = [x for x in self.game_map.entities if x.char != "C"]
 
-    def update_game_map(self):
+    def update_game_map(self) -> None:
         """Uppdaterar spel kartan när spelaren hamnar på en ny våning."""
+        if self.game_map:
+            self.game_map.entities = [self.player]
         self.generator.generate_dungeon()
         self.game_map = self.generator.get_dungeon()
         self.update_fov()
@@ -70,8 +72,9 @@ class Engine:
         """Kollar om spelaren har aktiverat en fälla."""
         return isinstance(self.game_map.tiles[x, y], tile_types.Trap)
 
-    def handle_events(self, events: Iterable[Any]) -> None:
+    def handle_events(self) -> None:
         """Tar hand om alla event som sker i spelet."""
+        events = tcod.event.wait()  # Samlar alla event som sker i spelet
         for event in events:
             if isinstance(event, tcod.event.MouseButtonDown):
                 # Mus knapp tryck är specialfall och måste konverteras till en tile
@@ -111,14 +114,14 @@ class Engine:
                 self.tick += 1
                 self.update_fov()  # Uppdaterar spelarens fält av syn
 
-    def handle_enemy_AI(self):
+    def handle_enemy_AI(self) -> None:
         """Tar hand om hur fiender beter sig."""
         if self.monster_tick != self.tick:  # Om spelaren har gjort något
             self.game_map.generate_pathfinding_map()  # Tittar på spelplanen och skapar en pathfinding karta
             for monster in self.game_map.entities:
                 if (
                     monster.char not in ("@", "C")
-                    and random.randint(0, 100) > monster.move_chance
+                    and random.randint(0, 100) < monster.move_chance
                     and monster.hp > 0
                     and self.game_map.calculate_distance(
                         monster.x, monster.y, self.player.x, self.player.y
@@ -143,7 +146,7 @@ class Engine:
                 self.tick
             )  # Efter att ha kollat på varenda fiende så ökas antalet monster ticks till det nuvarande tick antalet
 
-    def can_player_attack(self):
+    def can_player_attack(self) -> None:
         """Sätter bara en cooldown på spelarens attack så att spelaren inte kan attackera för ofta."""
         if not self.player_can_attack:
             self.player_attack_cool_down = time.time()
@@ -152,7 +155,7 @@ class Engine:
         if time.time() - self.player_attack_cool_down >= 1:
             self.player_can_attack = True
 
-    def handle_used_items(self):
+    def handle_used_items(self) -> None:
         """Behandlar alla items som spelaren eller alla monster använt."""
         for entity in self.creatures:
             if entity.used_items != []:
@@ -180,11 +183,11 @@ class Engine:
             algorithm=tcod.FOV_SYMMETRIC_SHADOWCAST,
         )
 
-    def check_inventory(self):
+    def check_inventory(self) -> str:
         if self.inventory_open:
             return "open"
 
-    def check_entities(self):
+    def check_entities(self) -> str:
         """Tittar på alla entities och kollar om de har 0 eller mindre hp, om de har det så dör de och xp läggs till spelaren"""
         for entity in self.game_map.entities:
             if entity.hp <= 0:
@@ -201,7 +204,7 @@ class Engine:
 
         self.game_map.explored |= self.game_map.visible
 
-    def check_xp(self):
+    def check_xp(self) -> str:
         """Kollar om spelaren har tillräckligt med xp för att levla upp"""
         if self.player.xp >= self.player.xp_to_next_level:
             self.player.level += 1
@@ -238,7 +241,6 @@ class Engine:
         )  # Visar meddelanden
         self.window.render_log(  # Visar loggen
             player=self.player,
-            engine=self,
         )
         context.present(console)  # Presenterar allt som ska visas på skärmen
 

@@ -16,6 +16,7 @@ from stage.floor import Floor
 
 class Generator:
     """Klass för att generera en spelvärld"""
+
     def __init__(
         self,
         map_width: int,
@@ -139,6 +140,7 @@ class Generator:
                     new_chest = Chest(
                         a,
                         b,
+                        tier=self.difficulty,
                     )
                     self.dungeon.entities.append(new_chest)
         else:  # Sista våningen är speciell och ska ha en boss

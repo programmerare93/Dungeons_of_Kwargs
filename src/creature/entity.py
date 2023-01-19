@@ -38,7 +38,7 @@ class Player(Entity):
         self,
         char: str,
         color: Tuple[int, int, int],
-        stats=[10, 1000, 10, 10, 2],  # Utgångspunkten för spelarens stats
+        stats=[500, 40, 10, 20, 40],  # Utgångspunkten för spelarens stats
         name: str = "Player",
     ):
         super().__init__(0, 0, "@", color, name)
@@ -66,27 +66,19 @@ class Monster(Entity):
 
     def __init__(
         self,
-        x: int,
-        y: int,
         char: str,
         color: Tuple[int, int, int],
-        difficulty: int,
-        max_hp: int,
-        strength: int,
-        perception: int,
-        agility: int,
-        intelligence: int,
         name: str,
+        stats: list = [10, 10, 10, 10, 10],
         move_chance: int = 100,
+        difficulty: int = 1,
+        x: int = None,
+        y: int = None,
     ):
         super().__init__(x, y, char, color, name)
         self.difficulty = difficulty  # Monstrets statistik kommer att bero på hur svårt den nuvarande nivån är
-        self.max_hp = max_hp * self.difficulty
-        self.hp = self.max_hp * self.difficulty
-        self.strength = strength * self.difficulty
-        self.agility = agility * self.difficulty
-        self.intelligence = intelligence * self.difficulty
-        self.perception = perception * self.difficulty
+        self.stats = stats
+        self.update_stats()
         self.move_chance = (
             move_chance  # Hur stor chans det är för att monstret ska röra sig
         )
@@ -102,7 +94,16 @@ class Monster(Entity):
             []
         )  # Lista med items som monstret använt och som fortfarande är aktiva
 
-    def monster_pathfinding(self, player, game_map, engine):
+    def update_stats(self) -> None:
+        """Används för att uppdatera statsen när de ändras"""
+        self.max_hp = self.stats[0] * self.difficulty
+        self.hp = self.max_hp * self.difficulty
+        self.strength = self.stats[1] * self.difficulty
+        self.perception = self.stats[2] * self.difficulty
+        self.agility = self.stats[3] * self.difficulty
+        self.intelligence = self.stats[4] * self.difficulty
+
+    def monster_pathfinding(self, player, game_map, engine) -> None:
         """Monster pathfinding"""
         if game_map.pathfinding(self.x, self.y, player.x, player.y) == []:
             return
@@ -119,7 +120,7 @@ class Monster(Entity):
         )  # Räknar ut vilken riktning monstret ska röra sig
         action.perform(engine, self)
 
-    def choose_item(self):
+    def choose_item(self) -> StatItem:
         """Väljer ett item från inventoryt"""
         return random.choice(self.items)
 
@@ -144,7 +145,133 @@ class Chest(Entity):
         ]
 
 
-def generate_monsters(room, game_map):
+# Definierar alla fiender
+
+# Nivå 1
+orc = Monster(
+    name="Orc",
+    char="O",
+    color=(0, 255, 0),
+    stats=[10, 10, 10, 10, 10],
+)
+
+troll = Monster(
+    name="Troll",
+    char="T",
+    color=blue,
+    stats=[20, 10, 5, 3, 3],
+)
+
+goblin = Monster(
+    name="Goblin",
+    char="G",
+    color=light_green,
+    stats=[5, 2, 10, 15, 2],
+)
+
+# Nivå 2
+
+skeleton = Monster(
+    name="Skeleton",
+    char="S",
+    color=(237, 236, 230),
+    stats=[10, 20, 20, 20, 1],
+)
+
+rock_elemental = Monster(
+    name="Rock Elemental",
+    char="R",
+    color=(121, 92, 74),
+    stats=[100, 15, 10, 15, 50],
+)
+
+basilisk = Monster(
+    name="Basilisk",
+    char="B",
+    color=dark_green,
+    stats=[25, 20, 20, 20, 20],
+)
+
+# Nivå 3
+
+werewolf = Monster(
+    name="Werewolf",
+    char="W",
+    color=(128, 128, 128),
+    stats=[50, 20, 25, 15, 50],
+)
+
+arachnid = Monster(
+    name="Arachnid",
+    char="A",
+    color=(72, 75, 98),
+    stats=[30, 25, 30, 20, 50],
+)
+
+harpy = Monster(
+    name="Harpy",
+    char="H",
+    color=(252, 233, 3),
+    stats=[40, 30, 40, 20, 50],
+)
+
+# Nivå 4
+
+mummy = Monster(
+    name="Mummy",
+    char="M",
+    color=(237, 236, 231),
+    stats=[50, 15, 5, 3, 10],
+)
+
+vampire = Monster(
+    name="Vampire",
+    char="V",
+    color=red,
+    stats=[80, 30, 20, 16, 30],
+)
+
+zombie = Monster(
+    name="Zombie",
+    char="Z",
+    color=(0, 82, 33),
+    stats=[60, 20, 5, 3, 20],
+)
+
+# Nivå 5
+
+death_knight = Monster(
+    name="Death Knight",
+    char="K",
+    color=(99, 181, 33),
+    stats=[150, 50, 20, 20, 20],
+)
+
+
+lich = Monster(name="Lich", char="L", color=(227, 98, 47), stats=[200, 100, 50, 50, 50])
+
+level_1_monsters = [orc, goblin, troll]
+
+level_2_monsters = [rock_elemental, basilisk, skeleton]
+
+level_3_monsters = [werewolf, arachnid, harpy]
+
+level_4_monsters = [vampire, mummy, zombie]
+
+level_5_monsters = [death_knight, lich]
+
+all_monsters = [
+    level_1_monsters,
+    level_2_monsters,
+    level_3_monsters,
+    level_4_monsters,
+    level_5_monsters,
+]
+
+all_monster_chars = [monster.char for monster in list(chain(*all_monsters))]
+
+
+def generate_monsters(room, game_map) -> None:
     """Genererar en entity i ett givet rum"""
 
     x = random.randint(room.x1 + 1, room.x2 - 1)
@@ -152,98 +279,23 @@ def generate_monsters(room, game_map):
     y = random.randint(room.y1 + 1, room.y2 - 1)
 
     if not game_map.entity_at_location(x, y):
-        number = random.randint(0, 100)
-        if number < 10:
-            monster = Monster(
-                name="Wario",
-                x=x,
-                y=y,
-                char="W",
-                color=(255, 255, 0),
-                difficulty=game_map.difficulty,
-                max_hp=40,
-                strength=15,
-                agility=3,
-                perception=4,
-                intelligence=20
-            )
-        elif 10 <= number < 40:
-            monster = Monster(
-                name="Orc",
-                x=x,
-                y=y,
-                char="O",
-                color=(0, 255, 120),
-                difficulty=game_map.difficulty,
-                max_hp=16,
-                strength=10,
-                agility=5,
-                perception=5,
-                intelligence=1,
-            )
-        elif 40 <= number < 60:
-            monster = Monster(
-                name="Skeleton",
-                x=x,
-                y=y,
-                char="S",
-                color=(255, 255, 255),
-                difficulty=game_map.difficulty,
-                max_hp=10,
-                strength=8,
-                perception=6,
-                agility=10,
-                intelligence=6,
-            )
-        elif 60 <= number < 80:
-            monster = Monster(
-                name="Moomin Troll",
-                x=x,
-                y=y,
-                char="M",
-                color=(0, 0, 0),
-                difficulty=game_map.difficulty,
-                max_hp=14,
-                strength=10,
-                perception=14,
-                agility=8,
-                intelligence=4
-            )
-        elif 80 <= number < 90:
-            monster = Monster(
-                name="Vampire",
-                x=x,
-                y=y,
-                char="V",
-                color=(255, 0, 0),
-                difficulty=game_map.difficulty,
-                max_hp=18,
-                strength=8,
-                perception=20,
-                agility=14,
-                intelligence=20
-            )
-        else:
-            monster = Monster(
-                name="Troll",
-                x=x,
-                y=y,
-                char="T",
-                color=(0, 0, 255),
-                difficulty=game_map.difficulty,
-                max_hp=30,
-                strength=10,
-                perception=5,
-                agility=3,
-                intelligence=3,
-            )
-        game_map.entities.append(monster)
+        monster = random.choice(all_monsters[game_map.difficulty - 1])
+        new_monster = Monster(
+            name=monster.name,
+            char=monster.char,
+            color=monster.color,
+            stats=monster.stats,
+            x=x,
+            y=y,
+        )
+        game_map.entities.append(new_monster)
         room.type = "monster"
-    else:  # Om det redan finns en entity på den platsen, kör funktionen igen
-        generate_monsters(room, game_map)
+        return
+    else:
+        return
 
 
-def generate_boss(room, game_map):  # Special funktion för att generera bossen
+def generate_boss(room, game_map) -> None:  # Special funktion för att generera bossen
     x, y = room.center
 
     boss = Monster(
@@ -253,11 +305,7 @@ def generate_boss(room, game_map):  # Special funktion för att generera bossen
         char="B",
         color=red,
         difficulty=game_map.difficulty + 2,
-        max_hp=80,
-        strength=10,
-        perception=4,
-        agility=2,
-        intelligence=2,
+        stats=[100, 100, 100, 100, 100],
     )
     game_map.entities.append(boss)
     room.type = "monster"

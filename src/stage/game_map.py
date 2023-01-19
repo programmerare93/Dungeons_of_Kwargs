@@ -33,14 +33,14 @@ class GameMap:
 
     def render(self, console: Console) -> None:
         """Metod för att gå igenom alla tiles och sedan rendera varje tile"""
-        for (x, row) in enumerate(self.tiles):  
+        for (x, row) in enumerate(self.tiles):
             for (y, tile) in enumerate(row):
-                if self.visible[x, y]: # Varje tile som är synlig renderas
+                if self.visible[x, y]:  # Varje tile som är synlig renderas
                     tile.visible = True
                     if tile.type == tile_types.types_of_tiles["floor"]:
-                        tile.color = tile_types.floor_color
+                        tile.color = all_wall_colors[self.difficulty - 2]
                     elif tile.type == tile_types.types_of_tiles["wall"]:
-                        tile.color = tile_types.wall_color
+                        tile.color = all_wall_colors[self.difficulty - 2]
                     elif tile.type == tile_types.types_of_tiles["stair"]:
                         tile.color = tile_types.wall_color
                     elif tile.type == tile_types.types_of_tiles["trap"]:
@@ -50,12 +50,14 @@ class GameMap:
                             tile.color = tile_types.trap_color
 
                     tile.render(console, x, y)
-                elif self.explored[x, y]: # Varje tile som spelaren har varit nära renderas med en annan färg
+                elif self.explored[
+                    x, y
+                ]:  # Varje tile som spelaren har varit nära renderas med en annan färg
                     tile.seen = True
-                    tile.color = tile_types.seen_color
+                    tile.color = all_seen_colors[self.difficulty - 2]
                     tile.render(console, x, y)
 
-        for entity in self.entities: # Renderar alla entities om de är synliga
+        for entity in self.entities:  # Renderar alla entities om de är synliga
             if (
                 self.visible[entity.x, entity.y]
                 and not self.tiles[entity.x, entity.y] == tile_types.wall
@@ -63,17 +65,23 @@ class GameMap:
             ):
                 entity.render(console, entity.x, entity.y)
 
-    def entity_at_location(self, x: int, y: int) -> List[Entity]: # Ger en lista med alla entities som finns på en viss koordinat
+    def entity_at_location(
+        self, x: int, y: int
+    ) -> List[Entity]:  # Ger en lista med alla entities som finns på en viss koordinat
         return [entity for entity in self.entities if entity.x == x and entity.y == y]
 
-    def monster_or_chest_at_location(self, x: int, y: int) -> List[Entity]: # Ger en lista med alla entities som finns på en viss koordinat utom spelaren
+    def monster_or_chest_at_location(
+        self, x: int, y: int
+    ) -> List[
+        Entity
+    ]:  # Ger en lista med alla entities som finns på en viss koordinat utom spelaren
         return [
             entity
             for entity in self.entities
             if entity.x == x and entity.y == y and entity.char != "@"
         ]
 
-    def get_tile(self, x, y): # Returnerar en tile på en viss koordinat
+    def get_tile(self, x, y) -> Iterable:  # Returnerar en tile på en viss koordinat
         return self.tiles[x, y]
 
     def generate_pathfinding_map(self) -> None:
@@ -89,7 +97,7 @@ class GameMap:
                 ) and not self.monster_or_chest_at_location(x, y):
                     self.pathfinding_map[x, y] = 1
 
-    def pathfinding(self, x1, y1, x2, y2)-> List[Tuple[int, int]]:
+    def pathfinding(self, x1, y1, x2, y2) -> List[Tuple[int, int]]:
         """Tar emot två koordinater och returnerar en lista med koordinater (Tuples) som ett monster ska följa för att komma till spelaren"""
         path = tcod.path.AStar(self.pathfinding_map)
         return path.get_path(x1, y1, x2, y2)
