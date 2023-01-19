@@ -24,7 +24,7 @@ class StatBox(Box):
         self.stat_path = "..\\assets\\attributes\\{}.png".format(self.stat_name)
         self.index = index
 
-    def render(self, window):
+    def render(self, window) -> None:
         """Renderar en attribut samt en bild av den"""
         window.console.draw_frame(
             x=self.x,
@@ -62,7 +62,7 @@ class InventoryBox(Box):
         self.item = item
         self.item_path = "..\\assets\\items\\{}.png".format(self.item.name)
 
-    def render(self, window):
+    def render(self, window) -> None:
         window.console.print_box(
             x=self.x,
             y=self.y,
@@ -381,6 +381,7 @@ def victory_state(engine, window):
             fg=(255, 255, 255),
         )
         window.context.present(window.console)
+
 
 def death_state(engine, window) -> None:
     """Game state för när spelaren dör"""
