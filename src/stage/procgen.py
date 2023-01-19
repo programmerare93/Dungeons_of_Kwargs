@@ -121,7 +121,7 @@ class Generator:
             for (x, row) in enumerate(self.dungeon.tiles):
                 for (y, value) in enumerate(row):
                     if self.dungeon.tiles[x, y] == tile_types.floor:
-                        if random.randint(0, 50) in range(1, 25):
+                        if random.randint(0, 50) == 25:
                             self.dungeon.tiles[x, y] = tile_types.Trap(
                                 tile_types.trap_color, difficulty=self.difficulty
                             )
