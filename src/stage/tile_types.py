@@ -32,7 +32,7 @@ class Tile:
         self.color = color
         self.char = char
 
-    def render(self, console: Console, x: int, y: int):
+    def render(self, console: Console, x: int, y: int) -> None:
         console.print(x, y, self.char, self.color)
 
 

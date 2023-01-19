@@ -25,7 +25,7 @@ class Window:
         self.height = height
         self.width = width
 
-    def show_image(self, image_path, x, y, width=None, height=None):
+    def show_image(self, image_path, x, y, width=None, height=None) -> None:
         """Metod för att visa bilder"""
         image = tcod.image_load(image_path)
         if width is None and height is None:
@@ -33,7 +33,7 @@ class Window:
         image.blit_2x(self.console, x, y)
         tcod.console_blit(self.console, 0, 0, width, height, 0, 0, 0)
 
-    def render_log(self, player, engine):
+    def render_log(self, player) -> None:
         """Metod för att visa loggen"""
         self.console.draw_frame(0, 45, self.width, self.height - 45, "Log", clear=False)
         x_offset = 5
@@ -71,12 +71,12 @@ class Window:
 
     def print(
         self, x: int, y: int, string: str, fg=(255, 255, 255), bg=None, alignment=0
-    ):
+    ) -> None:
         self.console.print(x, y, string, fg, bg=bg, alignment=alignment)
 
-    def clear(self):
+    def clear(self) -> None:
         self.console.clear()
 
-    def present(self):
+    def present(self) -> None:
         """Metod för att visa konsolen(fönstret)"""
         self.context.present(self.console)

@@ -94,7 +94,7 @@ class Monster(Entity):
             []
         )  # Lista med items som monstret använt och som fortfarande är aktiva
 
-    def update_stats(self):
+    def update_stats(self) -> None:
         """Används för att uppdatera statsen när de ändras"""
         self.max_hp = self.stats[0] * self.difficulty
         self.hp = self.max_hp * self.difficulty
@@ -103,7 +103,7 @@ class Monster(Entity):
         self.agility = self.stats[3] * self.difficulty
         self.intelligence = self.stats[4] * self.difficulty
 
-    def monster_pathfinding(self, player, game_map, engine):
+    def monster_pathfinding(self, player, game_map, engine) -> None:
         """Monster pathfinding"""
         if game_map.pathfinding(self.x, self.y, player.x, player.y) == []:
             return
@@ -120,7 +120,7 @@ class Monster(Entity):
         )  # Räknar ut vilken riktning monstret ska röra sig
         action.perform(engine, self)
 
-    def choose_item(self):
+    def choose_item(self) -> StatItem:
         """Väljer ett item från inventoryt"""
         return random.choice(self.items)
 
@@ -271,7 +271,7 @@ all_monsters = [
 all_monster_chars = [monster.char for monster in list(chain(*all_monsters))]
 
 
-def generate_monsters(room, game_map):
+def generate_monsters(room, game_map) -> None:
     """Genererar en entity i ett givet rum"""
 
     x = random.randint(room.x1 + 1, room.x2 - 1)
@@ -295,7 +295,7 @@ def generate_monsters(room, game_map):
         return
 
 
-def generate_boss(room, game_map):  # Special funktion för att generera bossen
+def generate_boss(room, game_map) -> None:  # Special funktion för att generera bossen
     x, y = room.center
 
     boss = Monster(

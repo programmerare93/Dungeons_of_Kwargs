@@ -81,7 +81,7 @@ class GameMap:
             if entity.x == x and entity.y == y and entity.char != "@"
         ]
 
-    def get_tile(self, x, y):  # Returnerar en tile på en viss koordinat
+    def get_tile(self, x, y) -> Iterable:  # Returnerar en tile på en viss koordinat
         return self.tiles[x, y]
 
     def generate_pathfinding_map(self) -> None:

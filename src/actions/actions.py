@@ -1,36 +1,16 @@
 from __future__ import annotations
 
 import random
-import asyncio
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import stage.tile_types as tile_types
-from actions.soundhandler import SoundPlayer
 from window.color import *
 
 # Falskt på 'runtime'
 if TYPE_CHECKING:
     from engine.engine import Engine
     from creature.entity import Entity
-
-player = SoundPlayer()
-# all_monster_chars = (
-#     "O",
-#     "G",
-#     "T",
-#     "S",
-#     "B",
-#     "R",
-#     "W",
-#     "A",
-#     "H",
-#     "M",
-#     "V",
-#     "Z",
-#     "K",
-#     "L",
-# )
 
 
 class Action:
@@ -47,7 +27,7 @@ class MovementAction:
         self.dx = dx
         self.dy = dy
 
-    def perform(self, engine: Engine, entity: Entity) -> None:
+    def perform(self, engine: Engine, entity: Entity) -> Optional[str]:
         # Först tittar vi om spelaren kan flytta eller inte
         if not engine.player_can_move:
             return None
@@ -172,7 +152,7 @@ class OpenChest:
     def __init__(self) -> None:
         super().__init__()
 
-    def perform(self, engine: Engine, entity: Entity) -> None:
+    def perform(self, engine: Engine, entity: Entity) -> Optional[str]:
         for monster in engine.game_map.entities:
             if (
                 monster.char == "C"
