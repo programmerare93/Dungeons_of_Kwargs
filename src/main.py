@@ -9,15 +9,16 @@ from stage.procgen import Generator
 from window.window import Window
 from window.color import *
 
-
+# Definierar ett tileset för att använda i spelet, den här är en 16x16 tileset
+# som representerar varje tecken som vi använder i spelet
 tileset = tcod.tileset.load_tilesheet(
-    "./assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
-)  # Definierar en tileset för att använda i spelet, den här är en 16x16 tileset som använder CP437 som charmap och representerar varje tecken som vi använder i spelet
+    "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
+)
 
 
 window = Window(
     "Dungeons of Kwargs", 80, 70, tileset
-)  # Definierar en window med namnet Dungeons of Kwargs, 80x70 storlek och använder tileset som tileset
+)  # Definierar ett window med namnet Dungeons of Kwargs, 80x70 storlek och använder tileset som tileset
 
 
 def main():  # Huvudfunktionen som körs när spelet startas
@@ -61,8 +62,11 @@ def main():  # Huvudfunktionen som körs när spelet startas
 
         engine.handle_used_items()  # Tar hand om använda items
 
-        if engine.check_entities() == "dead":  # Ifall spelaren dör
-            death_state(engine, window)  # Visar döds skärmen
+        who_dead = engine.check_entities()
+        if who_dead == "player_kill":
+            death_state(engine, window)
+        elif who_dead == "boss_kill":
+            victory_state(engine, window)
 
         if engine.check_xp() == "Level Up":  # Ifall spelaren har levlat upp
             player.stats = stats_screen(

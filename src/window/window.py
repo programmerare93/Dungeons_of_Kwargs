@@ -57,7 +57,7 @@ class Window:
                 x_offset = 9
                 y_offset += 10
             self.show_image(
-                f"assets\\attributes\\{all_images[i]}", 50 + x_offset, y_offset
+                f"..\\assets\\attributes\\{all_images[i]}", 50 + x_offset, y_offset
             )
             self.console.print(
                 50 + x_offset,
@@ -67,7 +67,7 @@ class Window:
             )
             x_offset += 8
 
-        self.show_image("assets\\main_character.png", 3, 46)  # Visar spelarens bild
+        self.show_image("..\\assets\\main_character.png", 3, 46)  # Visar spelarens bild
 
     def print(
         self, x: int, y: int, string: str, fg=(255, 255, 255), bg=None, alignment=0

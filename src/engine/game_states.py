@@ -21,7 +21,7 @@ class StatBox(Box):
         self.stat_value = stats[self.stat_name]
         self.stat_description = stat_description[self.stat_name]
         self.stat_color = all_stat_colors[self.stat_name]
-        self.stat_path = "assets\\attributes\\{}.png".format(self.stat_name)
+        self.stat_path = "..\\assets\\attributes\\{}.png".format(self.stat_name)
         self.index = index
 
     def render(self, window):
@@ -60,7 +60,7 @@ class InventoryBox(Box):
     def __init__(self, x, y, width, height, item=None):
         super().__init__(x, y, width, height)
         self.item = item
-        self.item_path = "assets\\items\\{}.png".format(self.item.name)
+        self.item_path = "..\\assets\\items\\{}.png".format(self.item.name)
 
     def render(self, window):
         window.console.print_box(
@@ -222,7 +222,7 @@ def main_menu(engine, window) -> str:
             return "playing"
         window.clear()
 
-        window.show_image("assets\\main_menu.png", 0, 0)
+        window.show_image("..\\assets\\main_menu.png", 0, 0)
 
         window.print(
             x=window.width // 2 - 10,
@@ -337,7 +337,7 @@ def stats_screen(engine, window) -> List:
             fg=light_purple,
         )
 
-        window.show_image("assets\\main_character.png", window.width - 18, 48)
+        window.show_image("..\\assets\\main_character.png", window.width - 18, 48)
 
         window.print(
             x=window.width - 18, y=window.height // 2 + 10, string="Your character:"
@@ -358,6 +358,29 @@ def stats_screen(engine, window) -> List:
     window.present()
     return new_stats  # Ger tillbaka en lista med alla stats så att de kan användas för att uppdatera spelarens stats
 
+
+def victory_state(engine, window):
+    window.console.clear(bg=(0, 0, 0))
+    while True:
+        events = tcod.event.wait()
+        engine.handle_death_events(events)
+        window.console.print_box(
+            window.width // 2 - 5,
+            window.height // 2,
+            100,
+            200,
+            "You won!",
+            fg=(255, 0, 0),
+        )
+        window.console.print_box(
+            window.width // 2 - 10,
+            window.height - 5,
+            20,
+            5,
+            "Press esc to to quit",
+            fg=(255, 255, 255),
+        )
+        window.context.present(window.console)
 
 def death_state(engine, window) -> None:
     """Game state för när spelaren dör"""
