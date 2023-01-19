@@ -11,7 +11,7 @@ from window.color import *
 
 
 tileset = tcod.tileset.load_tilesheet(
-    "./assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
+    "../assets/Potash_10x10.png", 16, 16, tcod.tileset.CHARMAP_CP437
 )  # Definierar en tileset för att använda i spelet, den här är en 16x16 tileset som använder CP437 som charmap och representerar varje tecken som vi använder i spelet
 
 

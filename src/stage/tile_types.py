@@ -60,8 +60,6 @@ class Wall(Tile):
         self.type = 1
 
 
-# Vi har inget specifikt objekt för att kopiera för Trap
-# då det resulterar i att all fällor har samma svårighet
 class Trap(Tile):
     def __init__(self, color, difficulty):
         self.walkable = True
@@ -102,6 +100,9 @@ seen_color = dark_gray
 floor_color = sky_blue
 wall_color = white
 trap_color = baby_blue
+
+# Vi har inget specifikt objekt för Trap då det
+# resulterar i att all fällor har samma svårighet
 
 floor = Floor(floor_color)
 
