@@ -1,6 +1,3 @@
-import tcod
-
-from actions.input_handlers import EventHandler
 from creature.entity import Player
 from engine.engine import Engine
 from engine.game_states import *
@@ -54,13 +51,13 @@ def main():  # Huvudfunktionen som körs när spelet startas
 
     while True:  # Spel loopen
 
-        engine.handle_events()  # Tar hand om alla events som sker i spelet
+        engine.handle_events()
 
-        engine.handle_enemy_AI()  # Tar hand om fiendernas AI
+        engine.handle_enemy_AI()
 
-        engine.can_player_attack()  # Tittar ifall spelarens attack cooldown är klar
+        engine.can_player_attack()
 
-        engine.handle_used_items()  # Tar hand om använda items
+        engine.handle_used_items()
 
         who_dead = engine.check_entities()
         if who_dead == "player_kill":
