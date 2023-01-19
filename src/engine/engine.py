@@ -68,7 +68,7 @@ class Engine:
         self.floor.floor += 1
         self.creatures = [x for x in self.game_map.entities if x.char != "C"]
 
-    def player_activated_trap(self, x: int, y: int) -> bool:
+    def entity_activated_trap(self, x: int, y: int) -> bool:
         """Kollar om spelaren har aktiverat en fälla."""
         return isinstance(self.game_map.tiles[x, y], tile_types.Trap)
 
@@ -192,15 +192,13 @@ class Engine:
         for entity in self.game_map.entities:
             if entity.hp <= 0:
                 if entity.char == "@":
-                    return "player_kill"
+                    return "dead"
                 self.message_log.add_message(f"{entity.name} died!", color.death_text)
                 self.game_map.entities.remove(entity)
                 self.creatures.remove(entity)
                 self.player.xp += entity.xp_value
                 self.render(console=self.window.console, context=self.window.context)
                 self.player_can_attack = True
-                if entity.char == "B":
-                    return "boss_kill"
                 # self.sound_handler.monster_death()
                 break
 
