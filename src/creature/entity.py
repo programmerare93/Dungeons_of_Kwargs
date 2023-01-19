@@ -38,7 +38,7 @@ class Player(Entity):
         self,
         char: str,
         color: Tuple[int, int, int],
-        stats=[1000, 1000, 1000, 1000, 2],  # Utgångspunkten för spelarens stats
+        stats=[500, 40, 10, 20, 40],  # Utgångspunkten för spelarens stats
         name: str = "Player",
     ):
         super().__init__(0, 0, "@", color, name)

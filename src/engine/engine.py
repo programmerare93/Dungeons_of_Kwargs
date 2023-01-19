@@ -72,8 +72,9 @@ class Engine:
         """Kollar om spelaren har aktiverat en fälla."""
         return isinstance(self.game_map.tiles[x, y], tile_types.Trap)
 
-    def handle_events(self, events: Iterable[Any]) -> None:
+    def handle_events(self) -> None:
         """Tar hand om alla event som sker i spelet."""
+        events = tcod.event.wait()  # Samlar alla event som sker i spelet
         for event in events:
             if isinstance(event, tcod.event.MouseButtonDown):
                 # Mus knapp tryck är specialfall och måste konverteras till en tile

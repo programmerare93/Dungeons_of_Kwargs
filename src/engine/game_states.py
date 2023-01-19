@@ -3,14 +3,20 @@ import tcod.sdl.render
 from window.color import *
 from typing import List
 
-class StatBox:
-    """Liknande till inventory box klassen fast för statistik"""
 
-    def __init__(self, x, y, width, height, stat_name, stats, index):
+class Box:
+    def __init__(self, x, y, width, height) -> None:
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+
+
+class StatBox(Box):
+    """Liknande till inventory box klassen fast för statistik"""
+
+    def __init__(self, x, y, width, height, stat_name, stats, index):
+        super().__init__(x, y, width, height)
         self.stat_name = stat_name
         self.stat_value = stats[self.stat_name]
         self.stat_description = stat_description[self.stat_name]
@@ -48,14 +54,11 @@ class StatBox:
         window.show_image(self.stat_path, self.x + 1, self.y + 10)
 
 
-class InventoryBox:
+class InventoryBox(Box):
     """En låda som innehåller ett föremål och allt som krävs för att rendera den"""
 
     def __init__(self, x, y, width, height, item=None):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
+        super().__init__(x, y, width, height)
         self.item = item
         self.item_path = "assets\\items\\{}.png".format(self.item.name)
 
@@ -159,9 +162,7 @@ def inventory_state(engine, window) -> None:
 
         window.present()
 
-        events = tcod.event.wait()
-
-        event = engine.handle_events(events)
+        event = engine.handle_events()
 
         if event == "inventory":  # Ifall spelaren trycker på i så stängs inventoryt
             engine.inventory_open = False
@@ -215,8 +216,7 @@ def main_menu(engine, window) -> str:
     """Game state för huvudmenyn"""
 
     while True:
-        events = tcod.event.wait()
-        if engine.handle_events(events) == "new_game":
+        if engine.handle_events() == "new_game":
             window.clear()
             window.present()
             return "playing"
@@ -272,8 +272,7 @@ def stats_screen(engine, window) -> List:
     while (
         available_points > 0
     ):  # Så länge spelaren har skill points så kan de öka sina stats
-        events = tcod.event.wait()
-        event = engine.handle_events(events)
+        event = engine.handle_events()
         if isinstance(
             event, tuple
         ):  # Ifall spelaren klickar på en attribut så ökar den med 1
@@ -365,8 +364,7 @@ def death_state(engine, window) -> None:
     engine.player_can_move = False
     window.clear()
     while True:
-        events = tcod.event.wait()
-        engine.handle_events(events)
+        engine.handle_events()
         window.console.print_box(
             window.width // 2 - 5,
             window.height // 2,

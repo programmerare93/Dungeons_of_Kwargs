@@ -53,11 +53,7 @@ def main():  # Huvudfunktionen som körs när spelet startas
 
     while True:  # Spel loopen
 
-        events = (
-            tcod.event.wait()
-        )  # Samlar in alla events som sker i spelet, exempelvis knapptryckningar
-
-        engine.handle_events(events)  # Tar hand om alla events som sker i spelet
+        engine.handle_events()  # Tar hand om alla events som sker i spelet
 
         engine.handle_enemy_AI()  # Tar hand om fiendernas AI
 
