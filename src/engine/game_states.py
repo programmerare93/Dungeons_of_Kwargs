@@ -194,6 +194,7 @@ def inventory_state(engine, window) -> None:
             mouse_x, mouse_y = tuple(event)
             hit_box = is_in_box(all_page_items[current_page], mouse_x, mouse_y)
             if hit_box != None:
+                all_page_items[current_page].remove(hit_box)
                 engine.player.items.remove(hit_box.item)
                 engine.message_log.add_message(
                     "You dropped the {}!".format(hit_box.item.name)
@@ -330,7 +331,7 @@ def stats_screen(engine, window) -> List:
             y=5,
             width=21,
             height=window.height - 5,
-            string="Controls: \n\n\nMove: WASD \n\n\nGo down stairs: < \n\n\nInventory: i \n\n\n Open Chest: e \n\n\nExit: Escape \n\n\nTo attack an enemy simply walk into them!",
+            string="Controls: \n\n\nMove: WASD \n\n\nGo down stairs: < \n\n\nToggle Inventory: i \n\n\n Open Chest: e \n\n\nExit: Escape \n\n\nTo attack an enemy simply walk into them!",
         )
 
         window.print(

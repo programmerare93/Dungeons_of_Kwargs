@@ -134,7 +134,7 @@ class Generator:
             # Genererar kistor
             for room in self.room_list:
                 a, b = room.center
-                if random.randint(1, 4) == 4 and not isinstance(
+                if random.randint(1, 4) in range(1, 5) and not isinstance(
                     self.dungeon.get_tile(a, b), tile_types.StairCase
                 ):
                     new_chest = Chest(

@@ -156,6 +156,7 @@ class OpenChest:
                     entity.x, entity.y, monster.x, monster.y
                 )
                 == 1
+                and len(engine.player.items) + len(monster.items) <= 26
             ):  # Om spelaren är 1 tile från en kista
                 chest = monster
                 engine.message_log.add_message("You opened a chest!")
@@ -171,3 +172,14 @@ class OpenChest:
                     console=engine.window.console, context=engine.window.context
                 )
                 return "opened_chest"
+            elif (
+                monster.char == "C"
+                and engine.game_map.calculate_distance(
+                    entity.x, entity.y, monster.x, monster.y
+                )
+                and len(engine.player.items) + len(monster.items) > 26
+            ):
+                engine.message_log.add_message(
+                    "Your inventory is too full to open the chest!"
+                )
+                return "inventory_full"
