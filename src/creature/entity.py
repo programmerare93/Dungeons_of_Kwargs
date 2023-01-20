@@ -42,6 +42,8 @@ class Player(Entity):
         name: str = "Player",
     ):
         super().__init__(0, 0, "@", color, name)
+        if stats is None:
+            stats = [5, 40, 10, 20, 40]
         self.stats = stats
         self.update_stats()
         self.armor = obama_armor

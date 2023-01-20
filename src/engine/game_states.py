@@ -363,7 +363,7 @@ def victory_state(engine, window):
     window.console.clear(bg=(0, 0, 0))
     while True:
         events = tcod.event.wait()
-        engine.handle_death_events(events)
+        engine.handle_events(events)
         window.console.print_box(
             window.width // 2 - 5,
             window.height // 2,
