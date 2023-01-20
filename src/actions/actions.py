@@ -53,32 +53,28 @@ class MovementAction:
         ).walkable:  # Ifall det inte går att gå på den tilen
             return None
 
-        """Tittar om spelaren har gått på en fälla"""
-        if engine.player_activated_trap(dest_x, dest_y):
+        """Tittar om entiteten har gått på en fälla"""
+        if engine.entity_activated_trap(dest_x, dest_y):
             difficulty = engine.game_map.tiles[dest_x, dest_y].difficulty
-            agility = engine.player.agility
+            agility = entity.agility
             if (
                 difficulty
-                < agility  # Ser till att spelaren inte tar skada om spelaren har mer agility än fällans svårighetsgrad
+                <= agility  # Ser till att spelaren inte tar skada om spelaren har mer agility än fällans svårighetsgrad
                 and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
             ):
-                exp_gain = difficulty * 2
                 engine.message_log.add_message(
-                    f"You stepped on a trap. You avoided it! You gain {exp_gain} xp!",
+                    f"{entity.name} stepped on a trap. {entity.name} avoided it!",
                     green,
-                )
-                engine.player.xp += (
-                    exp_gain  # Ger spelaren xp för att ha undvikit fällan
                 )
             elif (
                 difficulty > agility
                 and not engine.game_map.tiles[dest_x, dest_y].hasBeenActivated
             ):
                 engine.message_log.add_message(
-                    f"You stepped on a trap. You took {difficulty - agility} damage!",
+                    f"{entity.name} stepped on a trap. {entity.name} took {difficulty - agility} damage!",
                     red,
                 )
-                engine.player.hp -= difficulty - agility
+                entity.hp -= difficulty - agility
             engine.game_map.tiles[
                 dest_x, dest_y
             ].hasBeenActivated = True  # Ser till att fällan inte kan aktiveras igen
@@ -160,6 +156,7 @@ class OpenChest:
                     entity.x, entity.y, monster.x, monster.y
                 )
                 == 1
+                and len(engine.player.items) + len(monster.items) <= 26
             ):  # Om spelaren är 1 tile från en kista
                 chest = monster
                 engine.message_log.add_message("You opened a chest!")
@@ -175,3 +172,14 @@ class OpenChest:
                     console=engine.window.console, context=engine.window.context
                 )
                 return "opened_chest"
+            elif (
+                monster.char == "C"
+                and engine.game_map.calculate_distance(
+                    entity.x, entity.y, monster.x, monster.y
+                )
+                and len(engine.player.items) + len(monster.items) > 26
+            ):
+                engine.message_log.add_message(
+                    "Your inventory is too full to open the chest!"
+                )
+                return "inventory_full"

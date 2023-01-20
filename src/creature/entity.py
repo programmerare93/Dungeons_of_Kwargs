@@ -21,12 +21,12 @@ class Entity:
         self.char = char
         self.color = color
 
-    def move(self, dx: int, dy: int):
+    def move(self, dx: int, dy: int) -> None:
         """Ändrar x och y koordinaten på en entity med ett givet värde"""
         self.x += dx
         self.y += dy
 
-    def render(self, console: Console, x: int, y: int):
+    def render(self, console: Console, x: int, y: int) -> None:
         """Ritar ut en entity på en given konsol"""
         console.print(x=x, y=y, string=self.char, fg=self.color)
 
@@ -50,7 +50,7 @@ class Player(Entity):
         self.xp = 0
         self.xp_to_next_level = 100
         self.level = 1
-        self.items = [small_healing_potion]
+        self.items = [small_healing_potion, small_healing_potion, small_healing_potion]
         self.used_items = []
 
     def update_stats(self):
@@ -71,8 +71,8 @@ class Monster(Entity):
         char: str,
         color: Tuple[int, int, int],
         name: str,
-        stats: list = [10, 10, 10, 10, 10],
         move_chance: int = 100,
+        stats: list = [10, 10, 10, 10, 10],
         difficulty: int = 1,
         x: int = None,
         y: int = None,
@@ -156,7 +156,8 @@ orc = Monster(
     name="Orc",
     char="O",
     color=(0, 255, 0),
-    stats=[10, 10, 10, 10, 10],
+    stats=[10, 10, 10, 5, 10],
+    move_chance=40,
 )
 
 troll = Monster(
@@ -164,13 +165,15 @@ troll = Monster(
     char="T",
     color=blue,
     stats=[20, 10, 5, 3, 3],
+    move_chance=50,
 )
 
 goblin = Monster(
     name="Goblin",
     char="G",
     color=light_green,
-    stats=[5, 2, 10, 15, 2],
+    stats=[5, 2, 10, 12, 2],
+    move_chance=50,
 )
 
 # Nivå 2
@@ -180,6 +183,7 @@ skeleton = Monster(
     char="S",
     color=(237, 236, 230),
     stats=[10, 20, 20, 20, 1],
+    move_chance=70,
 )
 
 rock_elemental = Monster(
@@ -187,6 +191,7 @@ rock_elemental = Monster(
     char="R",
     color=(121, 92, 74),
     stats=[100, 15, 10, 15, 50],
+    move_chance=30,
 )
 
 basilisk = Monster(
@@ -194,6 +199,7 @@ basilisk = Monster(
     char="B",
     color=dark_green,
     stats=[25, 20, 20, 20, 20],
+    move_chance=65,
 )
 
 # Nivå 3
@@ -203,6 +209,7 @@ werewolf = Monster(
     char="W",
     color=(128, 128, 128),
     stats=[50, 20, 25, 15, 50],
+    move_chance=70,
 )
 
 arachnid = Monster(
@@ -210,6 +217,7 @@ arachnid = Monster(
     char="A",
     color=(72, 75, 98),
     stats=[30, 25, 30, 20, 50],
+    move_chance=60,
 )
 
 harpy = Monster(
@@ -217,6 +225,7 @@ harpy = Monster(
     char="H",
     color=(252, 233, 3),
     stats=[40, 30, 40, 20, 50],
+    move_chance=50,
 )
 
 # Nivå 4
@@ -226,6 +235,7 @@ mummy = Monster(
     char="M",
     color=(237, 236, 231),
     stats=[50, 15, 5, 3, 10],
+    move_chance=30,
 )
 
 vampire = Monster(
@@ -233,6 +243,7 @@ vampire = Monster(
     char="V",
     color=red,
     stats=[80, 30, 20, 16, 30],
+    move_chance=80,
 )
 
 zombie = Monster(
@@ -240,6 +251,7 @@ zombie = Monster(
     char="Z",
     color=(0, 82, 33),
     stats=[60, 20, 5, 3, 20],
+    move_chance=40,
 )
 
 # Nivå 5
@@ -249,10 +261,26 @@ death_knight = Monster(
     char="K",
     color=(99, 181, 33),
     stats=[150, 50, 20, 20, 20],
+    move_chance=80,
 )
 
 
-lich = Monster(name="Lich", char="L", color=(227, 98, 47), stats=[200, 100, 50, 50, 50])
+lich = Monster(
+    name="Lich",
+    char="L",
+    color=(227, 98, 47),
+    stats=[200, 100, 50, 50, 50],
+    move_chance=90,
+)
+
+demon = Monster(
+    name="Demon",
+    char="D",
+    color=(255, 0, 0),
+    stats=[300, 100, 100, 100, 100],
+    move_chance=90,
+)
+
 
 level_1_monsters = [orc, goblin, troll]
 
@@ -262,7 +290,7 @@ level_3_monsters = [werewolf, arachnid, harpy]
 
 level_4_monsters = [vampire, mummy, zombie]
 
-level_5_monsters = [death_knight, lich]
+level_5_monsters = [death_knight, lich, demon]
 
 all_monsters = [
     level_1_monsters,
@@ -291,6 +319,7 @@ def generate_monsters(room, game_map) -> None:
             stats=monster.stats,
             x=x,
             y=y,
+            move_chance=monster.move_chance,
         )
         game_map.entities.append(new_monster)
         room.type = "monster"

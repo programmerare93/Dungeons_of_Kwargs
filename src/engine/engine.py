@@ -68,7 +68,7 @@ class Engine:
         self.floor.floor += 1
         self.creatures = [x for x in self.game_map.entities if x.char != "C"]
 
-    def player_activated_trap(self, x: int, y: int) -> bool:
+    def entity_activated_trap(self, x: int, y: int) -> bool:
         """Kollar om spelaren har aktiverat en fälla."""
         return isinstance(self.game_map.tiles[x, y], tile_types.Trap)
 
@@ -76,10 +76,13 @@ class Engine:
         """Tar hand om alla event som sker i spelet."""
         events = tcod.event.wait()  # Samlar alla event som sker i spelet
         for event in events:
-            if isinstance(event, tcod.event.MouseButtonDown):
+            if isinstance(event, tcod.event.MouseButtonDown) and event.button == 1:
                 # Mus knapp tryck är specialfall och måste konverteras till en tile
                 self.window.context.convert_event(event)
                 return tuple(event.tile)
+            elif isinstance(event, tcod.event.MouseButtonDown) and event.button == 3:
+                self.window.context.convert_event(event)
+                return list(event.tile)
             action = self.event_handler.dispatch(
                 event
             )  # Dispatch metoden ärvs av EventHandler klassen från tcod.event klassen, så vi vet inte hur den fungerar, fast den kommer att kalla på andra funktioner i event_handler
@@ -192,7 +195,7 @@ class Engine:
         for entity in self.game_map.entities:
             if entity.hp <= 0:
                 if entity.char == "@":
-                    return "player_kill"
+                    return "dead"
                 self.message_log.add_message(f"{entity.name} died!", color.death_text)
                 self.game_map.entities.remove(entity)
                 self.creatures.remove(entity)

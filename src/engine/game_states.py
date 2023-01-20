@@ -24,7 +24,7 @@ class StatBox(Box):
         self.stat_path = "..\\assets\\attributes\\{}.png".format(self.stat_name)
         self.index = index
 
-    def render(self, window):
+    def render(self, window) -> None:
         """Renderar en attribut samt en bild av den"""
         window.console.draw_frame(
             x=self.x,
@@ -62,7 +62,7 @@ class InventoryBox(Box):
         self.item = item
         self.item_path = "..\\assets\\items\\{}.png".format(self.item.name)
 
-    def render(self, window):
+    def render(self, window) -> None:
         window.console.print_box(
             x=self.x,
             y=self.y,
@@ -176,7 +176,9 @@ def inventory_state(engine, window) -> None:
         elif event == "previous_page":
             if current_page > 0:
                 current_page -= 1
-        elif isinstance(event, tuple):  # Ifall spelaren klickade
+        elif (
+            isinstance(event, tuple) and len(player_items) != 0
+        ):  # Ifall spelaren klickade
             mouse_x, mouse_y = event
             hit_box = is_in_box(
                 all_page_items[current_page], mouse_x, mouse_y
@@ -188,6 +190,15 @@ def inventory_state(engine, window) -> None:
                 engine.inventory_open = False
                 engine.player_can_move = True
                 return
+        elif isinstance(event, list):
+            mouse_x, mouse_y = tuple(event)
+            hit_box = is_in_box(all_page_items[current_page], mouse_x, mouse_y)
+            if hit_box != None:
+                all_page_items[current_page].remove(hit_box)
+                engine.player.items.remove(hit_box.item)
+                engine.message_log.add_message(
+                    "You dropped the {}!".format(hit_box.item.name)
+                )
 
 
 # Varje attribut har sin egen beskrivning
@@ -320,7 +331,7 @@ def stats_screen(engine, window) -> List:
             y=5,
             width=21,
             height=window.height - 5,
-            string="Controls: \n\n\nMove: WASD \n\n\nGo down stairs: < \n\n\nInventory: i \n\n\n Open Chest: e \n\n\nExit: Escape \n\n\nTo attack an enemy simply walk into them!",
+            string="Controls: \n\n\nMove: WASD \n\n\nGo down stairs: < \n\n\nToggle Inventory: i \n\n\n Open Chest: e \n\n\nExit: Escape \n\n\nTo attack an enemy simply walk into them!",
         )
 
         window.print(
@@ -381,6 +392,7 @@ def victory_state(engine, window):
             fg=(255, 255, 255),
         )
         window.context.present(window.console)
+
 
 def death_state(engine, window) -> None:
     """Game state för när spelaren dör"""
