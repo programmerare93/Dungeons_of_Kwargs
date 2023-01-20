@@ -44,7 +44,7 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             case tcod.event.K_d:
                 action = MovementAction(dx=1, dy=0)
             case tcod.event.K_ESCAPE:  # För att stänga av spelet
-                raise SystemExit()
+                return "exit"
             case tcod.event.K_LESS:  # För att gå ner en trappa
                 action = GoDown()
             case tcod.event.K_i:  # För att öppna inventory
