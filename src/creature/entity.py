@@ -38,7 +38,7 @@ class Player(Entity):
         self,
         char: str,
         color: Tuple[int, int, int],
-        stats=[5, 20, 10, 1, 10],  # Hp, Strength, Perception, Agility, Intelligence
+        stats=[100, 20, 10, 10, 10],  # Hp, Strength, Perception, Agility, Intelligence
         name: str = "Player",
     ):
         super().__init__(0, 0, "@", color, name)
@@ -269,7 +269,7 @@ lich = Monster(
     name="Lich",
     char="L",
     color=(227, 98, 47),
-    stats=[200, 100, 50, 50, 50],
+    stats=[200, 60, 50, 50, 50],
     move_chance=90,
 )
 
@@ -277,7 +277,7 @@ demon = Monster(
     name="Demon",
     char="D",
     color=(255, 0, 0),
-    stats=[300, 100, 100, 100, 100],
+    stats=[225, 50, 70, 70, 70],
     move_chance=90,
 )
 
