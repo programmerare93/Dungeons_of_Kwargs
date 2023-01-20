@@ -159,6 +159,14 @@ def inventory_state(engine, window) -> None:
                 ),
                 fg=yellow,
             )
+            window.console.print_box(
+                x=window.width - 11,
+                y=6,
+                width=10,
+                height=20,
+                string="Right click to drop items",
+                fg=yellow,
+            )
 
         window.present()
 
