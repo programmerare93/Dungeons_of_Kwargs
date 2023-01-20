@@ -46,7 +46,7 @@ class Player(Entity):
             stats = [5, 40, 10, 20, 40]
         self.stats = stats
         self.update_stats()
-        self.armor = obama_armor
+        self.armor = leather_armor
         self.xp = 0
         self.xp_to_next_level = 100
         self.level = 1
