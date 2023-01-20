@@ -195,7 +195,7 @@ class Engine:
         for entity in self.game_map.entities:
             if entity.hp <= 0:
                 if entity.char == "@":
-                    return "dead"
+                    return "player_kill"
                 self.message_log.add_message(f"{entity.name} died!", color.death_text)
                 self.game_map.entities.remove(entity)
                 self.creatures.remove(entity)
