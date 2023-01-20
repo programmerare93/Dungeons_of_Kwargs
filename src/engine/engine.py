@@ -86,9 +86,14 @@ class Engine:
             action = self.event_handler.dispatch(
                 event
             )  # Dispatch metoden ärvs av EventHandler klassen från tcod.event klassen, så vi vet inte hur den fungerar, fast den kommer att kalla på andra funktioner i event_handler
-
             if action in [str(x) for x in range(6)]:
                 return action
+            elif action == "exit" and not self.inventory_open:
+                raise SystemExit()
+
+            elif action == "exit" and self.inventory_open:
+                return None
+
             match action:  # Tittar på vad som händer i action variabeln och gör något beroende på vad det är
                 case None:  # Ifall det inte är något så gör vi inget
                     continue
