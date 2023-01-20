@@ -4,12 +4,6 @@ import os
 
 class Window:
     """Klass för att skapa ett fönster med tcod"""
-
-    context: tcod.context
-    console: tcod.Console
-    width: int
-    height: int
-
     def __init__(self, title: str, width: int, height: int, tileset):
         self.console = tcod.Console(width, height, "F")
 

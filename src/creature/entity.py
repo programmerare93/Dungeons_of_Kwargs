@@ -38,19 +38,19 @@ class Player(Entity):
         self,
         char: str,
         color: Tuple[int, int, int],
-        stats=[500, 40, 10, 20, 40],  # Utgångspunkten för spelarens stats
+        stats=[100, 20, 10, 20, 10],  # Hp, Strength, Perception, Agility, Intelligence
         name: str = "Player",
     ):
         super().__init__(0, 0, "@", color, name)
         if stats is None:
-            stats = [5, 40, 10, 20, 40]
+            stats = [100, 20, 10, 20, 10]
         self.stats = stats
         self.update_stats()
         self.armor = leather_armor
         self.xp = 0
         self.xp_to_next_level = 100
         self.level = 1
-        self.items = list(chain(*all_items))
+        self.items = [small_healing_potion]
         self.used_items = []
 
     def update_stats(self):
@@ -128,7 +128,9 @@ class Monster(Entity):
 
 
 class Chest(Entity):
-    """Klass för att representera en kista, kommer att fungera som en container för items och ärver från entiteten så att vi enkelt kan ta bort den när den öppnas"""
+    """Klass för att representera en kista,
+    kommer att fungera som en container för items och ärver från entiteten
+    så att vi enkelt kan ta bort den när den öppnas"""
 
     def __init__(self, x: int, y: int, name: str = "Chest", tier: int = 1):
         self.name = name
@@ -306,8 +308,8 @@ def generate_boss(room, game_map) -> None:  # Special funktion för att generera
         y=y,
         char="B",
         color=red,
-        difficulty=game_map.difficulty + 2,
-        stats=[100, 100, 100, 100, 100],
+        difficulty=3,
+        stats=[80, 80, 80, 80, 80],
     )
     game_map.entities.append(boss)
     room.type = "monster"

@@ -199,7 +199,7 @@ class Engine:
                 self.player.xp += entity.xp_value
                 self.render(console=self.window.console, context=self.window.context)
                 self.player_can_attack = True
-                if entity.char == "B":
+                if entity.name == "Ancient Titan":
                     return "boss_kill"
                 # self.sound_handler.monster_death()
                 break
