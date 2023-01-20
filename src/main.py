@@ -60,7 +60,7 @@ def main():  # Huvudfunktionen som körs när spelet startas
         engine.handle_used_items()
 
         who_dead = engine.check_entities()
-        if who_dead == "dead":
+        if who_dead == "player_kill":
             death_state(engine, window)
         elif who_dead == "boss_kill":
             victory_state(engine, window)
