@@ -176,7 +176,9 @@ def inventory_state(engine, window) -> None:
         elif event == "previous_page":
             if current_page > 0:
                 current_page -= 1
-        elif isinstance(event, tuple):  # Ifall spelaren klickade
+        elif (
+            isinstance(event, tuple) and len(player_items) != 0
+        ):  # Ifall spelaren klickade
             mouse_x, mouse_y = event
             hit_box = is_in_box(
                 all_page_items[current_page], mouse_x, mouse_y
@@ -188,6 +190,14 @@ def inventory_state(engine, window) -> None:
                 engine.inventory_open = False
                 engine.player_can_move = True
                 return
+        elif isinstance(event, list):
+            mouse_x, mouse_y = tuple(event)
+            hit_box = is_in_box(all_page_items[current_page], mouse_x, mouse_y)
+            if hit_box != None:
+                engine.player.items.remove(hit_box.item)
+                engine.message_log.add_message(
+                    "You dropped the {}!".format(hit_box.item.name)
+                )
 
 
 # Varje attribut har sin egen beskrivning

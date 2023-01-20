@@ -1,6 +1,5 @@
 import tcod
 
-from actions.input_handlers import EventHandler
 from creature.entity import Player
 from engine.engine import Engine
 from engine.game_states import *

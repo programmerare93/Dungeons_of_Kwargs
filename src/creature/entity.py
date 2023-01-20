@@ -38,7 +38,7 @@ class Player(Entity):
         self,
         char: str,
         color: Tuple[int, int, int],
-        stats=[500, 40, 10, 20, 40],  # Utgångspunkten för spelarens stats
+        stats=[50, 15, 15, 15, 20],  # Utgångspunkten för spelarens stats
         name: str = "Player",
     ):
         super().__init__(0, 0, "@", color, name)
@@ -48,7 +48,7 @@ class Player(Entity):
         self.xp = 0
         self.xp_to_next_level = 100
         self.level = 1
-        self.items = list(chain(*all_items))
+        self.items = [small_healing_potion]
         self.used_items = []
 
     def update_stats(self):
